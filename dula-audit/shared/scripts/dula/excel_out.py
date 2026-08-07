@@ -51,6 +51,24 @@ def _ancho(ws, anchos: dict[int, int]) -> None:
         ws.column_dimensions[get_column_letter(col)].width = w
 
 
+def _escalar(valor: Any) -> Any:
+    """openpyxl solo escribe escalares. Los indicadores compuestos (diccionarios
+    de resultados de varios cuadres, listas de filtros aplicados) se aplanan a
+    texto legible en lugar de romper la generacion del papel."""
+    if valor is None or isinstance(valor, (str, int, float, bool)):
+        return valor
+    if isinstance(valor, dict):
+        partes = []
+        for k, v in valor.items():
+            v = _escalar(v)
+            v = f"{v:,.2f}" if isinstance(v, float) else v
+            partes.append(f"{str(k).replace('_', ' ')}: {v}")
+        return " | ".join(partes)
+    if isinstance(valor, (list, tuple, set)):
+        return ", ".join(str(_escalar(v)) for v in valor)
+    return str(valor)
+
+
 def _auto_ancho(ws, df: pd.DataFrame, fila_cab: int, maximo: int = 55) -> None:
     for j, col in enumerate(df.columns, start=1):
         largo = max([len(str(col))] + [len(str(v)) for v in df[col].head(200)] or [10])
@@ -173,9 +191,12 @@ class PapelDeTrabajo:
             f += 1
             for nombre, valor in self._indicadores:
                 ws.cell(row=f, column=1, value=nombre)
-                cel = ws.cell(row=f, column=2, value=valor)
-                if isinstance(valor, (int, float)):
+                escalar = _escalar(valor)
+                cel = ws.cell(row=f, column=2, value=escalar)
+                if isinstance(escalar, (int, float)) and not isinstance(escalar, bool):
                     cel.number_format = FORMATO_EUR
+                else:
+                    cel.alignment = Alignment(wrap_text=True, vertical="top")
                 f += 1
 
         # semaforo del estado

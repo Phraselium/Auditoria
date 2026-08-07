@@ -5,8 +5,8 @@ completo del encargo —aceptación, planificación, trabajo de campo, cierre e
 informe— bajo NIA-ES, con cálculo determinista por script, trazabilidad total y
 reporte por excepción.
 
-**Estado:** v1.0.0 · 34 skills · 7 comandos · 3 agentes · 16 módulos Python ·
-**52/52 comprobaciones de aceptación superadas**.
+**Estado:** v1.1.0 · 34 skills · 7 comandos · 3 agentes · 21 módulos Python ·
+**208/208 comprobaciones superadas · 100 % de cobertura de la librería**.
 
 ---
 
@@ -44,6 +44,11 @@ Este plugin ataca las dos cosas:
    revisor externo la reconstruya sin preguntar nada.
 6. **Autocontrol.** Ninguna skill cierra sin pasar su checklist de
    autoverificación.
+7. **Trazabilidad del uso de IA.** Toda ejecución asistida queda registrada en
+   `uso-ia.log` con sus entradas (y su huella SHA-256), sus salidas y **quién
+   validó el resultado**. `revision-de-calidad` reporta como excepción toda
+   ejecución sin validar cuyo resultado se haya incorporado a un papel
+   concluido (NIGC1-ES; ISO/IEC 42001).
 
 > **El plugin asiste, no decide ni firma.** La dirección, supervisión y revisión
 > del encargo es responsabilidad **indelegable** del socio firmante (NIA-ES 220
@@ -62,7 +67,7 @@ pip install pandas openpyxl
 
 # 3. Verificar la instalación
 cd ~/.claude/plugins/dula-audit
-python3 tests/test_aceptacion.py     # debe dar 52/52
+python3 tests/run_all.py     # 208/208 y cobertura 100 %
 ```
 
 Después, **completa `CLAUDE.md`**: los campos entre `«»` son los datos reales del
@@ -194,8 +199,12 @@ python3 -m dula.cli --help
 | `asientos` | Test de asientos del diario |
 | `muestreo` | MUS, atributos o dirigido, con semilla registrada |
 | `analiticos` | Variaciones, ratios y expectativas |
-| `comparar` | Comparador documental |
+| `comparar` | Comparador documental (8 comparaciones) |
 | `calidad` | Revisión del archivo + panel del socio |
+| `estado` | Dónde está el encargo y cuál es el siguiente paso |
+| `horas` | Imputa y consulta horas por papel de trabajo |
+| `pbc` | Pendientes del cliente, ordenados por ruta crítica |
+| `validar` | Valida una ejecución de la bitácora de uso de IA |
 
 ---
 
@@ -203,6 +212,9 @@ python3 -m dula.cli --help
 
 `tests/test_aceptacion.py` demuestra los seis criterios de aceptación
 **ejecutándolos** sobre fixtures sintéticos (nada de datos de clientes):
+
+**`tests/test_aceptacion.py`** — los seis criterios, sobre fixtures sintéticos
+(nada de datos de clientes):
 
 | # | Criterio | Comprobaciones |
 |---|---|---|
@@ -213,10 +225,19 @@ python3 -m dula.cli --help
 | 5 | La revisión detecta un papel sin conclusión y un riesgo sin respuesta | 7/7 |
 | 6 | El modelo de informe corresponde a la versión normativa vigente | 14/14 |
 
+**`tests/test_libreria.py`** — 156 comprobaciones unitarias con **resultados
+numéricos conocidos**, no solo «que no reviente»: TIR de un préstamo francés
+contra su tipo de partida, proyección de errores por *tainting*, umbral doble de
+los analíticos, clasificación de arrendamientos indicador a indicador, período
+medio de cobro, conciliación bancaria en los dos sentidos.
+
 ```bash
+python3 tests/run_all.py             # 208/208 + cobertura, es el que hay que ejecutar
 python3 tests/generar_fixtures.py    # regenera los datos sintéticos
-python3 tests/test_aceptacion.py     # 52/52
 ```
+
+`run_all.py` **falla si la cobertura baja del 95 %**. Un plugin que produce
+papeles de trabajo firmados no puede llevar código que nunca se ha ejecutado.
 
 ---
 
@@ -235,3 +256,6 @@ Conviene tenerlas presentes antes del primer uso real:
   sería peor que no hacerlo.
 - **El texto literal del apartado del Impuesto sobre Sociedades** está pendiente de
   contraste con el PDF oficial del ICAC (ver arriba).
+- **La compatibilidad con Data Sniper no está verificada contra un fichero real.**
+  La ingesta es genérica y la detección de cabeceras y columnas absorbe las
+  variantes habituales, pero es una hipótesis razonada, no un hecho comprobado.

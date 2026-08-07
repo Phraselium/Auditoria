@@ -48,6 +48,9 @@ sí es urgente ahora.
 | `CAL-070/071` | Sin registro de ficheros fuente, o papeles concluidos sin fichero | NIA-ES 230 |
 | `CAL-080` | Revisión de calidad del encargo exigible y no realizada | NIGC2-ES; NIA-ES 220R.36 |
 | `CAL-081` | Aceptación e independencia sin completar | LAC arts. 14-20 |
+| `CAL-090` | Hay papeles en el archivo y ninguna ejecución registrada en `uso-ia.log` | NIGC1-ES |
+| `CAL-091` | **Ejecución asistida sin validar cuyo resultado está en un papel concluido** | NIGC1-ES; NIA-ES 220R |
+| `CAL-092` | Ejecuciones sin validar y sin papel asociado (cálculos exploratorios) | — |
 
 ## Las dos capas de salida
 
@@ -75,6 +78,22 @@ confirma lo que hay. Cuando la ejecutes:
 
 Complementa la ejecución con el agente `revisor-critico` cuando el encargo sea de
 perfil COMPLEJO o cuando el archivo "parezca demasiado limpio".
+
+## El registro de asistencia por IA
+
+`CAL-091` es la comprobación que cierra el bucle del `uso-ia.log`. **La
+validación no es un trámite**: acredita que un auditor ha revisado el resultado
+de la herramienta, no solo que la herramienta se ejecutó. Sin ella, ante una
+inspección no hay forma de distinguir un cálculo revisado de uno aceptado a
+ciegas.
+
+```bash
+python3 -m dula.cli validar <encargo> --listar                     # ver el registro
+python3 -m dula.cli validar <encargo> --entrada IA-0003 --quien "MJ Pérez"
+```
+
+Al ejecutar la revisión en modo completo (no pre-vuelo) se genera además
+`02-documentos/Registro de asistencia automatizada.txt` para el archivo.
 
 ## Revisión de calidad del encargo (NIGC2-ES)
 

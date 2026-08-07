@@ -77,10 +77,21 @@ El problema opuesto y casi igual de caro. Triaje de lo recibido:
 
 ## 6. Seguimiento
 
-Los pendientes viven en `encargo.json` (`datos["pendientes"]`), no en un correo.
-Cada uno con área, descripción, prioridad, responsable, fecha de petición, fecha
-comprometida y estado. `estado-del-encargo` los muestra y `revision-de-calidad`
-los cruza con los papeles sin concluir.
+Los pendientes viven en `encargo.json`, no en un correo:
+
+```bash
+export PYTHONPATH=<plugin>/shared/scripts
+python3 -m dula.cli pbc <encargo> --anadir "Cuadros de leasing en Excel" \
+    --area F --prioridad 1 --responsable "Dirección financiera" --comprometido 2026-02-15
+python3 -m dula.cli pbc <encargo> --recordar P001     # anota un recordatorio
+python3 -m dula.cli pbc <encargo> --recibido P001     # sale de la lista
+python3 -m dula.cli pbc <encargo>                     # listado por ruta crítica
+```
+
+Prioridades: **1** bloqueante · **2** calendario · **3** alto impacto en horas ·
+**4** resto. `estado-del-encargo` los muestra ordenados y los usa para determinar
+el siguiente paso recomendado: mientras haya pendientes de prioridad 1 o 2 sin
+recibir, reclamarlos es lo que desbloquea más trabajo.
 
 ## Outputs
 

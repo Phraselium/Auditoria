@@ -70,9 +70,20 @@ al sistema de calidad del despacho:
 ## Registro de asistencia por IA
 
 `uso-ia.log` recoge, por cada ejecución: skill, versión del plugin, ficheros de
-entrada con su huella, salidas generadas, y **quién validó el resultado**. Lo
-exige el sistema de gestión de la calidad (NIGC1-ES) y da estructura al uso
-responsable de IA en un servicio de interés público (ISO/IEC 42001).
+entrada **con su huella SHA-256**, salidas generadas, parámetros, conclusión y
+**quién validó el resultado**. Lo exige el sistema de gestión de la calidad
+(NIGC1-ES) y da estructura al uso responsable de IA en un servicio de interés
+público (ISO/IEC 42001).
+
+Se alimenta **solo** con ejecuciones lanzadas con `--encargo`. Antes de cerrar el
+archivo:
+
+```bash
+python3 -m dula.cli validar <encargo> --listar    # ninguna debe quedar sin validar
+```
+
+`revision-de-calidad` en modo completo escribe la versión legible del registro en
+`02-documentos/Registro de asistencia automatizada.txt`, que es la que se archiva.
 
 ## Outputs
 
@@ -90,4 +101,5 @@ responsable de IA en un servicio de interés público (ISO/IEC 42001).
 - [ ] La revisión de calidad se ejecutó **sin bloqueantes** antes de la firma.
 - [ ] El ensamblado se ha completado dentro del plazo desde la fecha del informe.
 - [ ] Está registrada la fecha de vencimiento del periodo de conservación.
-- [ ] `uso-ia.log` está completo y archivado.
+- [ ] `uso-ia.log` está completo, **sin ejecuciones pendientes de validar**, y su
+      versión legible archivada en `02-documentos`.

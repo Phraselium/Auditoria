@@ -425,11 +425,27 @@ def verifica_covenants(df: pd.DataFrame, area: str = "E") -> Resultado:
     c_real = columna(df, "real", "obtenido", "calculado", "valor")
     c_sentido = columna(df, "sentido", "tipo", "comparacion")
 
+    def _valor(fila: Any, col: str | None) -> float | None:
+        """Distingue 'no informado' de 'cero'.
+
+        Tratar un dato ausente como 0,0 haria que un covenant sin informacion se
+        diese por cumplido (0 >= 0). Eso es concluir sin evidencia, que es
+        exactamente lo que el plugin no puede hacer.
+        """
+        if not col or col not in fila.index:
+            return None
+        bruto = fila[col]
+        if bruto is None or (isinstance(bruto, float) and pd.isna(bruto)):
+            return None
+        if isinstance(bruto, str) and not bruto.strip():
+            return None
+        return float(num(pd.DataFrame([fila]), col).iloc[0])
+
     incumplidos = 0
     for _, r in df.iterrows():
         ident = f"{r[c_id] if c_id else '?'} ({r[c_ent] if c_ent else '?'})"
-        exigido = float(num(pd.DataFrame([r]), c_exig).iloc[0]) if c_exig else None
-        real = float(num(pd.DataFrame([r]), c_real).iloc[0]) if c_real else None
+        exigido = _valor(r, c_exig)
+        real = _valor(r, c_real)
         if exigido is None or real is None:
             res.add(Excepcion(
                 "COV-001", RESOLVER, area,

@@ -43,10 +43,21 @@ python3 -m dula.cli comparar \
     --memoria-anterior 00-fuentes/memoria_anterior.txt \
     --modelo PYME --contexto '{"arrendamientos": true, "subvenciones": true}'
 
-# 3. Diff entre borradores
+# 3. Ejercicio <-> anterior <-> cuentas depositadas en el Registro Mercantil
+python3 -m dula.cli comparar --ccaa ccaa.json --anterior-ccaa ccaa_anterior.json \
+    --depositadas ccaa_depositadas.json
+
+# 4. Informe de gestion <-> cuentas anuales (NIA-ES 720R)
+python3 -m dula.cli comparar --ccaa ccaa.json --informe-gestion informe_gestion.json
+
+# 5. Documentacion soporte <-> registro contable
+python3 -m dula.cli comparar --soporte facturas.xlsx --contabilidad mayor_400.xlsx \
+    --clave "n factura" --columna-importe importe
+
+# 6. Diff entre borradores
 python3 -m dula.cli comparar --borrador-anterior v1.json --borrador-nuevo v2.json
 
-# 4. ULTIMA VERIFICACION antes de la firma
+# 7. ULTIMA VERIFICACION antes de la firma
 python3 -m dula.cli comparar --informe informe.json --ccaa-definitivas ccaa_def.json \
     --papel "01-papeles/9.1 Verificacion previa a la firma.xlsx"
 ```
@@ -97,9 +108,9 @@ inspección.
   nota figure como presente **no significa que esté completa**: el contraste
   numérico lo hace el motor numérico, y la suficiencia del contenido es
   `[JUICIO-AUDITOR]`.
-- Si el balance está post-regularización, pásale el diario para que la cuenta de
-  resultados pueda reconstruirse. Sin diario, la PyG saldrá a cero y el
-  comparador reportará diferencias contra las cuentas anuales — que es
+- Si el balance está post-regularización, pásale el diario con `--diario` para
+  que la cuenta de resultados pueda reconstruirse. Sin diario, la PyG saldrá a
+  cero y el comparador reportará diferencias contra las cuentas anuales — que es
   exactamente lo que debe hacer, pero no es la incidencia real.
 
 ## Checklist de autoverificación
@@ -110,6 +121,11 @@ inspección.
 - [ ] La checklist de memoria se ha corrido con el modelo correcto y el contexto
       del encargo (`arrendamientos`, `subvenciones`, `existencias`...).
 - [ ] Se ha buscado la herencia de notas del ejercicio anterior.
+- [ ] Si hay cuentas depositadas en el Registro Mercantil, se han comparado
+      (`--depositadas`): una diferencia ahí es una reformulación o una corrección
+      de error que debe estar desglosada.
+- [ ] Si existe informe de gestión, se ha contrastado contra las cuentas
+      (`--informe-gestion`, NIA-ES 720R).
 - [ ] Si el encargo está en fase de firma, la verificación `9.1` está ejecutada y
       **sin bloqueantes**.
 - [ ] No se ha volcado la comparación completa: solo las diferencias.

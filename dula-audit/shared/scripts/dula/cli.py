@@ -16,13 +16,15 @@ from typing import Any
 
 import pandas as pd
 
-from . import (amortizaciones, analiticos, asientos, calidad, comparador,
-               cuadres, financiacion, ingesta, leasing, materialidad, muestreo,
-               perfil)
+from . import (amortizaciones, analiticos, asientos, bitacora, calidad,
+               comparador, cuadres, estado, financiacion, ingesta, leasing,
+               materialidad, muestreo, perfil)
 from .encargo import Encargo
 from .excel_out import PapelDeTrabajo, exporta_tablas
 from .excepciones import Resultado
 from .traza import RegistroTrazas, Traza, huella
+
+VERSION = "1.1.0"
 
 
 def _salida(res: Resultado, json_out: bool = False) -> None:
@@ -46,6 +48,9 @@ def _papel(args, ref: str, titulo: str, res: Resultado,
                        getattr(args, "ejercicio", 0) or 0)
     p.alcance(alcance or res.concepto).fundamento(fundamento)
     p.concluye(res.conclusion, "CON EXCEPCIONES" if res.excepciones else "LIMPIO")
+    horas = getattr(args, "horas", None)
+    if horas:
+        p.horas(horas)
     for nombre, valor in res.datos.items():
         p.indicador(nombre.replace("_", " ").capitalize(), valor)
     for nombre, (df, totales) in (detalles or {}).items():
@@ -56,6 +61,57 @@ def _papel(args, ref: str, titulo: str, res: Resultado,
     ruta = p.guardar(args.papel)
     print(f"\nPapel de trabajo: {ruta}")
     return ruta
+
+
+def _bitacora(args, skill: str, entradas: list[str], salidas: list[str],
+              res: Resultado | None = None, ref: str = "",
+              parametros: dict[str, Any] | None = None) -> str | None:
+    """Anota la ejecucion en uso-ia.log. Exigido por NIGC1-ES.
+
+    Solo se registra cuando hay carpeta de encargo: fuera de un encargo el
+    calculo es exploratorio y no forma parte de un archivo.
+    """
+    carpeta = getattr(args, "encargo", None)
+    if not carpeta:
+        return None
+    if os.path.isfile(carpeta):
+        carpeta = os.path.dirname(os.path.abspath(carpeta))
+    b = bitacora.Bitacora(carpeta)
+    eid = b.registra(
+        skill=skill, comando=" ".join(sys.argv[1:])[:400],
+        entradas=[e for e in entradas if e], salidas=[s for s in salidas if s],
+        parametros=parametros or {},
+        conclusion=res.conclusion if res else "",
+        excepciones=len(res.excepciones) if res else 0,
+        papel=ref, version_plugin=VERSION)
+    print(f"Bitacora: {eid} registrada en uso-ia.log "
+          f"(pendiente de validacion: `dula validar {carpeta} --entrada {eid} --quien \"...\"`)")
+    return eid
+
+
+def _registra(args, skill: str, ref: str, titulo: str, res: Resultado,
+              entradas: list[str], salidas: list[str],
+              parametros: dict[str, Any] | None = None,
+              riesgos: list[str] | None = None) -> None:
+    """Registra el papel en el estado del encargo y anota la bitacora.
+
+    Un papel con excepciones bloqueantes NO se marca como concluido: eso lo
+    detectaria despues `revision-de-calidad`, pero es mejor no crear el problema.
+    """
+    if not getattr(args, "encargo", None):
+        return
+    enc = Encargo.abrir(args.encargo)
+    for e in entradas:
+        if e and os.path.isfile(e):
+            enc.registra_fuente(e, huella(e), titulo)
+    enc.registra_papel(ref, titulo, getattr(args, "papel", "") or "", res.conclusion,
+                       riesgos or getattr(args, "riesgos", None) or [],
+                       estado="concluido" if res.ok else "en curso",
+                       horas=getattr(args, "horas", None))
+    enc.registra_excepciones(res.excepciones, ref)
+    enc.guardar()
+    print(f"Estado actualizado en {enc.ruta}")
+    _bitacora(args, skill, entradas, salidas, res, ref, parametros)
 
 
 # ---------------------------------------------------------------------------
@@ -128,10 +184,15 @@ def cmd_ingesta(args) -> int:
             enc.registra_fuente(args.diario, huella(args.diario), "Libro diario")
         enc.registra_papel("2.1", "Ingesta y cuadres de integridad",
                            args.papel or "", global_.conclusion,
-                           estado="concluido" if ok else "en curso")
+                           estado="concluido" if ok else "en curso",
+                           horas=args.horas)
         enc.registra_excepciones(todas, "2.1")
         enc.guardar()
         print(f"Estado actualizado en {enc.ruta}")
+        _bitacora(args, "ingesta-y-cuadres",
+                  [args.sumas_y_saldos, args.diario, args.anterior],
+                  [args.papel], global_, "2.1",
+                  {"ejercicio": args.ejercicio, "cuadres_ok": ok})
 
     return 0 if ok else 2
 
@@ -162,6 +223,9 @@ def cmd_materialidad(args) -> int:
         enc.fija_materialidad(registro)
         enc.guardar()
         print(f"\nMaterialidad registrada en {enc.ruta}")
+        _bitacora(args, "materialidad", [], [], None, "1.4",
+                  {"magnitud": mat.magnitud, "porcentaje": mat.porcentaje,
+                   "global": round(mat.global_, 2), "ejecucion": round(mat.ejecucion, 2)})
     return 0
 
 
@@ -228,6 +292,9 @@ def cmd_estimar(args) -> int:
                                "estimacion": est, "configuracion": cfg}
         enc.guardar()
         print(f"\nPerfil registrado en {enc.ruta}")
+        _bitacora(args, "estimacion-encargo", [], [args.excel], None, "0.3",
+                  {"perfil": p, "puntuacion": puntuacion,
+                   "horas_totales": est["horas_totales"]})
     return 0
 
 
@@ -272,6 +339,10 @@ def cmd_leasing(args) -> int:
         exporta_tablas(args.excel, {"Resumen": resumen, "Por ejercicio": por_ejercicio,
                                     "Cuadro completo": cuadros})
         print(f"Anexo: {os.path.abspath(args.excel)}")
+    _registra(args, "area-arrendamientos", "F-1", "Arrendamientos", res,
+              [args.contratos], [args.papel, args.excel],
+              {"contratos": res.datos.get("contratos"),
+               "deuda_viva_total": res.datos.get("deuda_viva_total")})
     return 0 if res.ok else 2
 
 
@@ -301,6 +372,10 @@ def cmd_financiacion(args) -> int:
                    "corriente/no corriente y los intereses devengados de la totalidad de "
                    "los instrumentos de financiacion, seguimiento de las confirmaciones "
                    "bancarias y verificacion de covenants.")
+    _registra(args, "area-tesoreria-y-financiacion", "E-1", "Financiacion y tesoreria",
+              res, [args.cartera, args.confirmaciones, args.covenants], [args.papel],
+              {"instrumentos": res.datos.get("instrumentos"),
+               "deuda_viva_total": res.datos.get("deuda_viva_total")})
     return 0 if res.ok else 2
 
 
@@ -320,6 +395,10 @@ def cmd_amortizaciones(args) -> int:
            alcance="Recalculo integral de la amortizacion del ejercicio elemento a "
                    "elemento, con prorrateo por dias en altas y bajas, y contraste contra "
                    "la dotacion contabilizada.")
+    _registra(args, "area-inmovilizado", "A-1", "Inmovilizado", res,
+              [args.inventario], [args.papel],
+              {"elementos": res.datos.get("elementos"),
+               "diferencia_total": res.datos.get("diferencia_total")})
     return 0 if res.ok else 2
 
 
@@ -336,6 +415,10 @@ def cmd_asientos(args) -> int:
            fundamento="NIA-ES 240.32.a). El riesgo de elusion de controles por la direccion "
                       "se presume presente en todas las entidades, con independencia de la "
                       "valoracion del riesgo de fraude.")
+    _registra(args, "test-asientos-diario", "2.8", "Test de asientos del diario", res,
+              [args.diario], [args.papel],
+              {"asientos_totales": res.datos.get("asientos_totales"),
+               "seleccionados": res.datos.get("seleccionados"), "perfil": args.perfil})
     return 0
 
 
@@ -343,8 +426,30 @@ def cmd_comparar(args) -> int:
     resultados: list[Resultado] = []
     if args.ccaa and args.sumas_y_saldos:
         sys_df, _ = ingesta.normaliza_sumas_y_saldos(args.sumas_y_saldos)
+        diario_df = None
+        if args.diario:
+            diario_df, _ = ingesta.normaliza_diario(args.diario)
         ccaa = json.load(open(args.ccaa, encoding="utf-8"))
-        resultados.append(comparador.ccaa_vs_sumas_y_saldos(ccaa, sys_df))
+        resultados.append(comparador.ccaa_vs_sumas_y_saldos(ccaa, sys_df, diario_df))
+    if args.ccaa and args.anterior_ccaa:
+        # comparativa del ejercicio precedente y, en su caso, cuentas depositadas
+        actual = json.load(open(args.ccaa, encoding="utf-8"))
+        anterior = json.load(open(args.anterior_ccaa, encoding="utf-8"))
+        depositadas = (json.load(open(args.depositadas, encoding="utf-8"))
+                       if args.depositadas else None)
+        resultados.append(comparador.ejercicio_vs_anterior(actual, anterior, depositadas))
+    if args.informe_gestion and args.ccaa:
+        ig = json.load(open(args.informe_gestion, encoding="utf-8"))
+        cc = json.load(open(args.ccaa, encoding="utf-8"))
+        resultados.append(comparador.informe_gestion_vs_ccaa(ig, cc))
+    if args.soporte and args.contabilidad:
+        sop, _ = ingesta.lee_tabla(args.soporte)
+        cont, _ = ingesta.lee_tabla(args.contabilidad)
+        clave = ingesta.columna(sop, args.clave) or args.clave
+        col_imp = ingesta.columna(sop, args.columna_importe) or args.columna_importe
+        sop[col_imp] = ingesta.num(sop, col_imp)
+        cont[col_imp] = ingesta.num(cont, col_imp)
+        resultados.append(comparador.soporte_vs_contabilidad(sop, cont, clave, col_imp))
     if args.memoria_desgloses and args.estados:
         d = json.load(open(args.memoria_desgloses, encoding="utf-8"))
         e = json.load(open(args.estados, encoding="utf-8"))
@@ -379,9 +484,16 @@ def cmd_comparar(args) -> int:
                         else f"{len(total.excepciones)} diferencias detectadas.")
     print("=" * 70)
     print(total.conclusion)
-    _papel(args, "2.10", "Comparador documental", total, None, None,
+    ref = "9.1" if (args.informe and args.ccaa_definitivas) else "2.10"
+    titulo = ("Verificacion del informe contra las cuentas definitivas"
+              if ref == "9.1" else "Comparador documental")
+    _papel(args, ref, titulo, total, None, None,
            alcance="Comparacion sistematica entre cuentas anuales, balance de sumas y "
-                   "saldos, memoria, borradores sucesivos e informe de auditoria.")
+                   "saldos, memoria, cuentas depositadas, borradores sucesivos, informe "
+                   "de gestion, documentacion soporte e informe de auditoria.")
+    _registra(args, "comparador-documental", ref, titulo, total,
+              [args.ccaa, args.sumas_y_saldos, args.memoria_texto, args.soporte],
+              [args.papel], {"comparaciones": list(total.datos)})
     return 0 if total.ok else 2
 
 
@@ -407,9 +519,79 @@ def cmd_muestreo(args) -> int:
     return 0
 
 
+def cmd_estado(args) -> int:
+    enc = Encargo.abrir(args.encargo)
+    b = bitacora.Bitacora(enc.carpeta)
+    print(estado.panel(enc.datos, b.resumen() if b.entradas() else None))
+    return 0
+
+
+def cmd_validar(args) -> int:
+    """Valida una entrada de la bitacora de uso de IA (NIGC1-ES)."""
+    carpeta = args.encargo
+    if os.path.isfile(carpeta):
+        carpeta = os.path.dirname(os.path.abspath(carpeta))
+    b = bitacora.Bitacora(carpeta)
+    if args.listar or not args.entrada:
+        print(b.informe())
+        return 0
+    if not b.valida(args.entrada, args.quien):
+        print(f"ERROR: no existe la entrada {args.entrada} en uso-ia.log", file=sys.stderr)
+        return 1
+    print(f"Entrada {args.entrada} validada por {args.quien}.")
+    return 0
+
+
+def cmd_horas(args) -> int:
+    enc = Encargo.abrir(args.encargo)
+    if args.papel_ref and args.imputar:
+        total = enc.imputa_horas(args.papel_ref, args.imputar, args.quien)
+        enc.guardar()
+        print(f"Papel {args.papel_ref}: {total} h acumuladas.")
+    est = estado.horas_estimadas(enc.datos)
+    cons = enc.horas_consumidas
+    print(f"\nHoras consumidas: {cons} h" + (f" | estimadas: {est} h | "
+          f"desviacion {cons - est:+.1f} h ({(cons - est) / est:+.0%})" if est else ""))
+    filas = [{"Papel": p["ref"], "Titulo": p["titulo"], "Horas": p.get("horas", 0.0),
+              "Estado": p.get("estado", "")} for p in enc.datos.get("papeles", [])]
+    for f in sorted(filas, key=lambda x: -float(x["Horas"] or 0)):
+        print(f"  {f['Papel']:<6} {f['Titulo'][:45]:<47} {float(f['Horas'] or 0):>6.1f} h  "
+              f"{f['Estado']}")
+    return 0
+
+
+def cmd_pbc(args) -> int:
+    """Gestiona los pendientes del cliente."""
+    enc = Encargo.abrir(args.encargo)
+    if args.añadir:
+        p = enc.añade_pendiente(args.area or "?", args.añadir, args.prioridad,
+                                args.responsable or "", args.comprometido or "")
+        enc.guardar()
+        print(f"Pendiente {p['id']} registrado (prioridad {p['prioridad']}).")
+    if args.recibido:
+        if enc.recibe_pendiente(args.recibido):
+            enc.guardar(); print(f"Pendiente {args.recibido} marcado como recibido.")
+        else:
+            print(f"ERROR: no existe {args.recibido}", file=sys.stderr); return 1
+    if args.recordar:
+        if enc.recuerda_pendiente(args.recordar):
+            enc.guardar(); print(f"Recordatorio anotado en {args.recordar}.")
+        else:
+            print(f"ERROR: no existe {args.recordar}", file=sys.stderr); return 1
+    pend = estado.pendientes_ordenados(enc.datos)
+    print(f"\nPENDIENTES DEL CLIENTE ({len(pend)}, ruta critica primero)")
+    for p in pend:
+        print(f"  {p['id']} [P{p['prioridad']}] {p.get('area', '?'):<4} "
+              f"{p['descripcion'][:60]:<62} {p['estado']}"
+              + (f" ({p['recordatorios']} recordatorios)" if p.get("recordatorios") else ""))
+    if not pend:
+        print("  Ninguno pendiente.")
+    return 0
+
+
 def cmd_calidad(args) -> int:
     enc = Encargo.abrir(args.encargo)
-    res = calidad.revisa(enc.datos, pre_vuelo=args.pre_vuelo)
+    res = calidad.revisa(enc.datos, pre_vuelo=args.pre_vuelo, carpeta=enc.carpeta)
     print(calidad.panel_del_socio(enc.datos, res))
     print()
     print("=" * 78)
@@ -433,6 +615,22 @@ def cmd_calidad(args) -> int:
         with open(args.panel, "w", encoding="utf-8") as fh:
             fh.write(calidad.panel_del_socio(enc.datos, res))
         print(f"\nPanel del socio: {os.path.abspath(args.panel)}")
+
+    b = bitacora.Bitacora(enc.carpeta)
+    sin_validar = b.sin_validar
+    if sin_validar:
+        print(f"\nBITACORA: {len(sin_validar)} ejecuciones asistidas SIN VALIDAR "
+              f"({', '.join(e['id'] for e in sin_validar[:8])}"
+              f"{'...' if len(sin_validar) > 8 else ''}).")
+        print("  Toda ejecucion cuyo resultado se haya incorporado a un papel concluido "
+              "debe estar validada (NIGC1-ES).")
+    if not args.pre_vuelo:
+        informe_ia = os.path.join(enc.carpeta, "02-documentos",
+                                  "Registro de asistencia automatizada.txt")
+        os.makedirs(os.path.dirname(informe_ia), exist_ok=True)
+        with open(informe_ia, "w", encoding="utf-8") as fh:
+            fh.write(b.informe())
+        print(f"Registro de asistencia automatizada: {informe_ia}")
     return 0 if res.datos["puede_firmarse"] else 2
 
 
@@ -470,6 +668,10 @@ def construye_parser() -> argparse.ArgumentParser:
         sp.add_argument("--cliente", default="", help="denominacion del cliente")
         sp.add_argument("--ejercicio", type=int, default=0)
         sp.add_argument("--encargo", help="ruta de encargo.json o de su carpeta")
+        sp.add_argument("--horas", type=float,
+                        help="horas dedicadas, para el seguimiento del presupuesto")
+        sp.add_argument("--riesgos", nargs="*",
+                        help="ids de los riesgos que responde este papel (p.ej. R001 R002)")
 
     s = sub.add_parser("nuevo", help="crea la carpeta y el estado del encargo")
     s.add_argument("carpeta"); s.add_argument("cliente")
@@ -523,6 +725,14 @@ def construye_parser() -> argparse.ArgumentParser:
 
     s = sub.add_parser("comparar", help="comparador documental")
     s.add_argument("--ccaa"); s.add_argument("--sumas-y-saldos")
+    s.add_argument("--diario", help="para reconstruir la PyG si el balance esta regularizado")
+    s.add_argument("--anterior-ccaa", help="cuentas anuales del ejercicio anterior")
+    s.add_argument("--depositadas", help="cuentas depositadas en el Registro Mercantil")
+    s.add_argument("--informe-gestion", help="cifras del informe de gestion (JSON)")
+    s.add_argument("--soporte", help="documentacion soporte (facturas, contratos...)")
+    s.add_argument("--contabilidad", help="registro contable a casar con el soporte")
+    s.add_argument("--clave", default="documento", help="columna de casacion")
+    s.add_argument("--columna-importe", default="importe")
     s.add_argument("--memoria-desgloses"); s.add_argument("--estados")
     s.add_argument("--memoria-texto"); s.add_argument("--memoria-anterior")
     s.add_argument("--modelo", default="PYME", choices=["PYME", "ABREVIADA", "NORMAL"])
@@ -552,7 +762,37 @@ def construye_parser() -> argparse.ArgumentParser:
     s.add_argument("--panel", help="ruta del panel del socio en texto")
     s.add_argument("--papel"); s.add_argument("--cliente", default="")
     s.add_argument("--ejercicio", type=int, default=0)
+    s.add_argument("--horas", type=float)
     s.set_defaults(fn=cmd_calidad)
+
+    s = sub.add_parser("estado", help="donde esta el encargo y cual es el siguiente paso")
+    s.add_argument("encargo")
+    s.set_defaults(fn=cmd_estado)
+
+    s = sub.add_parser("validar", help="valida una ejecucion de la bitacora de uso de IA")
+    s.add_argument("encargo")
+    s.add_argument("--entrada", help="id de la entrada (p.ej. IA-0003)")
+    s.add_argument("--quien", default="", help="nombre de quien valida el resultado")
+    s.add_argument("--listar", action="store_true", help="muestra el registro completo")
+    s.set_defaults(fn=cmd_validar)
+
+    s = sub.add_parser("horas", help="imputa y consulta horas por papel de trabajo")
+    s.add_argument("encargo")
+    s.add_argument("--papel-ref", help="referencia del papel (p.ej. F-1)")
+    s.add_argument("--imputar", type=float, help="horas a imputar")
+    s.add_argument("--quien", default="")
+    s.set_defaults(fn=cmd_horas)
+
+    s = sub.add_parser("pbc", help="gestiona los pendientes de documentacion del cliente")
+    s.add_argument("encargo")
+    s.add_argument("--anadir", "--añadir", dest="añadir", help="descripcion del pendiente")
+    s.add_argument("--area", help="area del indice (p.ej. F)")
+    s.add_argument("--prioridad", type=int, default=3, choices=[1, 2, 3, 4],
+                   help="1 bloqueante, 2 calendario, 3 alto impacto, 4 resto")
+    s.add_argument("--responsable"); s.add_argument("--comprometido")
+    s.add_argument("--recibido", help="id del pendiente recibido")
+    s.add_argument("--recordar", help="id del pendiente a recordar")
+    s.set_defaults(fn=cmd_pbc)
 
     return p
 

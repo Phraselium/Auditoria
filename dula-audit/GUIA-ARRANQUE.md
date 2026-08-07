@@ -9,7 +9,7 @@ Una página. Léela entera antes del primer encargo.
 ```bash
 cp -r dula-audit ~/.claude/plugins/
 pip install pandas openpyxl
-cd ~/.claude/plugins/dula-audit && python3 tests/test_aceptacion.py    # debe dar 52/52
+cd ~/.claude/plugins/dula-audit && python3 tests/run_all.py    # 208/208 y cobertura 100 %
 ```
 
 ## 2. Configurar (20 minutos, una sola vez)
@@ -39,6 +39,16 @@ la marca. Es cinco minutos y no se puede automatizar desde este entorno.
 /dula-audit:comparar
 /dula-audit:estado                        ← úsalo siempre que retomes el encargo
 /dula-audit:cerrar
+```
+
+Y durante la campaña, en la línea de comandos:
+
+```bash
+export PYTHONPATH=~/.claude/plugins/dula-audit/shared/scripts
+python3 -m dula.cli estado <encargo>                    # ¿dónde estamos?
+python3 -m dula.cli pbc <encargo>                       # ¿qué falta del cliente?
+python3 -m dula.cli horas <encargo>                     # ¿cómo va el presupuesto?
+python3 -m dula.cli validar <encargo> --listar          # bitácora de uso de IA
 ```
 
 O simplemente pídelo en lenguaje natural: *«audita el inmovilizado de ACME»*,
@@ -91,4 +101,12 @@ Esto marca la diferencia entre un encargo caro y uno barato:
 | Los honorarios salen `[PENDIENTE-CLIENTE]` | Falta `shared/references/tarifas.json` |
 | Diferencias sistemáticas de tipo en leasings | Comisiones de apertura no incluidas en el cálculo del banco. Ver `ARR-020` |
 
+| El informe de calidad avisa de ejecuciones sin validar | Es lo correcto: valide cada una con `dula validar <encargo> --entrada IA-000X --quien "..."` |
+
 Para ver la traza completa de un error: `DULA_DEBUG=1 python3 -m dula.cli ...`
+
+## 8. Una rutina que merece la pena
+
+Al cerrar cada área: `--horas` en el comando, validar la entrada de la bitácora,
+y `dula estado`. Son treinta segundos y evitan que el último día aparezcan a la
+vez las excepciones, las horas descuadradas y la bitácora sin firmar.

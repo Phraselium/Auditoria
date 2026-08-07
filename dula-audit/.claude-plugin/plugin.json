@@ -1,6 +1,6 @@
 {
   "name": "dula-audit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Equipo de auditoría senior virtual para Dula Auditores. Cubre el ciclo completo del encargo (aceptación, planificación, trabajo de campo, cierre e informe) bajo NIA-ES, con cálculo determinista por script, trazabilidad total y reporte por excepción.",
   "author": {
     "name": "Dula Auditores"

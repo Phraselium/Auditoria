@@ -147,7 +147,9 @@ class Encargo:
     # -- papeles de trabajo -----------------------------------------------
     def registra_papel(self, ref: str, titulo: str, fichero: str = "",
                        conclusion: str = "", riesgos: list[str] | None = None,
-                       estado: str = "en curso") -> dict[str, Any]:
+                       estado: str = "en curso", horas: float | None = None,
+                       preparado_por: str = "", revisado_por: str = "") -> dict[str, Any]:
+        anterior = next((p for p in self.datos["papeles"] if p["ref"] == ref), {})
         papel = {
             "ref": ref,
             "titulo": titulo,
@@ -155,6 +157,10 @@ class Encargo:
             "conclusion": conclusion,
             "riesgos": riesgos or [],
             "estado": estado,  # en curso | concluido
+            # las horas se acumulan: un area se trabaja en varias sesiones
+            "horas": round(float(anterior.get("horas") or 0.0) + float(horas or 0.0), 2),
+            "preparado_por": preparado_por or anterior.get("preparado_por", ""),
+            "revisado_por": revisado_por or anterior.get("revisado_por", ""),
             "actualizado": _ahora(),
         }
         self.datos["papeles"] = [p for p in self.datos["papeles"] if p["ref"] != ref]
@@ -180,6 +186,65 @@ class Encargo:
         ]
         for e in excepciones:
             self.datos["excepciones"].append(e.dict() if hasattr(e, "dict") else dict(e))
+
+    # -- pendientes del cliente (PBC) --------------------------------------
+    def añade_pendiente(self, area: str, descripcion: str, prioridad: int = 3,
+                        responsable: str = "", comprometido: str = "") -> dict[str, Any]:
+        """Registra un elemento de la PBC.
+
+        Prioridad 1 = bloqueante (sin ello no hay trabajo de campo),
+        2 = calendario (plazo de respuesta de terceros o fecha irrepetible),
+        3 = alto impacto en horas, 4 = resto.
+        """
+        p = {
+            "id": f"P{len(self.datos['pendientes']) + 1:03d}",
+            "area": area,
+            "descripcion": descripcion,
+            "prioridad": int(prioridad),
+            "responsable": responsable,
+            "solicitado": _ahora(),
+            "comprometido": comprometido,
+            "estado": "pendiente",  # pendiente | recordado | recibido
+            "recordatorios": 0,
+        }
+        self.datos["pendientes"].append(p)
+        return p
+
+    add_pendiente = añade_pendiente
+
+    def recuerda_pendiente(self, pendiente_id: str) -> bool:
+        for p in self.datos["pendientes"]:
+            if p["id"] == pendiente_id:
+                p["recordatorios"] += 1
+                p["estado"] = "recordado"
+                p["ultimo_recordatorio"] = _ahora()
+                return True
+        return False
+
+    def recibe_pendiente(self, pendiente_id: str) -> bool:
+        for p in self.datos["pendientes"]:
+            if p["id"] == pendiente_id:
+                p["estado"] = "recibido"
+                p["recibido"] = _ahora()
+                return True
+        return False
+
+    # -- horas -------------------------------------------------------------
+    def imputa_horas(self, ref_papel: str, horas: float, quien: str = "") -> float:
+        """Imputa horas a un papel. Devuelve el acumulado del papel."""
+        for p in self.datos["papeles"]:
+            if p["ref"] == ref_papel:
+                p["horas"] = round(float(p.get("horas") or 0.0) + float(horas), 2)
+                if quien and not p.get("preparado_por"):
+                    p["preparado_por"] = quien
+                p["actualizado"] = _ahora()
+                return p["horas"]
+        raise KeyError(f"No existe el papel {ref_papel}. Registrelo antes de imputar horas.")
+
+    @property
+    def horas_consumidas(self) -> float:
+        return round(sum(float(p.get("horas") or 0.0)
+                         for p in self.datos.get("papeles", [])), 2)
 
     # -- incorrecciones ----------------------------------------------------
     def añade_incorreccion(self, **kw: Any) -> dict[str, Any]:

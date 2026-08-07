@@ -43,13 +43,25 @@ probado**, **con qué alcance**, y **a qué resultado se llega respecto de las
 afirmaciones cubiertas**. Una conclusión de una línea no es una conclusión
 (`CAL-011`).
 
-**7. Registrar.**
+**7. Registrar.** Si la ejecución se lanza desde el CLI con `--encargo`, el
+registro del papel, de las fuentes y de la bitácora es **automático**:
+
+```bash
+python3 -m dula.cli <subcomando> ... --encargo . --papel "01-papeles/F-1.xlsx" \
+    --horas 6 --riesgos R002 R007
+```
+
+Desde Python:
 
 ```python
-enc.registra_papel("<REF>", "<Título>", ruta, conclusion, ["R001"], "concluido")
+enc.registra_papel("<REF>", "<Título>", ruta, conclusion, ["R001"], "concluido",
+                   horas=6.0, preparado_por="LG")
 enc.registra_excepciones(res.excepciones, "<REF>")
 enc.guardar()
 ```
+
+Las horas **se acumulan** entre sesiones: un área se trabaja en varias tandas y
+`estado-del-encargo` necesita el total para calcular la desviación.
 
 **8. Proponer ajustes.** Toda diferencia que suponga una incorrección se registra
 con `enc.añade_incorreccion(...)`, marcando si está corregida y con su evaluación

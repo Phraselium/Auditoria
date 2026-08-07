@@ -5,10 +5,18 @@ argument-hint: [ruta-del-encargo]
 
 Estado del encargo: $ARGUMENTS
 
-Invoca `estado-del-encargo`. Lee el estado de `encargo.json` —no de la memoria de
-la conversación— y presenta fase, perfil, materialidad vigente, papeles
-concluidos y pendientes, riesgos sin respuesta, excepciones por severidad,
-pendientes del cliente ordenados por ruta crítica, y desviación de horas.
+Invoca `estado-del-encargo`:
+
+```bash
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
+python3 -m dula.cli estado <carpeta-encargo>
+```
+
+Lee el estado de `encargo.json` y `uso-ia.log` —no de la memoria de la
+conversación— y presenta fase, perfil, materialidad vigente, papeles concluidos y
+pendientes, riesgos sin respuesta, excepciones por severidad, pendientes del
+cliente ordenados por ruta crítica, desviación de horas y ejecuciones asistidas
+sin validar.
 
 Termina siempre con el **siguiente paso recomendado**, que debe ser una acción
 concreta. Prioridad:

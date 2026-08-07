@@ -12,11 +12,10 @@ no es un lujo: es lo primero que se pregunta cualquiera que retoma un encargo.
 
 ```bash
 export PYTHONPATH=<plugin>/shared/scripts
-python3 -m dula.cli calidad <carpeta-encargo> --pre-vuelo
+python3 -m dula.cli estado <carpeta-encargo>
 ```
 
-Devuelve el panel del socio, que ya contiene el estado. Para el detalle operativo,
-lee `encargo.json` y presenta:
+El subcomando lee `encargo.json` y `uso-ia.log` y presenta:
 
 ## Qué mostrar, y en este orden
 
@@ -41,6 +40,17 @@ HORAS        Estimadas <n> h | consumidas <n> h | desviación <±n> h
 
 SIGUIENTE PASO RECOMENDADO
   <la acción concreta que desbloquea más trabajo>
+```
+
+Complementos:
+
+```bash
+python3 -m dula.cli horas <encargo>                          # horas por papel
+python3 -m dula.cli horas <encargo> --papel-ref F-1 --imputar 3.5 --quien "LG"
+python3 -m dula.cli pbc <encargo>                            # pendientes del cliente
+python3 -m dula.cli pbc <encargo> --anadir "Cuadros de leasing en Excel" --area F --prioridad 1
+python3 -m dula.cli pbc <encargo> --recibido P001            # marcar como recibido
+python3 -m dula.cli validar <encargo> --listar               # bitácora de uso de IA
 ```
 
 ## El «siguiente paso recomendado»

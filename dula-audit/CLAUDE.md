@@ -261,10 +261,22 @@ Son **innegociables**. Cualquier skill que las incumpla está mal ejecutada.
 10. **Confidencialidad.** La documentación del cliente está sujeta a deber de
     secreto (art. 31 LAC), a la normativa de prevención del blanqueo y al
     RGPD/LOPDGDD. No se expone ni se reutiliza fuera del encargo.
-11. **Registro de asistencia por IA.** Toda ejecución se anota en `uso-ia.log`:
-    skill, versión, inputs, outputs y quién validó. Lo exige el sistema de
-    gestión de la calidad (NIGC1-ES) y da estructura al uso responsable de IA
-    (ISO/IEC 42001).
+11. **Registro de asistencia por IA.** Toda ejecución con `--encargo` se anota
+    automáticamente en `uso-ia.log`: skill, versión, entradas con su SHA-256,
+    salidas, parámetros, conclusión y **quién validó el resultado**. Lo exige el
+    sistema de gestión de la calidad (NIGC1-ES) y da estructura al uso
+    responsable de IA (ISO/IEC 42001).
+
+    La entrada nace **sin validar**. El auditor la valida después:
+
+    ```bash
+    python3 -m dula.cli validar <encargo> --entrada IA-0003 --quien "MJ Pérez"
+    ```
+
+    `revision-de-calidad` reporta como excepción (`CAL-091`) toda ejecución sin
+    validar cuyo resultado se haya incorporado a un papel **concluido**. La
+    validación acredita que un auditor ha revisado el resultado de la
+    herramienta, no solo que la herramienta se ejecutó.
 
 ---
 
@@ -278,5 +290,13 @@ python3 -m dula.cli <subcomando> --help
 Dependencias: `pandas` y `openpyxl`. Nada más — sin dependencias exóticas que
 compliquen la instalación en los equipos del despacho.
 
-Verificación de la instalación: `python3 tests/test_aceptacion.py` debe devolver
-**52/52 comprobaciones superadas**.
+Subcomandos: `nuevo` · `estimar` · `ingesta` · `materialidad` · `leasing` ·
+`financiacion` · `amortizaciones` · `asientos` · `muestreo` · `analiticos` ·
+`comparar` · `calidad` · `estado` · `horas` · `pbc` · `validar`.
+
+Argumentos comunes a los que generan papel: `--papel` `--cliente` `--ejercicio`
+`--encargo` `--horas` `--riesgos`. Con `--encargo`, el papel se registra en el
+estado y la ejecución en la bitácora **sin que haya que hacer nada más**.
+
+Verificación de la instalación: `python3 tests/run_all.py` debe devolver
+**208/208 comprobaciones superadas y 100 % de cobertura**.

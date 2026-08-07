@@ -283,6 +283,53 @@ def sistema_gestion_calidad(datos: dict[str, Any]) -> list[Excepcion]:
     return out
 
 
+def asistencia_automatizada(datos: dict[str, Any], carpeta: str | None) -> list[Excepcion]:
+    """Ejecuciones asistidas por IA sin validar (NIGC1-ES; ISO/IEC 42001).
+
+    Solo se exige la validacion de las ejecuciones cuyo resultado se ha
+    incorporado a un papel de trabajo YA CONCLUIDO. Exigirla sobre trabajo en
+    curso generaria ruido sin aportar control.
+    """
+    out: list[Excepcion] = []
+    if not carpeta:
+        return out
+    from .bitacora import Bitacora
+    b = Bitacora(carpeta)
+    entradas = b.entradas()
+    if not entradas:
+        if datos.get("papeles"):
+            out.append(_exc(
+                "CAL-090", RESOLVER, "9.2",
+                "Hay papeles de trabajo en el archivo y no consta ninguna ejecucion "
+                "registrada en uso-ia.log.",
+                "Verificar que las ejecuciones asistidas se estan registrando. El sistema "
+                "de gestion de la calidad exige dejar constancia del uso de herramientas "
+                "automatizadas.",
+                "NIGC1-ES"))
+        return out
+
+    concluidos = {p["ref"] for p in datos.get("papeles", [])
+                  if p.get("estado") == "concluido"}
+    pendientes = [e for e in b.sin_validar if e.get("papel") in concluidos]
+    for e in pendientes:
+        out.append(_exc(
+            "CAL-091", RESOLVER, e.get("papel") or "9.2",
+            f"Ejecucion {e['id']} ({e['skill']}) sin validar, y su resultado se ha "
+            f"incorporado al papel {e.get('papel')}, que consta concluido.",
+            f"Validarla: `dula validar <encargo> --entrada {e['id']} --quien \"<nombre>\"`. "
+            "La validacion acredita que un auditor ha revisado el resultado de la "
+            "herramienta, no solo que la herramienta se ejecuto.",
+            "NIGC1-ES; NIA-ES 220 (Revisada)"))
+    sin_papel = [e for e in b.sin_validar if not e.get("papel")]
+    if sin_papel:
+        out.append(_exc(
+            "CAL-092", DOCUMENTAR, "9.2",
+            f"{len(sin_papel)} ejecuciones asistidas sin validar y sin papel de trabajo "
+            "asociado (calculos exploratorios).",
+            "Revisar si alguna deberia haber generado papel de trabajo."))
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Motor
 # ---------------------------------------------------------------------------
@@ -299,21 +346,25 @@ COMPROBACIONES = (
 )
 
 
-def revisa(datos: dict[str, Any], pre_vuelo: bool = False) -> Resultado:
+def revisa(datos: dict[str, Any], pre_vuelo: bool = False,
+           carpeta: str | None = None) -> Resultado:
     """Revision completa del archivo.
 
     `pre_vuelo=True` degrada los bloqueantes que solo lo son en el momento de la
     firma (revision de calidad del encargo, fases posteriores) para que el modo
     continuo no genere alarmas prematuras.
+
+    `carpeta` habilita la comprobacion del registro de asistencia por IA.
     """
     res = Resultado("Revision de calidad del archivo"
                     + (" (modo pre-vuelo)" if pre_vuelo else " (previa a la firma)"))
-    for fn in COMPROBACIONES:
-        for e in fn(datos):
-            if pre_vuelo and e.codigo in {"CAL-080", "CAL-050", "CAL-062"} \
-                    and e.severidad == BLOQUEANTE:
-                e.severidad = RESOLVER
-            res.add(e)
+    hallazgos = [e for fn in COMPROBACIONES for e in fn(datos)]
+    hallazgos += asistencia_automatizada(datos, carpeta)
+    for e in hallazgos:
+        if pre_vuelo and e.codigo in {"CAL-080", "CAL-050", "CAL-062"} \
+                and e.severidad == BLOQUEANTE:
+            e.severidad = RESOLVER
+        res.add(e)
 
     cuenta = {s: sum(1 for e in res.excepciones if e.severidad == s)
               for s in ORDEN_SEVERIDAD}
