@@ -705,7 +705,7 @@ def cmd_doctor(args) -> int:
     if not (dir_ref and os.path.exists(os.path.join(dir_ref, "tarifas.json"))):
         avisos.append("No hay tarifas.json: `estimacion-encargo` calculara horas pero "
                       "devolvera los honorarios como [PENDIENTE-CLIENTE]. Copie "
-                      "shared/references/tarifas.json.ejemplo y ponga las suyas.")
+                      "shared/references/tarifas-ejemplo.json y ponga las suyas.")
     hist = os.path.join(dir_ref, "historico-encargos.json") if dir_ref else ""
     if hist and os.path.exists(hist):
         try:

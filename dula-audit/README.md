@@ -5,8 +5,9 @@ completo del encargo —aceptación, planificación, trabajo de campo, cierre e
 informe— bajo NIA-ES, con cálculo determinista por script, trazabilidad total y
 reporte por excepción.
 
-**Estado:** v1.4.0 · 35 skills · 7 comandos · 3 agentes · 23 módulos Python ·
-**257/257 comprobaciones superadas · 100 % de cobertura de la librería**.
+**Estado:** v1.5.0 · 10 skills · 29 procedimientos · 1 comando · 3 agentes ·
+23 módulos Python · **263/263 comprobaciones superadas · 100 % de cobertura de
+la librería**.
 
 ---
 
@@ -64,7 +65,7 @@ mismo. El de claude.ai se genera desde el mismo código, así que no divergen.
 | | Claude Code | claude.ai (web y escritorio) |
 |---|---|---|
 | Formato | Plugin (`/plugin install`) | Skill suelta en `.zip`, subida desde Ajustes |
-| Componentes | 35 skills + 7 comandos + 3 agentes | 1 skill con 35 procedimientos que se abren bajo demanda |
+| Componentes | 10 skills + 1 comando + 3 agentes | 1 skill con 39 procedimientos que se abren bajo demanda |
 | Menú `/` | Sí, con descripción y argumentos | No: Claude la activa sola por el contexto |
 | Requisito | — | Plan Pro, Max, Team o Enterprise **con ejecución de código activada** |
 | Ámbito | Personal o de proyecto | Personal: cada persona la sube por su cuenta |
@@ -143,7 +144,7 @@ frontmatter solo acepta los seis campos de la especificación Agent Skills, así
 que el plugin no se puede subir tal cual — `argument-hint`, `when_to_use` y
 `user-invocable` darían `Unexpected key(s) in SKILL.md frontmatter`.
 
-El paquete ya está construido en **`build/dula-audit-claude-ai.zip`** (233 KB).
+El paquete ya está construido en **`build/dula-audit-claude-ai.zip`** (240 KB).
 
 **Pasos:**
 
@@ -159,7 +160,7 @@ El paquete ya está construido en **`build/dula-audit-claude-ai.zip`** (233 KB).
 - No hay menú `/`: Claude activa la skill sola cuando el contexto lo pide
   («cuadra este balance», «recalcula estos leasings»). Puede invocarla
   explícitamente nombrándola.
-- Los 35 procedimientos viajan en `procedimientos/`, y Claude abre **solo** el
+- Los 39 procedimientos viajan en `procedimientos/`, y Claude abre **solo** el
   que necesita. Coste en contexto hasta entonces: cero.
 - El `SKILL.md` es un índice con las once reglas innegociables y la tabla de
   procedimientos.
@@ -173,6 +174,26 @@ python3 tools/construir_claude_ai.py
 El script valida el paquete contra la especificación —campos permitidos,
 longitud de `name` y `description`, tamaño del cuerpo— y falla si algo no cumple.
 La suite lo comprueba en cada ejecución.
+
+### Si la subida falla con «no se ha podido sincronizar»
+
+Ese error es del validador de la plataforma, no del contenido de la skill. Las
+cuatro causas conocidas están ya descartadas por construcción, y la suite lo
+verifica en cada ejecución:
+
+| Causa | Cómo se evita |
+|---|---|
+| Campos de frontmatter con texto libre | El paquete lleva **solo** `name` y `description`. `license` y `compatibility` exigen valores normalizados (SPDX, mapa de versiones) y con prosa se rechazan |
+| Ficheros con bit de ejecución o scripts de shell | El punto de entrada es `dula.py`, Python plano en modo `0644`. No viaja ningún `.sh`, `.exe` ni binario |
+| Extensiones desconocidas | Solo `.md`, `.py` y `.json` |
+| Más de 200 ficheros | El paquete tiene 87 |
+
+Si aun así falla, suba **`build/dula-audit-claude-ai-minimo.zip`** (98 KB): es el
+mismo índice y los mismos 39 procedimientos, sin librería Python ni referencias.
+Si ese sí sincroniza, el problema está en la librería o en las referencias, no en
+la skill — y lo sabremos con una sola prueba. Tenga en cuenta que **sin la
+librería no hay cálculo determinista**, así que es un paquete de diagnóstico, no
+el producto.
 
 > **Las skills no se sincronizan entre superficies.** Si actualiza el plugin,
 > tiene que volver a subir el `.zip` a claude.ai.
@@ -200,8 +221,16 @@ Al pulsar cualquiera, lo primero que aparece en pantalla es **qué necesita, qu�
 va a recibir y el comando exacto** que se va a ejecutar. Si falta algún dato, se
 lo pide en lugar de inventarlo.
 
-`area-runner` no aparece en el menú: es maquinaria interna de la que tiran las
-doce áreas.
+**Diez entradas, no treinta y cinco.** Cinco de ellas son **guías de fase**:
+`estimacion-y-aceptacion`, `planificacion`, `areas-de-campo`,
+`tecnicas-de-prueba` y `cierre-del-encargo`. Cada una es un índice que dice qué
+procedimiento de su fase toca y en qué orden, y abre solo ese, desde
+`shared/procedimientos/`. Las otras cinco —`convenciones-dula`,
+`ingesta-y-cuadres`, `comparador-documental`, `redaccion-informe` y
+`revision-de-calidad`— llevan su contenido dentro porque se usan solas.
+
+Los 29 procedimientos no ocupan contexto hasta que se abren: el menú es corto y
+el conocimiento sigue completo.
 
 ---
 
@@ -210,31 +239,26 @@ doce áreas.
 ```
 /dula-audit:nuevo-encargo "ACME SL" 2025 PGC-PYMES
         │
-        ├─ estimacion-encargo ──► perfil, horas, honorarios, go/no-go
-        └─ aceptacion-e-independencia ──► declaración firmable + carta de encargo
+/estimacion-y-aceptacion            ─► estimacion-encargo · aceptacion-e-independencia
+        │                              escalado-del-encargo
         │
-/dula-audit:planificar
+/ingesta-y-cuadres                  ◄── PUERTA: si no cuadra, se detiene
         │
-        ├─ ingesta-y-cuadres        ◄── PUERTA: si no cuadra, se detiene
-        ├─ entendimiento-entidad
-        ├─ materialidad
-        ├─ mapa-de-riesgos
-        ├─ escalado-del-encargo     ◄── configura qué se activa y con qué profundidad
-        ├─ diseno-de-pruebas        ◄── cero riesgos huérfanos, cero pruebas huérfanas
-        └─ plan-y-solicitud-informacion (PBC)
+/planificacion                      ─► entendimiento-entidad · materialidad
+        │                              mapa-de-riesgos · diseno-de-pruebas
+        │                              plan-y-solicitud-informacion (PBC)
         │
-/dula-audit:campo <area>            ─► 12 áreas + area-runner + test de asientos
-/dula-audit:comparar                ─► CCAA ↔ balance ↔ memoria ↔ borradores
-/dula-audit:estado                  ─► dónde estamos y cuál es el siguiente paso
+/areas-de-campo <área>              ─► las 12 áreas + saldos de apertura
+/tecnicas-de-prueba                 ─► muestreo · analiticos · test-asientos-diario
+/comparador-documental              ─► CCAA ↔ balance ↔ memoria ↔ borradores
+/revision-de-calidad                ─► dónde estamos, qué falta, y el panel del socio
         │
-/dula-audit:cerrar
+/cierre-del-encargo                 ─► hechos-posteriores-y-empresa-en-funcionamiento
+        │                              evaluacion-de-incorrecciones
+        │                              comunicaciones-y-manifestaciones
+        │                              archivo-y-cierre
         │
-        ├─ evaluacion-de-incorrecciones
-        ├─ hechos-posteriores-y-empresa-en-funcionamiento
-        ├─ comunicaciones-y-manifestaciones
-        ├─ redaccion-informe        ◄── incluida la sección del Impuesto sobre Sociedades
-        ├─ revision-de-calidad      ◄── panel del socio + listado por severidad
-        └─ archivo-y-cierre
+/redaccion-informe                  ◄── incluida la sección del Impuesto sobre Sociedades
 ```
 
 `revision-de-calidad --pre-vuelo` se ejecuta **durante toda la campaña**, no solo
@@ -251,13 +275,14 @@ dula-audit/
 ├── skills/convenciones-dula/SKILL.md                    # perfil del despacho, convenciones y umbrales
 ├── GUIA-ARRANQUE.md             # una página para empezar
 ├── bin/dula                     # lanzador; se añade al PATH del Bash
-├── commands/                    # 7 comandos de entrada rápida
+├── commands/nuevo-encargo.md    # el único comando: crea la carpeta y arranca
 ├── agents/                      # extractor-documental · reconciliador · revisor-critico
-├── skills/                      # 34 skills
+├── skills/                      # 10 skills: 5 guías de fase + 5 con contenido propio
 └── shared/
-    ├── scripts/dula/            # 16 módulos: ingesta, cuadres, muestreo, leasing…
+    ├── procedimientos/          # 29 procedimientos que las guías abren bajo demanda
+    ├── scripts/dula/            # 23 módulos: ingesta, cuadres, muestreo, leasing…
     ├── references/              # mapeo PGC, desgloses de memoria, catálogo de
-    │                            # riesgos, 11 packs de programa por área
+    │                            # riesgos, 12 packs de programa por área
     └── templates/               # informe, cartas, comunicaciones, índice
 ```
 

@@ -941,9 +941,23 @@ def t_menu() -> None:
            f"al pulsarla, toda skill presenta que necesita y que devuelve "
            f"({cuerpos_sin_arranque[:3]})")
 
-    interno = [fm for f, fm in skills if fm["name"] == "area-runner"]
-    afirma(interno and interno[0].get("user-invocable") is False,
-           "la maquinaria interna (area-runner) no aparece en el menu")
+    # el menu tiene que caber en una pantalla: diez entradas, no treinta y cinco
+    afirma(len(skills) <= 10,
+           f"el menu no pasa de diez skills (hay {len(skills)})")
+
+    # las guias de fase remiten a procedimientos que existen
+    procs = {os.path.splitext(os.path.basename(p))[0]
+             for p in g.glob(os.path.join(raiz, "shared", "procedimientos", "*.md"))}
+    afirma(len(procs) >= 25, f"los procedimientos siguen en shared/ (hay {len(procs)})")
+    rotos = []
+    for f, fm in skills:
+        texto = open(f, encoding="utf-8").read()
+        for ref in __import__("re").findall(r"^\| `([a-z0-9-]+)` \|", texto,
+                                            __import__("re").M):
+            if ref not in procs and ref not in {n for n, _ in
+                                                [(fm2["name"], 0) for _, fm2 in skills]}:
+                rotos.append((os.path.basename(os.path.dirname(f)), ref))
+    afirma(not rotos, f"toda guia remite a un procedimiento existente ({rotos[:3]})")
 
 
 def t_paquete_claude_ai() -> None:
@@ -974,10 +988,10 @@ def t_paquete_claude_ai() -> None:
             r"^---\n(.*?)\n---", z.read("dula-audit/SKILL.md").decode("utf-8"),
             __import__("re").S).group(1)
         fm = yaml.safe_load(fm_txt)
-        permitidos = {"name", "description", "license", "compatibility", "metadata",
-                      "allowed-tools"}
-        afirma(set(fm) <= permitidos,
-               f"solo campos de la especificación ({sorted(set(fm) - permitidos)} sobran)")
+        # solo los dos campos obligatorios: `license` y `compatibility` exigen
+        # valores normalizados y con texto libre la subida falla al sincronizar
+        afirma(set(fm) == {"name", "description"},
+               f"frontmatter minimo, solo name y description ({sorted(fm)})")
         afirma(len(fm["description"]) <= 1024,
                f"description de {len(fm['description'])} caracteres (máximo 1024)")
         afirma(__import__("re").fullmatch(r"[a-z0-9-]{1,64}", fm["name"])
@@ -985,13 +999,30 @@ def t_paquete_claude_ai() -> None:
                f"name '{fm['name']}' cumple el formato y no usa palabras reservadas")
 
         procs = [n for n in nombres if n.startswith("dula-audit/procedimientos/")]
-        afirma(len(procs) == 35, f"viajan los 35 procedimientos (hay {len(procs)})")
-        for carpeta in ("referencias/", "plantillas/", "scripts/dula/", "bin/dula"):
+        afirma(len(procs) == 39,
+               f"viajan las 10 guias y los 29 procedimientos (hay {len(procs)})")
+        for carpeta in ("referencias/", "plantillas/", "scripts/dula/", "dula.py"):
             afirma(any(n.startswith(f"dula-audit/{carpeta}") for n in nombres),
                    f"el paquete incluye {carpeta}")
         afirma(not any("when_to_use" in z.read(p).decode("utf-8")[:200]
                        and p.endswith("SKILL.md") for p in nombres),
                "ningún fichero conserva frontmatter de Claude Code")
+
+        # lo que dispara el rechazo al sincronizar: ejecutables, scripts de
+        # shell, extensiones desconocidas o instalacion de dependencias
+        afirma(len(nombres) <= 200, f"por debajo del limite de 200 ficheros ({len(nombres)})")
+        con_bit = [n for n in nombres
+                   if (z.getinfo(n).external_attr >> 16) & 0o111]
+        afirma(not con_bit, f"ningun fichero con bit de ejecucion ({con_bit[:3]})")
+        raras = [n for n in nombres
+                 if os.path.splitext(n)[1] not in (".md", ".py", ".json", "")]
+        afirma(not raras, f"solo extensiones conocidas: md, py, json ({raras[:3]})")
+
+        # las rutas del plugin se reescriben: en claude.ai no hay
+        # ${CLAUDE_PLUGIN_ROOT} ni el lanzador `dula` en el PATH
+        crudas = [p for p in procs if "CLAUDE_PLUGIN_ROOT"
+                  in z.read(p).decode("utf-8")]
+        afirma(not crudas, f"ningun procedimiento usa CLAUDE_PLUGIN_ROOT ({crudas[:3]})")
 
     # las rutas se resuelven fuera de la estructura del plugin
     from dula import rutas

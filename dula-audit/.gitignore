@@ -6,7 +6,7 @@ __pycache__/
 tests/fixtures/
 tests/salida/
 
-# El despacho crea este fichero a partir de tarifas.json.ejemplo
+# El despacho crea este fichero a partir de tarifas-ejemplo.json
 shared/references/tarifas.json
 
 # Paquete de claude.ai: se publica el .zip, no el arbol intermedio

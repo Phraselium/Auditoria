@@ -1,23 +1,47 @@
 ---
 name: revision-de-calidad
-description: Panel del socio en una página más el listado completo de excepciones por severidad.
-when_to_use: 'Ejecútala en MODO PRE-VUELO durante toda la campaña, no solo antes de firmar. Úsala cuando el socio pregunte "¿cómo va esto?", "¿puedo firmar?" o "¿qué me falta?". Términos: revisor, independiente, escéptico, archivo, completo, verifica, riesgo, respuesta, ejecutada, concluida, conclusión, soportada, cuadres, materialidad.'
+description: Estado del encargo, panel del socio y listado completo de excepciones por severidad.
+when_to_use: 'Úsala en dos situaciones. (a) Seguimiento: cuando alguien pregunte cómo va un encargo, qué falta para cerrarlo, cuál es el siguiente paso, o al retomarlo tras unos días. (b) Revisión: en MODO PRE-VUELO durante toda la campaña y antes de firmar, cuando el socio pregunte "¿puedo firmar?" o "¿qué me falta?". Términos: estado, cómo va, siguiente paso, retomar, pendientes, horas, desviación, revisor, independiente, escéptico, archivo, completo, riesgo, respuesta, ejecutada, concluida, conclusión, soportada, cuadres, materialidad, firma.'
 argument-hint: '[carpeta-del-encargo] [--pre-vuelo]'
 ---
 
-# Revisión de calidad del archivo
+# Estado y revisión de calidad del encargo
 
 > **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
 > líneas y antes de hacer nada:
 >
 > 1. **Qué necesito:** solo la carpeta del encargo.
-> 2. **Qué vas a recibir:** el panel con las cuestiones que exigen su juicio, y si el archivo está en condiciones de firma.
+> 2. **Qué vas a recibir:** dónde está el encargo y qué falta, o el panel con las cuestiones que exigen el juicio del socio y si el archivo está en condiciones de firma.
 > 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
 >
 > Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **La skill más importante dado el contexto del despacho.** Si el socio solo ve
 las excepciones el último día, el problema no se ha resuelto: se ha concentrado.
+
+## Antes de revisar: ¿dónde estamos?
+
+```bash
+dula estado <carpeta-encargo>
+```
+
+Fases, materialidad vigente, papeles concluidos, riesgos sin respuesta,
+excepciones abiertas, pendientes del cliente por ruta crítica, desviación de
+horas y —lo único que de verdad se usa— el **siguiente paso recomendado**. El
+detalle del formato y de la prioridad con que se elige ese siguiente paso está en:
+
+```bash
+cat ${CLAUDE_PLUGIN_ROOT}/shared/procedimientos/estado-del-encargo.md
+```
+
+Complementos de seguimiento:
+
+```bash
+dula horas <encargo> --papel-ref F-1 --imputar 3.5 --quien "LG"
+dula pbc <encargo> --anadir "Cuadros de leasing en Excel" --area F --prioridad 1
+dula pbc <encargo> --recibido P001
+dula validar <encargo> --listar
+```
 
 ## Modo pre-vuelo: el cambio que más importa
 

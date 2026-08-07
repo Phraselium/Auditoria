@@ -50,7 +50,7 @@ plugin— y completa **todos** los campos entre `«»`:
 
 - Denominación del despacho y **números de ROAC** (sociedad y socio firmante).
 - **Ruta base** donde vivirán las carpetas de los encargos.
-- **Tarifas por categoría** → copia `shared/references/tarifas.json.ejemplo` a
+- **Tarifas por categoría** → copia `shared/references/tarifas-ejemplo.json` a
   `tarifas.json` y pon las reales. *Sin esto, el plugin estima horas pero deja los
   honorarios como `[PENDIENTE-CLIENTE]`: no se inventa un precio.*
 - **Festivos autonómicos y locales** de la sede de tus clientes (para el test de
@@ -65,12 +65,15 @@ la marca. Es cinco minutos y no se puede automatizar desde este entorno.
 
 ```
 /dula-audit:nuevo-encargo "ACME SL" 2025 PGC-PYMES
-/dula-audit:estimar 00-fuentes/sumas_y_saldos.xlsx
-/dula-audit:planificar
-/dula-audit:campo arrendamientos          ← repite por cada área
-/dula-audit:comparar
-/dula-audit:estado                        ← úsalo siempre que retomes el encargo
-/dula-audit:cerrar
+/estimacion-y-aceptacion 00-fuentes/sumas_y_saldos.xlsx
+/ingesta-y-cuadres 00-fuentes/sumas_y_saldos.xlsx   ← puerta de entrada
+/planificacion
+/areas-de-campo arrendamientos            ← repite por cada área
+/tecnicas-de-prueba                       ← muestreo, analíticos, test de asientos
+/comparador-documental
+/revision-de-calidad                      ← úsala siempre que retomes el encargo
+/cierre-del-encargo
+/redaccion-informe
 ```
 
 Y durante la campaña, en la línea de comandos:

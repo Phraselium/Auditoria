@@ -13,9 +13,10 @@ Por eso no se puede subir el plugin tal cual. Este script GENERA el paquete a
 partir del plugin, de modo que ambos salen siempre de la misma fuente y no se
 desincronizan:
 
-  - Las 35 skills se convierten en ficheros de `procedimientos/`, que Claude lee
-    solo cuando los necesita (divulgacion progresiva). Su coste en contexto es
-    cero hasta que se abren.
+  - Las 10 skills del plugin y los procedimientos de `shared/procedimientos/` se
+    convierten en ficheros de `procedimientos/`, que Claude lee solo cuando los
+    necesita (divulgacion progresiva). Su coste en contexto es cero hasta que se
+    abren.
   - Un unico SKILL.md hace de indice: dice que hay y cuando usar cada cosa.
   - La libreria Python y las referencias viajan enteras.
 
@@ -43,27 +44,50 @@ MAX_DESCRIPCION = 1024
 CAMPOS_PERMITIDOS = {"name", "description", "license", "compatibility",
                      "metadata", "allowed-tools"}
 
-# Orden en que se presentan los procedimientos en el indice
+# Orden en que se presentan los procedimientos en el indice. Los marcados como
+# GUIA son los diez que en Claude Code son skills: hacen de puerta de entrada de
+# su fase y remiten al procedimiento concreto.
+GUIAS = {"convenciones-dula", "ingesta-y-cuadres", "comparador-documental",
+         "redaccion-informe", "revision-de-calidad", "areas-de-campo",
+         "planificacion", "cierre-del-encargo", "estimacion-y-aceptacion",
+         "tecnicas-de-prueba"}
+
 FASES = [
     ("Fase 0 — Captación y aceptación", [
-        "estimacion-encargo", "aceptacion-e-independencia", "escalado-del-encargo"]),
+        "estimacion-y-aceptacion", "estimacion-encargo",
+        "aceptacion-e-independencia", "escalado-del-encargo"]),
     ("Fase 1 — Planificación", [
-        "entendimiento-entidad", "materialidad", "mapa-de-riesgos",
-        "diseno-de-pruebas", "plan-y-solicitud-informacion"]),
+        "planificacion", "entendimiento-entidad", "materialidad",
+        "mapa-de-riesgos", "diseno-de-pruebas", "plan-y-solicitud-informacion"]),
     ("Fase 2 — Trabajo de campo (transversales)", [
-        "ingesta-y-cuadres", "comparador-documental", "analiticos", "muestreo",
-        "test-asientos-diario", "area-runner"]),
+        "convenciones-dula", "ingesta-y-cuadres", "comparador-documental",
+        "tecnicas-de-prueba", "muestreo", "analiticos", "test-asientos-diario"]),
     ("Fase 2 — Áreas", [
+        "areas-de-campo",
         "area-inmovilizado", "area-existencias", "area-clientes-e-ingresos",
         "area-proveedores-y-compras", "area-tesoreria-y-financiacion",
         "area-arrendamientos", "area-fondos-propios-y-reservas", "area-personal",
         "area-fiscal", "area-provisiones-y-contingencias", "area-subvenciones",
         "area-partes-vinculadas", "saldos-apertura"]),
     ("Fase 3 — Cierre e informe", [
-        "evaluacion-de-incorrecciones", "hechos-posteriores-y-empresa-en-funcionamiento",
-        "comunicaciones-y-manifestaciones", "redaccion-informe", "revision-de-calidad",
-        "archivo-y-cierre"]),
-    ("Transversal", ["estado-del-encargo", "convenciones-dula"]),
+        "cierre-del-encargo", "hechos-posteriores-y-empresa-en-funcionamiento",
+        "evaluacion-de-incorrecciones", "comunicaciones-y-manifestaciones",
+        "archivo-y-cierre", "redaccion-informe"]),
+    ("Transversal — seguimiento y revisión", [
+        "revision-de-calidad", "estado-del-encargo"]),
+]
+
+# El paquete de claude.ai no tiene ${CLAUDE_PLUGIN_ROOT} ni el lanzador `dula`
+# en el PATH: las rutas se reescriben al montar el paquete.
+SUSTITUCIONES = [
+    ("${CLAUDE_PLUGIN_ROOT}/shared/procedimientos", "$D/procedimientos"),
+    ("${CLAUDE_PLUGIN_ROOT}/shared/references", "$D/referencias"),
+    ("${CLAUDE_PLUGIN_ROOT}/shared/templates", "$D/plantillas"),
+    ("${CLAUDE_PLUGIN_ROOT}/shared/scripts", "$D/scripts"),
+    ("${CLAUDE_PLUGIN_ROOT}", "$D"),
+    ("shared/procedimientos/", "$D/procedimientos/"),
+    ("shared/references/", "$D/referencias/"),
+    ("shared/templates/", "$D/plantillas/"),
 ]
 
 DESCRIPCION = (
@@ -81,60 +105,75 @@ DESCRIPCION = (
     "redactar el informe o revisar el archivo antes de firmar."
 )
 
-LANZADOR = """#!/usr/bin/env bash
-# Lanzador de la libreria de calculo de dula-audit para claude.ai.
-#
-#   bash bin/dula <subcomando> [argumentos]
-#
-# Se localiza a si mismo, asi que funciona desde cualquier directorio.
-set -euo pipefail
-origen="${BASH_SOURCE[0]}"
-while [ -L "$origen" ]; do
-  destino="$(readlink "$origen")"
-  case "$destino" in
-    /*) origen="$destino" ;;
-    *)  origen="$(cd -P "$(dirname "$origen")" && pwd)/$destino" ;;
-  esac
-done
-RAIZ="$(cd -P "$(dirname "$origen")/.." && pwd)"
+ENTRADA = '''#!/usr/bin/env python3
+"""Punto de entrada de la libreria de calculo de dula-audit.
 
-PY=""
-for cand in python3 python; do
-  command -v "$cand" >/dev/null 2>&1 && PY="$cand" && break
-done
-[ -z "$PY" ] && { echo "ERROR: no se ha encontrado Python 3." >&2; exit 127; }
+    python3 dula.py <subcomando> [argumentos]
+    python3 dula.py doctor
 
-if ! "$PY" -c 'import pandas, openpyxl' 2>/dev/null; then
-  echo "Faltan pandas u openpyxl. Instalandolas..." >&2
-  "$PY" -m pip install --quiet pandas openpyxl >&2 || {
-    echo "ERROR: no se han podido instalar. Ejecute: $PY -m pip install pandas openpyxl" >&2
-    exit 127; }
-fi
-
-export PYTHONPATH="$RAIZ/scripts${PYTHONPATH:+:$PYTHONPATH}"
-export DULA_RAIZ="$RAIZ"
-exec "$PY" -m dula.cli "$@"
+Es Python plano, sin bit de ejecucion y sin instalar nada: el paquete no lleva
+ningun script de shell ejecutable, para no disparar los controles de seguridad
+de la plataforma.
 """
+import os
+import sys
+
+RAIZ = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(RAIZ, "scripts"))
+os.environ.setdefault("DULA_RAIZ", RAIZ)
+
+try:
+    import pandas  # noqa: F401
+    import openpyxl  # noqa: F401
+except ImportError as exc:
+    print(f"Falta una dependencia de Python: {exc.name}.\n"
+          f"Instalela con:  {sys.executable} -m pip install pandas openpyxl\n"
+          f"Son las dos unicas que necesita el plugin.", file=sys.stderr)
+    raise SystemExit(127)
+
+from dula.cli import main  # noqa: E402
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+'''
 
 
-def lee_skill(nombre: str) -> tuple[dict, str]:
-    ruta = os.path.join(RAIZ, "skills", nombre, "SKILL.md")
+def lee_skill(ruta: str) -> tuple[dict, str]:
+    """Devuelve (metadatos, cuerpo) de una skill de Claude Code."""
     t = open(ruta, encoding="utf-8").read()
     m = re.match(r"^---\n(.*?)\n---\n(.*)$", t, re.S)
+    if not m:
+        raise ValueError(f"{ruta}: sin frontmatter")
     return yaml.safe_load(m.group(1)), m.group(2)
+
+
+def lee_procedimiento(ruta: str) -> tuple[dict, str]:
+    """Los procedimientos de `shared/procedimientos/` ya llevan su cabecera en
+    prosa: `# nombre`, luego `> descripción` y opcionalmente `> **Cuándo:**`."""
+    t = open(ruta, encoding="utf-8").read()
+    m = re.search(r"^> (?!\*\*)(.+)$", t, re.M)
+    if not m:
+        raise ValueError(f"{ruta}: sin línea de descripción")
+    return {"description": m.group(1).strip(), "_ya_tiene_cabecera": True}, t
+
+
+def reescribe_rutas(texto: str) -> str:
+    for viejo, nuevo in SUSTITUCIONES:
+        texto = texto.replace(viejo, nuevo)
+    # el lanzador `dula` no está en el PATH de claude.ai
+    return re.sub(r"(?m)^(\s*)dula ", r"\1python3 $D/dula.py ", texto)
 
 
 def construye_indice(metadatos: dict[str, dict]) -> str:
     # el frontmatter se serializa, no se concatena: las descripciones llevan dos
     # puntos y romperian el YAML si se escribieran a mano
+    # SOLO name y description. `license` y `compatibility` admiten unicamente
+    # valores normalizados (SPDX / mapa de versiones); con texto libre el
+    # validador de claude.ai rechaza la subida ("no se ha podido sincronizar").
+    # Todo lo demas va al cuerpo, donde no lo valida nadie.
     import io
     buf = io.StringIO()
-    for k, v in (("name", NOMBRE),
-                 ("description", DESCRIPCION),
-                 ("license", "Propietaria - Dula Auditores"),
-                 ("compatibility", "Requiere Python 3.10+ con pandas y openpyxl"),
-                 ("metadata", {"version": "1.4.0", "autor": "Dula Auditores",
-                               "marco": "NIA-ES; PGC y PGC PYMES; RICAC de 22/01/2026"})):
+    for k, v in (("name", NOMBRE), ("description", DESCRIPCION)):
         yaml.safe_dump({k: v}, buf, allow_unicode=True, width=10**6,
                        default_flow_style=False, sort_keys=False)
     L = [
@@ -146,6 +185,9 @@ def construye_indice(metadatos: dict[str, dict]) -> str:
         "",
         "Equipo de auditoría senior para encargos españoles bajo NIA-ES. **Esta página es",
         "el índice**: abre solo el procedimiento que necesites, cuando lo necesites.",
+        "",
+        "Versión 1.5.0 · Dula Auditores · Marco: NIA-ES; PGC y PGC PYMES; RICAC de",
+        "22/01/2026 · Requiere Python 3.10+ con `pandas` y `openpyxl`.",
         "",
         "## Cómo trabajar con esta skill",
         "",
@@ -162,8 +204,8 @@ def construye_indice(metadatos: dict[str, dict]) -> str:
         "",
         "3. **Ejecuta los cálculos** con la librería. Nunca calcules «a ojo»:",
         "   ```bash",
-        "   bash $D/bin/dula doctor          # comprueba el entorno",
-        "   bash $D/bin/dula <subcomando> --help",
+        "   python3 $D/dula.py doctor          # comprueba el entorno",
+        "   python3 $D/dula.py <subcomando> --help",
         "   ```",
         "",
         "4. **Antes de nada, carga las convenciones del despacho**:",
@@ -210,8 +252,14 @@ def construye_indice(metadatos: dict[str, dict]) -> str:
         for n in nombres:
             if n not in metadatos:
                 continue
-            L.append(f"| `{n}` | {metadatos[n]['description']} |")
+            marca = "**▸**" if n in GUIAS else ""
+            L.append(f"| {marca} `{n}` | {metadatos[n]['description']} |".replace("|  `", "| `"))
         L.append("")
+    L += [
+        "**▸** marca las **guías de fase**: ábrelas primero, te dicen qué",
+        "procedimiento de su fase corresponde y en qué orden.",
+        "",
+    ]
     L += [
         "## Qué más hay en el paquete",
         "",
@@ -244,7 +292,7 @@ def construye_indice(metadatos: dict[str, dict]) -> str:
         "",
         "## Primer uso",
         "",
-        "Ejecuta `bash $D/bin/dula doctor`. Te dirá qué falta por configurar: los",
+        "Ejecuta `python3 $D/dula.py doctor`. Te dirá qué falta por configurar: los",
         "campos entre `«»` de `procedimientos/convenciones-dula.md` (números de ROAC,",
         "ruta base), las tarifas por categoría y los párrafos del modelo de informe",
         "pendientes de contrastar con el PDF oficial del ICAC.",
@@ -290,6 +338,23 @@ def valida(pkg: str) -> list[str]:
             errores.append(f"falta la carpeta {req}/")
     if not os.path.exists(os.path.join(pkg, "scripts", "dula", "cli.py")):
         errores.append("falta la libreria en scripts/dula/")
+    if not os.path.exists(os.path.join(pkg, "dula.py")):
+        errores.append("falta el punto de entrada dula.py")
+    # ningun ejecutable ni script de shell: los controles de seguridad de la
+    # plataforma rechazan paquetes que traen binarios o instalan dependencias
+    for base, _, ficheros in os.walk(pkg):
+        for f in ficheros:
+            ruta = os.path.join(base, f)
+            rel = os.path.relpath(ruta, pkg)
+            if os.stat(ruta).st_mode & 0o111:
+                errores.append(f"{rel} tiene bit de ejecucion")
+            if f.endswith((".sh", ".bash", ".exe", ".bat", ".dll", ".so")):
+                errores.append(f"{rel} es un ejecutable o script de shell")
+            if rel.endswith(".py") or rel.endswith(".md"):
+                texto = open(ruta, encoding="utf-8", errors="ignore").read()
+                if "pip install" in texto and "Instalela con" not in texto \
+                        and "pip install pandas openpyxl" not in texto:
+                    errores.append(f"{rel} ejecuta pip install")
     return errores
 
 
@@ -299,23 +364,35 @@ def main() -> int:
     pkg = os.path.join(DESTINO, NOMBRE)
     os.makedirs(os.path.join(pkg, "procedimientos"))
 
-    # 1. procedimientos = cuerpos de las skills, sin frontmatter de Claude Code
+    # 1. procedimientos: las diez skills (sin su frontmatter de Claude Code, que
+    #    claude.ai rechaza) mas los procedimientos de shared/procedimientos/
+    fuentes = [(os.path.basename(os.path.dirname(r)), r, lee_skill)
+               for r in sorted(glob.glob(os.path.join(RAIZ, "skills", "*", "SKILL.md")))]
+    fuentes += [(os.path.splitext(os.path.basename(r))[0], r, lee_procedimiento)
+                for r in sorted(glob.glob(
+                    os.path.join(RAIZ, "shared", "procedimientos", "*.md")))]
+
     metadatos: dict[str, dict] = {}
-    for ruta in sorted(glob.glob(os.path.join(RAIZ, "skills", "*", "SKILL.md"))):
-        nombre = os.path.basename(os.path.dirname(ruta))
-        fm, cuerpo = lee_skill(nombre)
+    for nombre, ruta, lector in fuentes:
+        if nombre in metadatos:
+            print(f"ERROR: '{nombre}' esta duplicado entre skills y procedimientos")
+            return 1
+        fm, cuerpo = lector(ruta)
         metadatos[nombre] = fm
-        cabecera = [f"# {nombre}", "", f"> {fm['description']}"]
-        if fm.get("when_to_use"):
-            cabecera += ["", f"> **Cuándo:** {fm['when_to_use']}"]
-        if fm.get("argument-hint"):
-            cabecera += ["", f"> **Necesita:** `{fm['argument-hint']}`"]
-        cabecera += ["", "---", ""]
-        # se quita el H1 original del cuerpo para no duplicar titulo
-        cuerpo = re.sub(r"^# .*?\n", "", cuerpo.lstrip(), count=1)
+        if fm.get("_ya_tiene_cabecera"):
+            texto = cuerpo
+        else:
+            cabecera = [f"# {nombre}", "", f"> {fm['description']}"]
+            if fm.get("when_to_use"):
+                cabecera += ["", f"> **Cuándo:** {fm['when_to_use']}"]
+            if fm.get("argument-hint"):
+                cabecera += ["", f"> **Necesita:** `{fm['argument-hint']}`"]
+            cabecera += ["", "---", ""]
+            # se quita el H1 original del cuerpo para no duplicar titulo
+            texto = "\n".join(cabecera) + re.sub(r"^# .*?\n", "", cuerpo.lstrip(), count=1)
         with open(os.path.join(pkg, "procedimientos", f"{nombre}.md"),
                   "w", encoding="utf-8") as fh:
-            fh.write("\n".join(cabecera) + cuerpo)
+            fh.write(reescribe_rutas(texto))
 
     faltan = {n for _, ns in FASES for n in ns} ^ set(metadatos)
     if faltan:
@@ -336,12 +413,12 @@ def main() -> int:
                             recursive=True):
         shutil.rmtree(basura, ignore_errors=True)
 
-    # el lanzador no puede llamarse igual que el paquete python `dula/`
-    os.makedirs(os.path.join(pkg, "bin"), exist_ok=True)
-    lanz = os.path.join(pkg, "bin", "dula")
-    with open(lanz, "w", encoding="utf-8") as fh:
-        fh.write(LANZADOR)
-    os.chmod(lanz, 0o755)
+    # punto de entrada Python plano en la raiz de la skill: ni shell ni bit de
+    # ejecucion, para no disparar los controles de seguridad de la plataforma
+    entrada = os.path.join(pkg, "dula.py")
+    with open(entrada, "w", encoding="utf-8") as fh:
+        fh.write(ENTRADA)
+    os.chmod(entrada, 0o644)
 
     # 4. validacion contra la especificacion
     errores = valida(pkg)
@@ -363,8 +440,20 @@ def main() -> int:
     n_proc = len(glob.glob(os.path.join(pkg, "procedimientos", "*.md")))
     print(f"Paquete para claude.ai: {zpath}")
     print(f"  {n_proc} procedimientos, {tam:,.0f} KB")
-    print(f"  frontmatter: solo los campos de la especificacion Agent Skills")
+    print(f"  frontmatter: solo name y description")
     print(f"  cuerpo de SKILL.md: {os.path.getsize(os.path.join(pkg, 'SKILL.md')):,} bytes")
+
+    # 6. paquete minimo de diagnostico: solo SKILL.md y los procedimientos.
+    #    Si el completo no sincroniza y este si, el problema esta en la libreria
+    #    Python o en las referencias, no en la skill.
+    zmin = os.path.join(DESTINO, f"{NOMBRE}-claude-ai-minimo.zip")
+    with zipfile.ZipFile(zmin, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr(f"{NOMBRE}/SKILL.md",
+                   open(os.path.join(pkg, "SKILL.md"), encoding="utf-8").read())
+        for f in sorted(glob.glob(os.path.join(pkg, "procedimientos", "*.md"))):
+            z.write(f, os.path.join(NOMBRE, "procedimientos", os.path.basename(f)))
+    print(f"Paquete minimo de diagnostico: {zmin}")
+    print(f"  sin libreria ni referencias, {os.path.getsize(zmin) / 1024:,.0f} KB")
     return 0
 
 
