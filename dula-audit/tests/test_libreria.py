@@ -877,7 +877,7 @@ def main() -> int:
     for fn in (t_plan_contable, t_materialidad, t_muestreo, t_leasing, t_financiacion,
                t_analiticos, t_comparador, t_cuadres_y_regularizacion,
                t_perfil_y_escalado, t_amortizaciones_deterioro, t_bitacora,
-               t_estado_y_encargo, t_excel, t_presentacion, t_cli, t_menu):
+               t_estado_y_encargo, t_excel, t_presentacion, t_cli, t_menu, t_paquete_claude_ai):
         fn()
     print("\n" + "=" * 78)
     print(f"TOTAL: {TOTAL[0] - len(FALLOS)}/{TOTAL[0]} comprobaciones superadas.")
@@ -887,9 +887,6 @@ def main() -> int:
             print("  -", f)
     return 1 if FALLOS else 0
 
-
-if __name__ == "__main__":
-    raise SystemExit(main())
 
 
 def t_menu() -> None:
@@ -947,3 +944,65 @@ def t_menu() -> None:
     interno = [fm for f, fm in skills if fm["name"] == "area-runner"]
     afirma(interno and interno[0].get("user-invocable") is False,
            "la maquinaria interna (area-runner) no aparece en el menu")
+
+
+def t_paquete_claude_ai() -> None:
+    """El paquete .zip para claude.ai debe cumplir la especificación Agent Skills.
+
+    claude.ai no admite plugins ni los campos de frontmatter propios de Claude
+    Code: `argument-hint`, `when_to_use` y `user-invocable` producen
+    "Unexpected key(s) in SKILL.md frontmatter". El paquete se genera desde el
+    plugin para que ambos no se desincronicen, y aquí se comprueba que sale
+    válido.
+    """
+    bloque("paquete para claude.ai")
+    import subprocess, zipfile
+    import yaml
+
+    r = subprocess.run([sys.executable, os.path.join(RAIZ, "tools", "construir_claude_ai.py")],
+                       capture_output=True, text=True, cwd=RAIZ)
+    afirma(r.returncode == 0, f"el paquete se construye sin errores ({r.stdout.strip()[:60]})")
+    zpath = os.path.join(RAIZ, "build", "dula-audit-claude-ai.zip")
+    afirma(os.path.exists(zpath), "se genera el .zip")
+
+    with zipfile.ZipFile(zpath) as z:
+        nombres = z.namelist()
+        skill = [n for n in nombres if n.endswith("SKILL.md")]
+        afirma(skill == ["dula-audit/SKILL.md"],
+               "el zip lleva la carpeta de la skill en la raíz, con un único SKILL.md")
+        fm_txt = __import__("re").match(
+            r"^---\n(.*?)\n---", z.read("dula-audit/SKILL.md").decode("utf-8"),
+            __import__("re").S).group(1)
+        fm = yaml.safe_load(fm_txt)
+        permitidos = {"name", "description", "license", "compatibility", "metadata",
+                      "allowed-tools"}
+        afirma(set(fm) <= permitidos,
+               f"solo campos de la especificación ({sorted(set(fm) - permitidos)} sobran)")
+        afirma(len(fm["description"]) <= 1024,
+               f"description de {len(fm['description'])} caracteres (máximo 1024)")
+        afirma(__import__("re").fullmatch(r"[a-z0-9-]{1,64}", fm["name"])
+               and "claude" not in fm["name"] and "anthropic" not in fm["name"],
+               f"name '{fm['name']}' cumple el formato y no usa palabras reservadas")
+
+        procs = [n for n in nombres if n.startswith("dula-audit/procedimientos/")]
+        afirma(len(procs) == 35, f"viajan los 35 procedimientos (hay {len(procs)})")
+        for carpeta in ("referencias/", "plantillas/", "scripts/dula/", "bin/dula"):
+            afirma(any(n.startswith(f"dula-audit/{carpeta}") for n in nombres),
+                   f"el paquete incluye {carpeta}")
+        afirma(not any("when_to_use" in z.read(p).decode("utf-8")[:200]
+                       and p.endswith("SKILL.md") for p in nombres),
+               "ningún fichero conserva frontmatter de Claude Code")
+
+    # las rutas se resuelven fuera de la estructura del plugin
+    from dula import rutas
+    afirma(os.path.isdir(rutas.directorio("referencias"))
+           and os.path.isdir(rutas.directorio("plantillas")),
+           "el localizador de rutas encuentra referencias y plantillas en el plugin")
+    try:
+        rutas.directorio("inexistente")
+        afirma(False, "un recurso desconocido debería fallar")
+    except ValueError:
+        afirma(True, "un recurso desconocido lanza ValueError")
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -5,8 +5,8 @@ completo del encargo —aceptación, planificación, trabajo de campo, cierre e
 informe— bajo NIA-ES, con cálculo determinista por script, trazabilidad total y
 reporte por excepción.
 
-**Estado:** v1.3.0 · 35 skills · 7 comandos · 3 agentes · 23 módulos Python ·
-**243/243 comprobaciones superadas · 100 % de cobertura de la librería**.
+**Estado:** v1.4.0 · 35 skills · 7 comandos · 3 agentes · 23 módulos Python ·
+**257/257 comprobaciones superadas · 100 % de cobertura de la librería**.
 
 ---
 
@@ -57,6 +57,21 @@ Este plugin ataca las dos cosas:
 ---
 
 ## Instalación
+
+Hay **dos productos distintos**, porque Claude Code y claude.ai no admiten lo
+mismo. El de claude.ai se genera desde el mismo código, así que no divergen.
+
+| | Claude Code | claude.ai (web y escritorio) |
+|---|---|---|
+| Formato | Plugin (`/plugin install`) | Skill suelta en `.zip`, subida desde Ajustes |
+| Componentes | 35 skills + 7 comandos + 3 agentes | 1 skill con 35 procedimientos que se abren bajo demanda |
+| Menú `/` | Sí, con descripción y argumentos | No: Claude la activa sola por el contexto |
+| Requisito | — | Plan Pro, Max, Team o Enterprise **con ejecución de código activada** |
+| Ámbito | Personal o de proyecto | Personal: cada persona la sube por su cuenta |
+
+---
+
+## A) Claude Code
 
 ### Opción A — desde el repositorio (recomendada)
 
@@ -112,12 +127,55 @@ Verificación completa de la librería de cálculo:
 
 ```bash
 claude plugin validate <ruta>/dula-audit    # debe decir "Validation passed"
-cd <ruta>/dula-audit && python3 tests/run_all.py   # 243/243 y cobertura 100 %
+cd <ruta>/dula-audit && python3 tests/run_all.py   # 257/257 y cobertura 100 %
 ```
 
 Después, **completa `skills/convenciones-dula/SKILL.md`**: los campos entre `«»` son los datos reales del
 despacho. Sin ellos, el plugin funciona pero deja `[PENDIENTE-CLIENTE]` donde
 haría falta un dato tuyo (tarifas, nº de ROAC, ruta base).
+
+---
+
+## B) claude.ai (web y escritorio)
+
+claude.ai **no admite plugins**: admite skills sueltas en `.zip`. Y su
+frontmatter solo acepta los seis campos de la especificación Agent Skills, así
+que el plugin no se puede subir tal cual — `argument-hint`, `when_to_use` y
+`user-invocable` darían `Unexpected key(s) in SKILL.md frontmatter`.
+
+El paquete ya está construido en **`build/dula-audit-claude-ai.zip`** (233 KB).
+
+**Pasos:**
+
+1. Descargue `build/dula-audit-claude-ai.zip` del repositorio.
+2. En claude.ai: **Ajustes → Capacidades** → active **«Ejecución de código y
+   creación de archivos»**. Sin eso las skills no funcionan.
+3. **Ajustes → Capacidades → Skills → Subir skill** y elija el `.zip`.
+4. En una conversación nueva, escriba: *«comprueba la instalación de dula-audit
+   con dula doctor»*.
+
+**Qué cambia respecto a Claude Code:**
+
+- No hay menú `/`: Claude activa la skill sola cuando el contexto lo pide
+  («cuadra este balance», «recalcula estos leasings»). Puede invocarla
+  explícitamente nombrándola.
+- Los 35 procedimientos viajan en `procedimientos/`, y Claude abre **solo** el
+  que necesita. Coste en contexto hasta entonces: cero.
+- El `SKILL.md` es un índice con las once reglas innegociables y la tabla de
+  procedimientos.
+
+**Para regenerarlo** tras cualquier cambio en el plugin:
+
+```bash
+python3 tools/construir_claude_ai.py
+```
+
+El script valida el paquete contra la especificación —campos permitidos,
+longitud de `name` y `description`, tamaño del cuerpo— y falla si algo no cumple.
+La suite lo comprueba en cada ejecución.
+
+> **Las skills no se sincronizan entre superficies.** Si actualiza el plugin,
+> tiene que volver a subir el `.zip` a claude.ai.
 
 ---
 
@@ -302,14 +360,14 @@ dula --help
 | 5 | La revisión detecta un papel sin conclusión y un riesgo sin respuesta | 7/7 |
 | 6 | El modelo de informe corresponde a la versión normativa vigente | 14/14 |
 
-**`tests/test_libreria.py`** — 191 comprobaciones unitarias con **resultados
+**`tests/test_libreria.py`** — 205 comprobaciones unitarias con **resultados
 numéricos conocidos**, no solo «que no reviente»: TIR de un préstamo francés
 contra su tipo de partida, proyección de errores por *tainting*, umbral doble de
 los analíticos, clasificación de arrendamientos indicador a indicador, período
 medio de cobro, conciliación bancaria en los dos sentidos.
 
 ```bash
-python3 tests/run_all.py             # 243/243 + cobertura, es el que hay que ejecutar
+python3 tests/run_all.py             # 257/257 + cobertura, es el que hay que ejecutar
 python3 tests/generar_fixtures.py    # regenera los datos sintéticos
 ```
 

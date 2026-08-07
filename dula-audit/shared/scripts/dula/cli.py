@@ -24,7 +24,7 @@ from .excel_out import PapelDeTrabajo, exporta_tablas
 from .excepciones import INFORMATIVA, RESOLVER, Excepcion, Resultado
 from .traza import RegistroTrazas, Traza, huella
 
-VERSION = "1.3.0"
+VERSION = "1.4.0"
 
 
 def _salida(res: Resultado, json_out: bool = False) -> None:
@@ -647,18 +647,27 @@ def cmd_doctor(args) -> int:
             bloqueantes.append(f"Falta la dependencia '{mod}'. "
                                f"Instalela con: pip install {mod}")
 
+    from . import rutas
     print("\nFicheros de referencia")
-    for rel, critico in (("shared/references/mapeo-pgc.json", True),
-                         ("shared/references/desgloses-memoria.json", True),
-                         ("shared/references/catalogo-riesgos.md", False),
-                         ("shared/templates/informe-auditoria.md", True),
-                         ("shared/references/tarifas.json", False),
-                         ("shared/references/historico-encargos.json", False)):
-        ruta = os.path.join(raiz, rel)
-        existe = os.path.exists(ruta)
-        print(f"  [{'OK' if existe else '--'}] {rel}")
+    try:
+        dir_ref = rutas.directorio("referencias")
+        dir_tpl = rutas.directorio("plantillas")
+        print(f"  referencias: {dir_ref}")
+        print(f"  plantillas:  {dir_tpl}")
+    except FileNotFoundError as exc:
+        bloqueantes.append(str(exc).split("\n")[0])
+        dir_ref = dir_tpl = None
+    for base, nombre, critico in ((dir_ref, "mapeo-pgc.json", True),
+                                  (dir_ref, "desgloses-memoria.json", True),
+                                  (dir_ref, "catalogo-riesgos.md", False),
+                                  (dir_tpl, "informe-auditoria.md", True),
+                                  (dir_ref, "tarifas.json", False),
+                                  (dir_ref, "historico-encargos.json", False)):
+        ruta = os.path.join(base, nombre) if base else ""
+        existe = bool(ruta) and os.path.exists(ruta)
+        print(f"  [{'OK' if existe else '--'}] {nombre}")
         if not existe and critico:
-            bloqueantes.append(f"Falta el fichero de referencia {rel}.")
+            bloqueantes.append(f"Falta el fichero de referencia {nombre}.")
 
     # el mapeo y la checklist deben cargarse de verdad, no solo existir
     try:
@@ -678,9 +687,11 @@ def cmd_doctor(args) -> int:
         bloqueantes.append(f"La checklist de desgloses no se puede cargar: {exc}")
 
     print("\nConfiguracion del despacho")
-    conf = os.path.join(raiz, "skills", "convenciones-dula", "SKILL.md")
-    if not os.path.exists(conf):
-        bloqueantes.append("Falta skills/convenciones-dula/SKILL.md.")
+    conf = next((c for c in (os.path.join(raiz, "skills", "convenciones-dula", "SKILL.md"),
+                             os.path.join(raiz, "procedimientos", "convenciones-dula.md"))
+                 if os.path.exists(c)), "")
+    if not conf:
+        avisos.append("No se localiza el fichero de convenciones del despacho.")
     else:
         texto = open(conf, encoding="utf-8").read()
         pendientes = texto.count("«")
@@ -691,12 +702,12 @@ def cmd_doctor(args) -> int:
                 "los dejara como [PENDIENTE-CLIENTE] en los documentos.")
         else:
             print("  Configuracion completada.")
-    if not os.path.exists(os.path.join(raiz, "shared", "references", "tarifas.json")):
+    if not (dir_ref and os.path.exists(os.path.join(dir_ref, "tarifas.json"))):
         avisos.append("No hay tarifas.json: `estimacion-encargo` calculara horas pero "
                       "devolvera los honorarios como [PENDIENTE-CLIENTE]. Copie "
                       "shared/references/tarifas.json.ejemplo y ponga las suyas.")
-    hist = os.path.join(raiz, "shared", "references", "historico-encargos.json")
-    if os.path.exists(hist):
+    hist = os.path.join(dir_ref, "historico-encargos.json") if dir_ref else ""
+    if hist and os.path.exists(hist):
         try:
             if not json.load(open(hist, encoding="utf-8")).get("encargos"):
                 avisos.append("El estimador no esta calibrado con encargos reales del "
@@ -704,8 +715,8 @@ def cmd_doctor(args) -> int:
         except Exception:  # noqa: BLE001
             avisos.append("historico-encargos.json no es JSON valido.")
 
-    plantilla = os.path.join(raiz, "shared", "templates", "informe-auditoria.md")
-    if os.path.exists(plantilla):
+    plantilla = os.path.join(dir_tpl, "informe-auditoria.md") if dir_tpl else ""
+    if plantilla and os.path.exists(plantilla):
         n = open(plantilla, encoding="utf-8").read().count("[VERIFICAR-LITERAL-ICAC]")
         if n:
             avisos.append(

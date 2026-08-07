@@ -324,5 +324,5 @@ Argumentos comunes a los que generan papel: `--papel` `--cliente` `--ejercicio`
 estado y la ejecución en la bitácora **sin que haya que hacer nada más**.
 
 Verificación de la instalación: `dula doctor` debe decir «El plugin es
-operativo», y `python3 tests/run_all.py` debe devolver **243/243 comprobaciones
+operativo», y `python3 tests/run_all.py` debe devolver **257/257 comprobaciones
 superadas y 100 % de cobertura**.

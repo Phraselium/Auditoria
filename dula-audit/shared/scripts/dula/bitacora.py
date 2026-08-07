@@ -45,7 +45,7 @@ class Bitacora:
                  salidas: list[str] | None = None,
                  parametros: dict[str, Any] | None = None,
                  conclusion: str = "", excepciones: int = 0,
-                 papel: str = "", version_plugin: str = "1.3.0") -> str:
+                 papel: str = "", version_plugin: str = "1.4.0") -> str:
         """Anota una ejecucion. Devuelve el id de la entrada."""
         entradas_h: list[dict[str, str]] = []
         for e in entradas or []:

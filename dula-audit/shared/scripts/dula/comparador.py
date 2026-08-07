@@ -24,13 +24,12 @@ import pandas as pd
 
 from .excepciones import (BLOQUEANTE, DOCUMENTAR, INFORMATIVA, RESOLVER,
                           Excepcion, Resultado)
+from . import rutas
 from .plan_contable import clasifica, es_patrimonial, es_resultados
 
 TOLERANCIA = 1.00  # EUR. Las cuentas anuales se formulan redondeadas.
 
-_REFS = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-    "references")
+
 
 
 def saldos_de_presentacion(sys: pd.DataFrame,
@@ -243,8 +242,8 @@ def diff_borradores(v_anterior: dict[str, float], v_nueva: dict[str, float],
 # Checklist de desgloses obligatorios de memoria
 # ---------------------------------------------------------------------------
 def _carga_checklist(modelo: str) -> list[dict[str, Any]]:
-    path = os.path.join(_REFS, "desgloses-memoria.json")
-    with open(path, encoding="utf-8") as fh:
+    with open(rutas.fichero("referencias", "desgloses-memoria.json"),
+              encoding="utf-8") as fh:
         data = json.load(fh)
     modelo = modelo.upper()
     if modelo not in data["modelos"]:

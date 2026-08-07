@@ -6,6 +6,18 @@ Una página. Léela entera antes del primer encargo.
 
 ## 1. Instalar (5 minutos, una sola vez)
 
+### Si usa **claude.ai** (web o escritorio)
+
+1. Descargue `build/dula-audit-claude-ai.zip` del repositorio.
+2. **Ajustes → Capacidades**: active «Ejecución de código y creación de archivos».
+3. **Ajustes → Capacidades → Skills → Subir skill** y elija el `.zip`.
+4. Pruebe con: *«comprueba la instalación de dula-audit con dula doctor»*.
+
+Necesita plan Pro, Max, Team o Enterprise. No hay menú `/`: Claude activa la
+skill sola cuando el contexto lo pide.
+
+### Si usa **Claude Code**
+
 Dentro de Claude Code:
 
 ```

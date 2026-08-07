@@ -8,18 +8,13 @@ from __future__ import annotations
 
 import functools
 import json
-import os
 from typing import Any
 
-_REF = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-    "references", "mapeo-pgc.json",
-)
-
+from . import rutas
 
 @functools.lru_cache(maxsize=1)
 def _mapeo() -> dict[str, Any]:
-    with open(_REF, encoding="utf-8") as fh:
+    with open(rutas.fichero("referencias", "mapeo-pgc.json"), encoding="utf-8") as fh:
         return json.load(fh)
 
 
