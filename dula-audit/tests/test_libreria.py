@@ -1035,5 +1035,28 @@ def t_paquete_claude_ai() -> None:
     except ValueError:
         afirma(True, "un recurso desconocido lanza ValueError")
 
+    # El paquete para Claude Code: se descomprime en ~/.claude/skills/ y carga
+    # sin marketplace, sin git y sin red. Es la via que no puede fallar por
+    # sincronizacion, asi que tiene que salir completa y con el lanzador usable.
+    zcc = os.path.join(RAIZ, "build", "dula-audit-claude-code.zip")
+    afirma(os.path.exists(zcc), "se genera el .zip para Claude Code")
+    with zipfile.ZipFile(zcc) as z:
+        nombres = set(z.namelist())
+        for req in ("dula-audit/.claude-plugin/plugin.json",
+                    "dula-audit/bin/dula",
+                    "dula-audit/shared/scripts/dula/cli.py",
+                    "dula-audit/shared/procedimientos/materialidad.md",
+                    "dula-audit/shared/references/mapeo-pgc.json",
+                    "dula-audit/shared/templates/informe-auditoria.md"):
+            afirma(req in nombres, f"el paquete de Claude Code incluye {req}")
+        afirma(sum(1 for n in nombres
+                   if n.startswith("dula-audit/skills/") and n.endswith("SKILL.md")) == 10,
+               "viajan las 10 skills")
+        afirma((z.getinfo("dula-audit/bin/dula").external_attr >> 16) & 0o111,
+               "el lanzador bin/dula conserva el bit de ejecucion")
+        afirma(not any("/build/" in n or "__pycache__" in n or n.endswith(".pyc")
+                       for n in nombres),
+               "no viajan artefactos de construccion ni cache de Python")
+
 if __name__ == "__main__":
     raise SystemExit(main())

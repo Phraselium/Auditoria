@@ -454,7 +454,47 @@ def main() -> int:
             z.write(f, os.path.join(NOMBRE, "procedimientos", os.path.basename(f)))
     print(f"Paquete minimo de diagnostico: {zmin}")
     print(f"  sin libreria ni referencias, {os.path.getsize(zmin) / 1024:,.0f} KB")
+
+    construye_claude_code()
     return 0
+
+
+# --- Claude Code: paquete para el directorio de skills -----------------------
+
+EXCLUIDOS = ("build", "__pycache__", os.path.join("tests", "fixtures"),
+             os.path.join("tests", "salida"), ".git")
+
+
+def construye_claude_code() -> None:
+    """Zip del plugin tal cual, para descomprimir en `~/.claude/skills/`.
+
+    Claude Code carga solo lo que hay ahi, sin marketplace, sin git y sin red.
+    Es la via que no depende de que la sincronizacion del marketplace funcione.
+    """
+    zpath = os.path.join(DESTINO, f"{NOMBRE}-claude-code.zip")
+    n = 0
+    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
+        for base, dirs, ficheros in os.walk(RAIZ):
+            rel_dir = os.path.relpath(base, RAIZ)
+            if any(rel_dir == e or rel_dir.startswith(e + os.sep) for e in EXCLUIDOS):
+                dirs[:] = []
+                continue
+            dirs[:] = [d for d in dirs if d not in ("build", "__pycache__", ".git")]
+            for f in ficheros:
+                if f.endswith(".pyc"):
+                    continue
+                completo = os.path.join(base, f)
+                rel = os.path.relpath(completo, RAIZ)
+                info = zipfile.ZipInfo(os.path.join(NOMBRE, rel).replace(os.sep, "/"))
+                info.compress_type = zipfile.ZIP_DEFLATED
+                # el lanzador `bin/dula` necesita conservar el bit de ejecucion
+                modo = 0o755 if rel == os.path.join("bin", "dula") else 0o644
+                info.external_attr = modo << 16
+                z.writestr(info, open(completo, "rb").read())
+                n += 1
+    print(f"Paquete para Claude Code: {zpath}")
+    print(f"  {n} ficheros, {os.path.getsize(zpath) / 1024:,.0f} KB")
+    print(f"  se descomprime en ~/.claude/skills/ y carga sin marketplace")
 
 
 if __name__ == "__main__":

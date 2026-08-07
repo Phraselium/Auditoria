@@ -6,7 +6,7 @@ informe— bajo NIA-ES, con cálculo determinista por script, trazabilidad total
 reporte por excepción.
 
 **Estado:** v1.5.0 · 10 skills · 29 procedimientos · 1 comando · 3 agentes ·
-23 módulos Python · **263/263 comprobaciones superadas · 100 % de cobertura de
+23 módulos Python · **273/273 comprobaciones superadas · 100 % de cobertura de
 la librería**.
 
 ---
@@ -74,9 +74,36 @@ mismo. El de claude.ai se genera desde el mismo código, así que no divergen.
 
 ## A) Claude Code
 
-### Opción A — desde el repositorio (recomendada)
+### Opción A — descomprimir en el directorio de skills (recomendada)
 
-Dentro de Claude Code:
+**No usa marketplace, ni git, ni red.** Claude Code carga lo que encuentre en
+`~/.claude/skills/`, así que no hay sincronización que pueda fallar.
+
+1. Descargue **`build/dula-audit-claude-code.zip`** (299 KB) del repositorio.
+2. Descomprímalo dentro de `~/.claude/skills/`:
+
+```bash
+mkdir -p ~/.claude/skills
+unzip -o ~/Descargas/dula-audit-claude-code.zip -d ~/.claude/skills/
+```
+
+En Windows: descomprima en `C:\Users\<usuario>\.claude\skills\`, de modo que
+quede `…\.claude\skills\dula-audit\.claude-plugin\plugin.json`.
+
+3. Reinicie Claude Code y compruébelo:
+
+```bash
+claude plugin list      # debe decir dula-audit@skills-dir · 1.5.0 · loaded
+```
+
+**Para actualizar:** borre la carpeta y vuelva a descomprimir. No hay caché
+intermedia que limpiar.
+
+> Si ya tenía el plugin instalado por marketplace, desinstálelo primero
+> (`/plugin uninstall dula-audit@dula`): la copia instalada tiene precedencia y
+> la del directorio de skills no llegaría a cargarse.
+
+### Opción B — desde el marketplace
 
 ```
 /plugin marketplace add Phraselium/Auditoria
@@ -85,8 +112,8 @@ Dentro de Claude Code:
 
 Si el resumen de instalación dice `Run /reload-plugins to activate`, ejecútalo.
 
-**Si falla con un error de sincronización**, use la URL completa del repositorio
-en lugar de la forma abreviada `owner/repo`:
+**Si falla con un error de sincronización**, pruebe con la URL completa en lugar
+de la forma abreviada `owner/repo`, que tiene que resolver el branch por defecto:
 
 ```
 /plugin marketplace remove dula
@@ -94,10 +121,9 @@ en lugar de la forma abreviada `owner/repo`:
 /plugin install dula-audit@dula
 ```
 
-La forma abreviada resuelve el branch por defecto del repositorio, y ahí es
-donde se rompe la caché. La URL completa no depende de eso.
+Y si tampoco, use la **opción A**: no depende del marketplace en absoluto.
 
-### Opción B — desde una copia local
+### Opción C — desde una copia local
 
 ```bash
 git clone https://github.com/Phraselium/Auditoria.git
@@ -108,7 +134,7 @@ git clone https://github.com/Phraselium/Auditoria.git
 /plugin install dula-audit@dula
 ```
 
-### Opción C — probarlo sin instalar
+### Opción D — probarlo sin instalar
 
 ```bash
 claude --plugin-dir /ruta/a/Auditoria/dula-audit
@@ -117,7 +143,7 @@ claude --plugin-dir /ruta/a/Auditoria/dula-audit
 La copia local tiene prioridad sobre la instalada, así que sirve para probar
 cambios sin desinstalar nada.
 
-### Para actualizar a una versión nueva
+### Para actualizar a una versión nueva (opciones B, C y D)
 
 **Sincronizar el marketplace no actualiza el plugin ya instalado.** Hay que
 reinstalarlo, y en este orden:
@@ -136,7 +162,7 @@ Compruebe con `claude plugin list` que la versión es la que esperaba. Si
 /plugin marketplace add https://github.com/Phraselium/Auditoria.git
 ```
 
-### Después de instalar, en cualquiera de los tres casos
+### Después de instalar, en cualquiera de los cuatro casos
 
 ```bash
 pip install pandas openpyxl            # las dos únicas dependencias
@@ -160,7 +186,7 @@ Verificación completa de la librería de cálculo:
 
 ```bash
 claude plugin validate <ruta>/dula-audit    # debe decir "Validation passed"
-cd <ruta>/dula-audit && python3 tests/run_all.py   # 263/263 y cobertura 100 %
+cd <ruta>/dula-audit && python3 tests/run_all.py   # 273/273 y cobertura 100 %
 ```
 
 Después, **completa `skills/convenciones-dula/SKILL.md`**: los campos entre `«»` son los datos reales del
@@ -424,7 +450,7 @@ los analíticos, clasificación de arrendamientos indicador a indicador, períod
 medio de cobro, conciliación bancaria en los dos sentidos.
 
 ```bash
-python3 tests/run_all.py             # 263/263 + cobertura, es el que hay que ejecutar
+python3 tests/run_all.py             # 273/273 + cobertura, es el que hay que ejecutar
 python3 tests/generar_fixtures.py    # regenera los datos sintéticos
 ```
 

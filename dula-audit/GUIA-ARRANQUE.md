@@ -18,25 +18,37 @@ skill sola cuando el contexto lo pide.
 
 ### Si usa **Claude Code**
 
-Dentro de Claude Code:
+Descarga `build/dula-audit-claude-code.zip` y descomprímelo en tu directorio de
+skills. **No hace falta marketplace ni git**, así que no hay sincronización que
+pueda fallar:
+
+```bash
+mkdir -p ~/.claude/skills
+unzip -o ~/Descargas/dula-audit-claude-code.zip -d ~/.claude/skills/
+```
+
+Reinicia Claude Code y comprueba que carga:
+
+```bash
+claude plugin list      # dula-audit@skills-dir · 1.5.0 · loaded
+```
+
+Para actualizar: borra la carpeta y vuelve a descomprimir.
+
+<details><summary>Alternativa: desde el marketplace</summary>
 
 ```
 /plugin marketplace add Phraselium/Auditoria
 /plugin install dula-audit@dula
 ```
 
-Si el resumen dice `Run /reload-plugins to activate`, ejecútalo. Si la
-**sincronización del marketplace falla**, usa la URL completa en vez de
-`Phraselium/Auditoria`:
+Si falla la sincronización, prueba con la URL completa
+(`https://github.com/Phraselium/Auditoria.git`). Y para actualizar, sincronizar
+no basta: hay que `uninstall` e `install`. Si ya tienes el plugin instalado por
+esta vía, desinstálalo antes de usar el directorio de skills — la copia
+instalada tiene precedencia.
 
-```
-/plugin marketplace remove dula
-/plugin marketplace add https://github.com/Phraselium/Auditoria.git
-/plugin install dula-audit@dula
-```
-
-Y para **actualizar** a una versión nueva, sincronizar no basta: hay que
-reinstalar (`/plugin marketplace update dula`, luego `uninstall` e `install`).
+</details>
 
 Después, en el terminal:
 
