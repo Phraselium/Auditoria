@@ -85,6 +85,18 @@ Dentro de Claude Code:
 
 Si el resumen de instalación dice `Run /reload-plugins to activate`, ejecútalo.
 
+**Si falla con un error de sincronización**, use la URL completa del repositorio
+en lugar de la forma abreviada `owner/repo`:
+
+```
+/plugin marketplace remove dula
+/plugin marketplace add https://github.com/Phraselium/Auditoria.git
+/plugin install dula-audit@dula
+```
+
+La forma abreviada resuelve el branch por defecto del repositorio, y ahí es
+donde se rompe la caché. La URL completa no depende de eso.
+
 ### Opción B — desde una copia local
 
 ```bash
@@ -105,6 +117,25 @@ claude --plugin-dir /ruta/a/Auditoria/dula-audit
 La copia local tiene prioridad sobre la instalada, así que sirve para probar
 cambios sin desinstalar nada.
 
+### Para actualizar a una versión nueva
+
+**Sincronizar el marketplace no actualiza el plugin ya instalado.** Hay que
+reinstalarlo, y en este orden:
+
+```
+/plugin marketplace update dula
+/plugin uninstall dula-audit@dula
+/plugin install dula-audit@dula
+```
+
+Compruebe con `claude plugin list` que la versión es la que esperaba. Si
+`marketplace update` falla, borre la caché y vuelva a añadirlo:
+
+```
+/plugin marketplace remove dula
+/plugin marketplace add https://github.com/Phraselium/Auditoria.git
+```
+
 ### Después de instalar, en cualquiera de los tres casos
 
 ```bash
@@ -120,15 +151,16 @@ dependencia, falta un fichero de referencia) de lo que solo **degrada** el
 resultado (sin tarifas, estimador sin calibrar, párrafos del informe pendientes
 de contraste). Empiece siempre por ahí.
 
-**Coste en contexto:** el plugin añade unos **6.700 tokens a cada sesión** — las
-descripciones de sus 42 componentes. Fuera de campaña puede desactivarlo con
-`/plugin disable dula-audit` y reactivarlo con `/plugin enable dula-audit`.
+**Coste en contexto:** el plugin añade unos **3.100 tokens a cada sesión** — las
+descripciones de sus 14 componentes. Eran 6.700 con las 35 skills anteriores.
+Fuera de campaña puede desactivarlo con `/plugin disable dula-audit` y
+reactivarlo con `/plugin enable dula-audit`.
 
 Verificación completa de la librería de cálculo:
 
 ```bash
 claude plugin validate <ruta>/dula-audit    # debe decir "Validation passed"
-cd <ruta>/dula-audit && python3 tests/run_all.py   # 257/257 y cobertura 100 %
+cd <ruta>/dula-audit && python3 tests/run_all.py   # 263/263 y cobertura 100 %
 ```
 
 Después, **completa `skills/convenciones-dula/SKILL.md`**: los campos entre `«»` son los datos reales del
@@ -392,7 +424,7 @@ los analíticos, clasificación de arrendamientos indicador a indicador, períod
 medio de cobro, conciliación bancaria en los dos sentidos.
 
 ```bash
-python3 tests/run_all.py             # 257/257 + cobertura, es el que hay que ejecutar
+python3 tests/run_all.py             # 263/263 + cobertura, es el que hay que ejecutar
 python3 tests/generar_fixtures.py    # regenera los datos sintéticos
 ```
 

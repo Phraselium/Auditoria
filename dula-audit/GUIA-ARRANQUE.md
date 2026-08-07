@@ -25,8 +25,20 @@ Dentro de Claude Code:
 /plugin install dula-audit@dula
 ```
 
-Si el resumen dice `Run /reload-plugins to activate`, ejecútalo. Después, en el
-terminal:
+Si el resumen dice `Run /reload-plugins to activate`, ejecútalo. Si la
+**sincronización del marketplace falla**, usa la URL completa en vez de
+`Phraselium/Auditoria`:
+
+```
+/plugin marketplace remove dula
+/plugin marketplace add https://github.com/Phraselium/Auditoria.git
+/plugin install dula-audit@dula
+```
+
+Y para **actualizar** a una versión nueva, sincronizar no basta: hay que
+reinstalar (`/plugin marketplace update dula`, luego `uninstall` e `install`).
+
+Después, en el terminal:
 
 ```bash
 pip install pandas openpyxl     # las dos únicas dependencias
