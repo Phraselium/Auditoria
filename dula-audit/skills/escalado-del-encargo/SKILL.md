@@ -1,9 +1,20 @@
 ---
 name: escalado-del-encargo
-description: Motor de proporcionalidad. A partir del perfil de complejidad configura automáticamente qué skills se activan, con qué profundidad, qué programas se simplifican y cuáles se refuerzan, con tres perfiles operativos (LIGERO de días, ESTÁNDAR, COMPLEJO de semanas) y sus reglas de transición. Eleva el perfil y avisa de qué trabajo ya ejecutado se ha quedado corto cuando aparece un hallazgo que invalida la simplificación. Úsala tras la estimación del encargo y cada vez que aparezca un hallazgo relevante.
+description: Configura el alcance según el perfil, y lo eleva si un hallazgo invalida la simplificación.
+when_to_use: 'Úsala tras la estimación del encargo y cada vez que aparezca un hallazgo relevante. Términos: proporcionalidad, partir, perfil, complejidad, configura, automáticamente, skills, activan, profundidad, programas, simplifican, cuáles, refuerzan, perfiles.'
+argument-hint: '[perfil o hallazgo]'
 ---
 
 # Escalado del encargo
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el perfil de complejidad calculado, o el hallazgo que puede invalidarlo.
+> 2. **Qué vas a recibir:** la configuración del perfil y, si procede, el aviso de qué trabajo ya ejecutado se ha quedado corto.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 Una S.L. de 900 asientos y una industrial de 200.000 no pueden recorrer el mismo
 camino. Este motor lo evita, pero con un límite que no se cruza: **la

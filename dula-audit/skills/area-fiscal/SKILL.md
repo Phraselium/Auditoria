@@ -1,9 +1,20 @@
 ---
 name: area-fiscal
-description: 'Audita el área fiscal: conciliación del resultado contable con la base imponible, diferencias permanentes y temporarias, activos y pasivos por impuesto diferido y su recuperabilidad, deducciones y bases imponibles negativas pendientes, contingencias fiscales y ejercicios abiertos, y cuadre de IVA, IRPF e IS con la contabilidad. NO cubre el apartado del informe sobre transparencia fiscal país por país: eso es redaccion-informe.'
+description: Área J — Conciliación resultado contable ↔ base imponible, impuestos diferidos y cuadres fiscales.
+when_to_use: 'NO cubre el apartado del informe sobre transparencia fiscal país por país: eso es redaccion-informe. Términos: audita, fiscal, conciliación, contable, imponible, diferencias, permanentes, temporarias, activos, pasivos, impuesto, diferido, recuperabilidad, deducciones.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Área J — Fiscal
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** modelos 200, 303, 390, 190 y 232, y las proyecciones que soportan los activos por impuesto diferido.
+> 2. **Qué vas a recibir:** papeles J-1 a J-3 con la conciliación, la recuperabilidad evaluada y los cuadres fiscales.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 473 retenciones · 474 activos por impuesto diferido · 479 pasivos por impuesto diferido · 6300/6301 impuesto · 633/638 ajustes · 475x HP acreedora
 

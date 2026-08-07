@@ -1,9 +1,20 @@
 ---
 name: area-partes-vinculadas
-description: 'Identifica las partes vinculadas y audita las operaciones realizadas con ellas y sus saldos pendientes, incluidas las retribuciones y anticipos al órgano de administración y a la alta dirección, y verifica su desglose en memoria. Úsala en todo encargo: la ausencia de operaciones vinculadas es una conclusión que hay que probar, no una presunción.'
+description: Área M — Identifica partes vinculadas, sus operaciones y el desglose de retribuciones.
+when_to_use: 'Úsala en todo encargo: la ausencia de operaciones vinculadas es una conclusión que hay que probar, no una presunción. Términos: identifica, partes, vinculadas, audita, operaciones, realizadas, saldos, pendientes, retribuciones, anticipos, órgano, administración, dirección, verifica.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Área M — Partes vinculadas
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** manifestación de la dirección, libro de socios, modelo 232 y el mayor de las cuentas 55x.
+> 2. **Qué vas a recibir:** papel M-1, con la advertencia de que «no hay operaciones vinculadas» es una conclusión que hay que probar.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 16x deudas con grupo · 24x inversiones en grupo · 44x deudores varios · 55x cuentas con socios y administradores
 

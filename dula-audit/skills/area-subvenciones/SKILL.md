@@ -1,9 +1,20 @@
 ---
 name: area-subvenciones
-description: 'Audita las subvenciones, donaciones y legados: clasificación entre capital y explotación, cumplimiento de las condiciones asociadas, imputación a resultados, riesgo de reintegro y desgloses. Úsala cuando haya saldos en las cuentas 130, 131, 132, 740 o 746. Si la entidad no recibe subvenciones, no la actives.'
+description: Área L — Clasificación, condiciones, imputación a resultados y riesgo de reintegro.
+when_to_use: 'Úsala cuando haya saldos en las cuentas 130, 131, 132, 740 o 746. Si la entidad no recibe subvenciones, no la actives. Términos: audita, subvenciones, donaciones, legados, clasificación, capital, explotación, cumplimiento, condiciones, asociadas, imputación, resultados, riesgo, reintegro.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Área L — Subvenciones
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** las resoluciones de concesión (no basta el listado del cliente) y las justificaciones presentadas.
+> 2. **Qué vas a recibir:** papel L-1 con cada condición verificada y la imputación recalculada.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 130/131/132 subvenciones de capital · 740 subvenciones de explotación · 746 imputación a resultados · 172/522 deudas por reintegro
 

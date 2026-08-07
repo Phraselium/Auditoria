@@ -1,9 +1,20 @@
 ---
 name: estado-del-encargo
-description: 'Muestra en una pantalla dónde está el encargo y qué falta: fase, perfil, materialidad vigente, papeles concluidos y pendientes, riesgos sin respuesta, excepciones abiertas por severidad, documentación pendiente del cliente y horas consumidas frente a las estimadas. Úsala cuando alguien pregunte cómo va un encargo, qué falta para cerrarlo, o al retomar un encargo tras unos días sin tocarlo.'
+description: Dónde está el encargo, qué falta del cliente y cuál es el siguiente paso.
+when_to_use: 'Úsala cuando alguien pregunte cómo va un encargo, qué falta para cerrarlo, o al retomar un encargo tras unos días sin tocarlo. Términos: muestra, pantalla, encargo, perfil, materialidad, vigente, papeles, concluidos, pendientes, riesgos, respuesta, excepciones, abiertas, severidad.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Estado del encargo
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** solo la carpeta del encargo.
+> 2. **Qué vas a recibir:** el panel con fases, materialidad, papeles, pendientes por ruta crítica, horas y siguiente paso.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 Con treinta y tantas skills y un estado persistente, «¿dónde estamos y qué falta?»
 no es un lujo: es lo primero que se pregunta cualquiera que retoma un encargo.

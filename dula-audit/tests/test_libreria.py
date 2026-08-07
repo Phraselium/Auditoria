@@ -877,7 +877,7 @@ def main() -> int:
     for fn in (t_plan_contable, t_materialidad, t_muestreo, t_leasing, t_financiacion,
                t_analiticos, t_comparador, t_cuadres_y_regularizacion,
                t_perfil_y_escalado, t_amortizaciones_deterioro, t_bitacora,
-               t_estado_y_encargo, t_excel, t_presentacion, t_cli):
+               t_estado_y_encargo, t_excel, t_presentacion, t_cli, t_menu):
         fn()
     print("\n" + "=" * 78)
     print(f"TOTAL: {TOTAL[0] - len(FALLOS)}/{TOTAL[0]} comprobaciones superadas.")
@@ -890,3 +890,60 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def t_menu() -> None:
+    """El menú `/` debe ser legible: una frase corta en castellano por entrada.
+
+    Las descripciones se escribían para que el modelo disparase la skill, y eso
+    llenaba el menú de párrafos de 500 caracteres. El detalle de disparo vive
+    ahora en `when_to_use`, que el usuario no ve.
+    """
+    bloque("menu de comandos (/)")
+    import glob as g
+    import yaml
+    raiz = RAIZ
+    entradas = []
+    for f in sorted(g.glob(os.path.join(raiz, "skills", "*", "SKILL.md"))
+                    + g.glob(os.path.join(raiz, "commands", "*.md"))):
+        fm = yaml.safe_load(__import__("re").match(
+            r"^---\n(.*?)\n---", open(f, encoding="utf-8").read(), __import__("re").S).group(1))
+        entradas.append((f, fm))
+
+    largas = [(os.path.basename(os.path.dirname(f)), len(fm["description"]))
+              for f, fm in entradas if len(fm["description"]) > 105]
+    afirma(not largas, f"ninguna descripcion pasa de 105 caracteres (peores: {largas[:3]})")
+
+    sin_punto = [f for f, fm in entradas if not fm["description"].rstrip().endswith(".")]
+    afirma(not sin_punto, "todas las descripciones son una frase acabada en punto")
+
+    ingles = [os.path.basename(os.path.dirname(f)) for f, fm in entradas
+              if __import__("re").search(r"\b(the|and|with|when|use it|for the)\b",
+                                         fm["description"], __import__("re").I)]
+    afirma(not ingles, f"todas las descripciones estan en castellano ({ingles[:3]})")
+
+    skills = [(f, fm) for f, fm in entradas if "SKILL.md" in f]
+    sin_trigger = [os.path.basename(os.path.dirname(f)) for f, fm in skills
+                   if not fm.get("when_to_use") and fm.get("user-invocable") is not False]
+    afirma(not sin_trigger,
+           f"toda skill visible conserva su when_to_use para el disparo ({sin_trigger[:3]})")
+
+    sin_hint = [os.path.basename(os.path.dirname(f)) for f, fm in skills
+                if not fm.get("argument-hint") and fm.get("user-invocable") is not False
+                and os.path.basename(os.path.dirname(f)) != "convenciones-dula"]
+    afirma(not sin_hint, f"toda skill invocable indica que argumentos espera ({sin_hint[:3]})")
+
+    cuerpos_sin_arranque = []
+    for f, fm in skills:
+        if fm.get("user-invocable") is False or "convenciones" in f:
+            continue
+        if "Al invocarla, empieza por aqui" not in open(f, encoding="utf-8").read() \
+           and "Al invocarla, empieza por aquí" not in open(f, encoding="utf-8").read():
+            cuerpos_sin_arranque.append(os.path.basename(os.path.dirname(f)))
+    afirma(not cuerpos_sin_arranque,
+           f"al pulsarla, toda skill presenta que necesita y que devuelve "
+           f"({cuerpos_sin_arranque[:3]})")
+
+    interno = [fm for f, fm in skills if fm["name"] == "area-runner"]
+    afirma(interno and interno[0].get("user-invocable") is False,
+           "la maquinaria interna (area-runner) no aparece en el menu")

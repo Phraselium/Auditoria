@@ -1,9 +1,20 @@
 ---
 name: area-provisiones-y-contingencias
-description: 'Audita provisiones y pasivos contingentes: circularización de abogados, evaluación de litigios en curso, verificación del cálculo de las provisiones y del desglose de los pasivos contingentes. Úsala cuando haya litigios, reclamaciones, saldos en el grupo 14 o 499, o cuando la circularización bancaria revele avales.'
+description: Área K — Circulariza abogados y evalúa litigios, provisiones y pasivos contingentes.
+when_to_use: 'Úsala cuando haya litigios, reclamaciones, saldos en el grupo 14 o 499, o cuando la circularización bancaria revele avales. Términos: audita, provisiones, pasivos, contingentes, circularización, abogados, evaluación, litigios, verificación, cálculo, desglose.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Área K — Provisiones y contingencias
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el mayor de la cuenta 623 para identificar a todos los abogados, y las actas del ejercicio.
+> 2. **Qué vas a recibir:** papel K-1 con cada litigio evaluado contra el árbol de decisión de la NRV 15ª.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 14x provisiones a largo · 499/529 provisiones a corto · 695/795 dotación y exceso
 

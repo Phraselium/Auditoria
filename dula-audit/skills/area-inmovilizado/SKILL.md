@@ -1,9 +1,20 @@
 ---
 name: area-inmovilizado
-description: 'Audita el inmovilizado material, intangible e inversiones inmobiliarias: altas, bajas, recálculo integral de amortizaciones elemento a elemento con prorrateo por días, activación de gastos, indicios de deterioro y existencia física. Úsala cuando haya saldos en los grupos 20, 21 o 22, cuando el cliente aporte el inventario de inmovilizado, o cuando haya que verificar la dotación a la amortización.'
+description: Área A — Altas, bajas, recálculo integral de amortizaciones e indicios de deterioro.
+when_to_use: 'Úsala cuando haya saldos en los grupos 20, 21 o 22, cuando el cliente aporte el inventario de inmovilizado, o cuando haya que verificar la dotación a la amortización. Términos: audita, inmovilizado, material, intangible, inversiones, inmobiliarias, recálculo, integral, amortizaciones, elemento, prorrateo, activación, gastos, indicios.'
+argument-hint: '[inventario.xlsx] [inicio] [fin]'
 ---
 
 # Área A — Inmovilizado
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el inventario de inmovilizado en formato de datos, con coste, coeficiente y dotación.
+> 2. **Qué vas a recibir:** papel A-1 con el recálculo elemento a elemento y solo los que difieren.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 20x, 21x, 22x, 23x · 28x amortización acumulada · 29x deterioro · 68x dotación · 77x/67x resultados por enajenación
 

@@ -1,6 +1,8 @@
 ---
 name: area-runner
-description: Motor común de ejecución de las áreas de trabajo de campo. Carga el programa de trabajo del área escalado por perfil, ejecuta los procedimientos, genera el papel de trabajo en formato estándar, concluye y registra el resultado en el estado del encargo. Las skills area-* delegan aquí toda la mecánica y solo aportan el criterio específico de su área. Úsala cuando ejecutes cualquier área de trabajo de campo o cuando necesites entender cómo se estructura un papel de trabajo del despacho.
+description: 'Motor interno de las áreas de campo: programa escalado, papel de trabajo y registro.'
+when_to_use: 'Úsala cuando ejecutes cualquier área de trabajo de campo o cuando necesites entender cómo se estructura un papel de trabajo del despacho. Términos: ejecución, programa, escalado, perfil, ejecuta, procedimientos, genera, formato, estándar, concluye, registra, estado, encargo, skills.'
+user-invocable: false
 ---
 
 # Motor de áreas

@@ -1,9 +1,20 @@
 ---
 name: area-clientes-e-ingresos
-description: 'Audita clientes e ingresos: circularización y procedimientos alternativos, corte de operaciones, antigüedad y deterioro, reconocimiento de ingresos incluida la respuesta a la presunción de fraude de la NIA-ES 240, y conciliación de ingresos con el IVA repercutido. Úsala siempre que haya cifra de negocios: es un área obligatoria en todo encargo.'
+description: Área C — Circularización, corte de operaciones, deterioro y reconocimiento de ingresos.
+when_to_use: 'Úsala siempre que haya cifra de negocios: es un área obligatoria en todo encargo. Términos: audita, clientes, ingresos, circularización, procedimientos, alternativos, operaciones, deterioro, reconocimiento, respuesta, presunción, fraude, conciliación, repercutido.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Área C — Clientes e ingresos
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** listado de saldos con antigüedad, facturación en formato de datos y los modelos 303/390.
+> 2. **Qué vas a recibir:** papeles C-1 a C-3 con el analítico mensual, el corte y la circularización.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 43x clientes · 490/493 deterioro · 70x ventas · 477 IVA repercutido
 

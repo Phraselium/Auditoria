@@ -1,9 +1,20 @@
 ---
 name: area-arrendamientos
-description: Procesa en lote contratos de arrendamiento en formatos dispares (contratos, cuadros de la entidad financiera, facturas de cuota), extrae sus términos, recalcula el tipo implícito, clasifica financiero/operativo con motivación, construye el cuadro de cuotas por año, periodifica la carga financiera, reparte corriente/no corriente y concilia con las cuentas 174 y 524. Diseñada para cientos de contratos. Úsala cuando el cliente tenga leasings o rentings, cuando aparezcan saldos en 174/524, o cuando haya que verificar el desglose de arrendamientos de la memoria.
+description: Área F — Recalcula y clasifica cientos de contratos de leasing y saca el cuadro de vencimientos.
+when_to_use: 'Úsala cuando el cliente tenga leasings o rentings, cuando aparezcan saldos en 174/524, o cuando haya que verificar el desglose de arrendamientos de la memoria. Términos: procesa, contratos, arrendamiento, formatos, dispares, cuadros, entidad, financiera, facturas, extrae, términos, recalcula, implícito, clasifica.'
+argument-hint: '[ficheros-de-contratos] [fecha-cierre]'
 ---
 
 # Área F — Arrendamientos
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** los cuadros de todas las entidades financieras (sin homogeneizar) y los saldos de las cuentas 174 y 524.
+> 2. **Qué vas a recibir:** papel F-1 con el recálculo del 100 %, la clasificación motivada y solo los contratos con excepción.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Prueba crítica de eficiencia.** El caso real de referencia: un transportista con
 ~100 camiones en arrendamiento financiero. A mano son tres días. Con esta skill,

@@ -1,5 +1,5 @@
 ---
-description: Calcula el perfil de complejidad y estima horas y honorarios a partir del balance de sumas y saldos
+description: Flujo 2 — Perfil de complejidad, horas, honorarios y decisión go/no-go.
 argument-hint: <ruta-del-balance> [ruta-del-diario]
 ---
 

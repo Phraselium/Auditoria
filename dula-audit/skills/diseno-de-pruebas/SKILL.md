@@ -1,9 +1,20 @@
 ---
 name: diseno-de-pruebas
-description: Motor de criterio. Para cada área y riesgo propone el procedimiento más eficiente que sigue siendo suficiente y apropiado, eligiendo entre analíticos sustantivos, muestreo estadístico (MUS o atributos), muestreo dirigido, examen del 100%, pruebas de controles con sustantivas reducidas, confirmaciones externas o pruebas de recorrido. Cada elección viene con fundamento, condiciones de validez, alcance y coste en horas. Úsala tras el mapa de riesgos, cuando haya que decidir cómo probar un área, o cuando el auditor pregunte si puede reducir el alcance de una prueba.
+description: Elige para cada riesgo el procedimiento más barato que sigue siendo suficiente, con su fundamento.
+when_to_use: 'Úsala tras el mapa de riesgos, cuando haya que decidir cómo probar un área, o cuando el auditor pregunte si puede reducir el alcance de una prueba. Términos: criterio, riesgo, propone, procedimiento, eficiente, siendo, suficiente, apropiado, eligiendo, analíticos, sustantivos, muestreo, estadístico, atributos.'
+argument-hint: '[área o riesgo]'
 ---
 
 # Diseño de pruebas — motor de criterio
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el mapa de riesgos, el perfil del encargo y la materialidad de ejecución.
+> 2. **Qué vas a recibir:** papel 1.5 con el procedimiento elegido, las alternativas descartadas y cuándo el atajo deja de ser defendible.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 Elige **la alternativa justificable más barata**, y dice expresamente **cuándo esa
 alternativa deja de ser defendible**. Ahorrar horas con un atajo que no se

@@ -1,9 +1,20 @@
 ---
 name: area-proveedores-y-compras
-description: 'Audita proveedores y compras: conciliaciones de saldos, búsqueda de pasivos no registrados, corte de operaciones y confirmaciones. Úsala siempre que haya compras o gastos de explotación significativos. La búsqueda de pasivos no registrados es su procedimiento central y no se omite en ningún perfil.'
+description: Área H — Conciliaciones, corte y búsqueda de pasivos no registrados.
+when_to_use: 'Úsala siempre que haya compras o gastos de explotación significativos. Términos: audita, proveedores, compras, conciliaciones, saldos, búsqueda, pasivos, registrados, operaciones, confirmaciones, procedimiento, central, ningún, perfil.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Área H — Proveedores y compras
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** listado de saldos y el extracto bancario del primer trimestre siguiente.
+> 2. **Qué vas a recibir:** papeles H-1 y H-2, con la búsqueda de pasivos no registrados sobre sus cuatro fuentes.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 40x proveedores · 41x acreedores · 60x compras · 62x servicios exteriores · 472 IVA soportado
 

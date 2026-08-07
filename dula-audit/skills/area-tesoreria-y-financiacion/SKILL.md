@@ -1,9 +1,20 @@
 ---
 name: area-tesoreria-y-financiacion
-description: 'Audita tesorería y financiación: conciliaciones bancarias, gestión y seguimiento de las confirmaciones bancarias incluidos avales, garantías, pignoraciones y saldos indirectos, normalización de cuadros de amortización heterogéneos, recálculo de deuda viva, reparto corriente/no corriente, intereses devengados, coste amortizado y verificación de covenants. Escala desde tres créditos hasta carteras de pólizas, confirming y factoring.'
+description: Áreas D y E — Conciliaciones bancarias, confirmaciones, deuda viva y covenants.
+when_to_use: 'Escala desde tres créditos hasta carteras de pólizas, confirming y factoring. Términos: audita, tesorería, financiación, conciliaciones, bancarias, gestión, seguimiento, confirmaciones, avales, garantías, pignoraciones, saldos, indirectos, normalización.'
+argument-hint: '[cartera.xlsx] [fecha-cierre]'
 ---
 
 # Área D y E — Tesorería y financiación
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** cuadros de todas las entidades en Excel, el control de circularización y los covenants.
+> 2. **Qué vas a recibir:** papeles D-1, D-2, E-1 y E-2 con la deuda viva recalculada y los avales revelados.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 57x tesorería · 52x deudas a corto · 17x deudas a largo · 16x deudas con grupo · 66x gastos financieros
 

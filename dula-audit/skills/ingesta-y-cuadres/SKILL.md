@@ -1,9 +1,20 @@
 ---
 name: ingesta-y-cuadres
-description: Normaliza el balance de sumas y saldos, el libro diario, los mayores y las cuentas anuales de cualquier ERP, y ejecuta la batería completa de cuadres de integridad (debe=haber, diario↔sumas y saldos, apertura↔cierre anterior, resultado, correlativos y huecos de numeración, asientos fuera de ejercicio, mapeo a epígrafes). Es la PUERTA DE ENTRADA obligatoria al trabajo de campo. Úsala en cuanto llegue la contabilidad del cliente, antes de cualquier prueba de área. NO la uses para comparar cuentas anuales con memoria (eso es comparador-documental).
+description: Normaliza la contabilidad de cualquier ERP y ejecuta los cuadres. Puerta de entrada obligatoria.
+when_to_use: 'Es la PUERTA DE ENTRADA obligatoria al trabajo de campo. Úsala en cuanto llegue la contabilidad del cliente, antes de cualquier prueba de área. NO la uses para comparar cuentas anuales con memoria (eso es comparador-documental). Términos: normaliza, balance, saldos, diario, mayores, anuales, cualquier, ejecuta, batería, completa, cuadres, integridad, apertura, cierre.'
+argument-hint: '[sumas-y-saldos.xlsx] [diario.xlsx]'
 ---
 
 # Ingesta y cuadres de integridad
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el balance de sumas y saldos al máximo detalle y, muy recomendable, el libro diario.
+> 2. **Qué vas a recibir:** papel 2.1 con los diez cuadres. Si alguno bloqueante falla, el trabajo de campo se detiene.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Puerta de entrada.** Si algo no cuadra, el proceso se detiene y lo reporta.
 Ninguna prueba de área se ejecuta sobre una base que no cuadra: sería trabajo

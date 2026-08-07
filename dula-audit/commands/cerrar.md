@@ -1,5 +1,5 @@
 ---
-description: 'Ejecuta la fase de cierre: incorrecciones, hechos posteriores, manifestaciones, informe y revisión de calidad'
+description: 'Flujo 6 — Fase de cierre: incorrecciones, manifestaciones, informe y calidad.'
 argument-hint: '[ruta-del-encargo]'
 ---
 

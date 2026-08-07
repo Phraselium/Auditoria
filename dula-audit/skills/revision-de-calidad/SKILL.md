@@ -1,9 +1,20 @@
 ---
 name: revision-de-calidad
-description: Actúa como revisor independiente y escéptico del archivo completo. Verifica que todo riesgo tiene respuesta ejecutada y concluida, que toda conclusión está soportada, que los cuadres pasan, que la materialidad es la vigente, que las incorrecciones están evaluadas, que la documentación permitiría reconstruir el trabajo y que el informe es coherente con el archivo. Entrega panel del socio en una página + listado completo por severidad. Ejecútala en MODO PRE-VUELO durante toda la campaña, no solo antes de firmar. Úsala cuando el socio pregunte "¿cómo va esto?", "¿puedo firmar?" o "¿qué me falta?".
+description: Panel del socio en una página más el listado completo de excepciones por severidad.
+when_to_use: 'Ejecútala en MODO PRE-VUELO durante toda la campaña, no solo antes de firmar. Úsala cuando el socio pregunte "¿cómo va esto?", "¿puedo firmar?" o "¿qué me falta?". Términos: revisor, independiente, escéptico, archivo, completo, verifica, riesgo, respuesta, ejecutada, concluida, conclusión, soportada, cuadres, materialidad.'
+argument-hint: '[carpeta-del-encargo] [--pre-vuelo]'
 ---
 
 # Revisión de calidad del archivo
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** solo la carpeta del encargo.
+> 2. **Qué vas a recibir:** el panel con las cuestiones que exigen su juicio, y si el archivo está en condiciones de firma.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **La skill más importante dado el contexto del despacho.** Si el socio solo ve
 las excepciones el último día, el problema no se ha resuelto: se ha concentrado.

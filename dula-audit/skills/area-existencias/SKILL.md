@@ -1,9 +1,20 @@
 ---
 name: area-existencias
-description: 'Audita las existencias: asistencia y verificación del recuento físico, valoración por coste medio o FIFO, corte de operaciones, obsolescencia y márgenes. Úsala cuando haya saldos en el grupo 3, cuando el cliente convoque el recuento, o cuando haya que evaluar el deterioro de existencias. Si la entidad no tiene existencias, no la actives.'
+description: Área B — Recuento físico, valoración, corte de operaciones y obsolescencia.
+when_to_use: 'Úsala cuando haya saldos en el grupo 3, cuando el cliente convoque el recuento, o cuando haya que evaluar el deterioro de existencias. Si la entidad no tiene existencias, no la actives. Términos: audita, existencias, asistencia, verificación, recuento, físico, valoración, operaciones, obsolescencia, márgenes.'
+argument-hint: '[inventario-valorado.xlsx]'
 ---
 
 # Área B — Existencias
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el inventario valorado por referencia y la fecha del recuento.
+> 2. **Qué vas a recibir:** papeles B-1 y B-2 con el recálculo de la valoración y las referencias de baja rotación.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 30x-36x existencias · 39x deterioro · 61x variación · 71x variación de productos terminados
 

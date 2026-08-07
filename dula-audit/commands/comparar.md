@@ -1,5 +1,5 @@
 ---
-description: Ejecuta el comparador documental sobre cuentas anuales, memoria, borradores o el informe
+description: Flujo 5 — Comparador documental sobre cuentas, memoria, borradores o informe.
 argument-hint: '[qué comparar]'
 ---
 

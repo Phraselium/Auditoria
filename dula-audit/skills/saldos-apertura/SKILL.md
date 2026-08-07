@@ -1,9 +1,20 @@
 ---
 name: saldos-apertura
-description: Ejecuta los procedimientos sobre los saldos iniciales y la información comparativa en primeros encargos, y evalúa el efecto en la opinión si no se obtiene evidencia suficiente y adecuada. Úsala cuando el encargo sea el primero con este cliente, cuando el ejercicio anterior no estuviera auditado, o cuando el auditor predecesor emitiera una opinión modificada.
+description: Procedimientos sobre saldos iniciales en primeros encargos y su efecto en la opinión.
+when_to_use: 'Úsala cuando el encargo sea el primero con este cliente, cuando el ejercicio anterior no estuviera auditado, o cuando el auditor predecesor emitiera una opinión modificada. Términos: ejecuta, procedimientos, saldos, iniciales, información, comparativa, primeros, encargos, evalúa, efecto, opinión, obtiene, evidencia, suficiente.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Saldos de apertura (NIA-ES 510 y 710)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** saber si el ejercicio anterior fue auditado y por quién.
+> 2. **Qué vas a recibir:** papel N-3 y el efecto en la opinión si no se obtiene evidencia suficiente.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## Los tres escenarios y lo que cambia en cada uno
 

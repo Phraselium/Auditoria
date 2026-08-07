@@ -1,5 +1,5 @@
 ---
-description: 'Ejecuta la fase completa de planificación: entendimiento, materialidad, riesgos, diseño de pruebas y PBC'
+description: 'Flujo 3 — Fase completa: cuadres, materialidad, riesgos, pruebas y PBC.'
 argument-hint: '[ruta-del-encargo]'
 ---
 

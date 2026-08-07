@@ -1,9 +1,20 @@
 ---
 name: area-personal
-description: 'Audita el área de personal: conciliación de nóminas, seguros sociales y contabilidad, indemnizaciones, provisiones por obligaciones con el personal y retenciones. Úsala cuando haya gastos de personal significativos, que es prácticamente siempre.'
+description: Área I — Concilia nóminas, seguros sociales y contabilidad; indemnizaciones y retenciones.
+when_to_use: 'Úsala cuando haya gastos de personal significativos, que es prácticamente siempre. Términos: audita, personal, conciliación, nóminas, seguros, sociales, contabilidad, indemnizaciones, provisiones, obligaciones, retenciones.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Área I — Personal
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** resumen anual de nóminas, TC1/TC2, modelo 190 y el convenio aplicable.
+> 2. **Qué vas a recibir:** papel I-1 con la conciliación en tres puntos y el analítico por coste medio.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 640/641 sueldos · 642 Seguridad Social · 649 otros gastos sociales · 465 remuneraciones pendientes · 476 organismos SS · 4751 retenciones
 

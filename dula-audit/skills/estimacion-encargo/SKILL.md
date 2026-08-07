@@ -1,9 +1,20 @@
 ---
 name: estimacion-encargo
-description: Calcula el perfil de complejidad de un encargo de auditoría a partir del balance de sumas y saldos y estima horas y honorarios por área y categoría profesional, con rango optimista/esperado/pesimista y punto muerto. Úsala cuando el socio esté valorando si aceptar un cliente, fijando precio, presupuestando o planificando la carga de trabajo, o cuando pregunte "cuánto nos va a costar esto" o "qué encarece este encargo". NO la uses para planificar el trabajo de un encargo ya aceptado (eso es diseno-de-pruebas) ni para evaluar la independencia (eso es aceptacion-e-independencia).
+description: Calcula el perfil de complejidad y estima horas y honorarios, con punto muerto y go/no-go.
+when_to_use: 'Úsala cuando el socio esté valorando si aceptar un cliente, fijando precio, presupuestando o planificando la carga de trabajo, o cuando pregunte "cuánto nos va a costar esto" o "qué encarece este encargo". NO la uses para planificar el trabajo de un encargo ya aceptado (eso es diseno-de-pruebas) ni para evaluar la independencia (eso es aceptacion-e-independencia). Términos: calcula, perfil, complejidad, encargo, auditoría, partir, balance, saldos, estima, honorarios, categoría, profesional, optimista, esperado.'
+argument-hint: '[sumas-y-saldos.xlsx]'
 ---
 
 # Estimación del encargo
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el balance de sumas y saldos y cinco respuestas del socio sobre leasings, financiación y cliente.
+> 2. **Qué vas a recibir:** informe de decisión en una página, con los factores que más encarecen y su palanca de abaratamiento.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 Convierte un balance de sumas y saldos en una decisión de precio defendible.
 Puntúa los drivers que de verdad mueven las horas en Dula, no los que figuran en

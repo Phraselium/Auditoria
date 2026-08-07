@@ -1,9 +1,20 @@
 ---
 name: test-asientos-diario
-description: 'Selecciona asientos inusuales del libro diario como respuesta al riesgo de elusión de los controles por la dirección: contrapartidas atípicas, cuentas raramente utilizadas, asientos manuales de cierre, fines de semana y festivos, importes redondos, usuarios de baja frecuencia, asientos sin descripción e ingresos sin contrapartida en clientes ni tesorería. Reporta por excepción con priorización por puntuación. Es obligatorio en todo encargo: úsala siempre que dispongas del libro diario.'
+description: Selecciona los asientos inusuales del diario. Obligatorio en todo encargo.
+when_to_use: 'Es obligatorio en todo encargo: úsala siempre que dispongas del libro diario. Términos: selecciona, asientos, inusuales, diario, respuesta, riesgo, elusión, controles, dirección, contrapartidas, atípicas, raramente, utilizadas, manuales.'
+argument-hint: '[diario.xlsx] [fecha-cierre]'
 ---
 
 # Test de asientos del diario (NIA-ES 240.32.a)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el libro diario con fecha y usuario.
+> 2. **Qué vas a recibir:** papel 2.8 con los asientos priorizados por puntuación, no un volcado de los raros.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Obligatorio en todo encargo, sin excepción.** El riesgo de elusión de los
 controles por la dirección se presume presente en toda entidad, sea cual sea su

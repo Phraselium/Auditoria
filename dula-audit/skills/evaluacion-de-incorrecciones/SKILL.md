@@ -1,9 +1,20 @@
 ---
 name: evaluacion-de-incorrecciones
-description: Elabora el sumario de ajustes y reclasificaciones corregidas y no corregidas, calcula su efecto acumulado y por epígrafe, las evalúa cuantitativa y cualitativamente, incorpora el efecto de las no corregidas del ejercicio anterior y concluye sobre si el conjunto supera la materialidad, con su impacto directo en el tipo de opinión. Úsala en la fase de cierre, antes de redactar el informe, y cada vez que un área proponga un ajuste.
+description: Sumario de ajustes corregidos y no corregidos, con su evaluación cualitativa y efecto en la opinión.
+when_to_use: 'Úsala en la fase de cierre, antes de redactar el informe, y cada vez que un área proponga un ajuste. Términos: elabora, sumario, ajustes, reclasificaciones, corregidas, calcula, efecto, acumulado, epígrafe, evalúa, cuantitativa, cualitativamente, incorpora, ejercicio.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Evaluación de incorrecciones (NIA-ES 450)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** los ajustes propuestos por cada área y las no corregidas del ejercicio anterior.
+> 2. **Qué vas a recibir:** papel 8.1 y la conclusión sobre si el conjunto supera la materialidad.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## Qué entra en el sumario
 

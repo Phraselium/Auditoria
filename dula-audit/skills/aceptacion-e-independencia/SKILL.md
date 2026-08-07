@@ -1,9 +1,20 @@
 ---
 name: aceptacion-e-independencia
-description: Evalúa de forma documentada las amenazas a la independencia y sus salvaguardas, las incompatibilidades legales propias, de la red y de personas vinculadas, la concentración de honorarios, los servicios distintos de auditoría prestados, las comprobaciones de prevención del blanqueo de capitales, la competencia y los recursos disponibles, y la comunicación con el auditor predecesor. Genera la declaración de independencia firmable y la carta de encargo adaptada. Úsala antes de aceptar cualquier encargo y al renovarlo cada ejercicio.
+description: Evalúa independencia e incompatibilidades y genera la declaración firmable y la carta de encargo.
+when_to_use: 'Úsala antes de aceptar cualquier encargo y al renovarlo cada ejercicio. Términos: evalúa, documentada, amenazas, independencia, salvaguardas, incompatibilidades, legales, propias, personas, vinculadas, concentración, honorarios, servicios, distintos.'
+argument-hint: '[cliente] [ejercicio]'
 ---
 
 # Aceptación e independencia
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** denominación y NIF del cliente, servicios que le prestamos, y si es primer encargo.
+> 2. **Qué vas a recibir:** papel 0.1, declaración de independencia para firmar por el equipo y carta de encargo adaptada.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 Se ejecuta **antes** de aceptar y **se repite cada ejercicio** en los recurrentes:
 las circunstancias cambian y la independencia es una evaluación continuada, no un

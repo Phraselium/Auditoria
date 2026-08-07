@@ -1,9 +1,20 @@
 ---
 name: comparador-documental
-description: Compara sistemáticamente cuentas anuales, balance de sumas y saldos, mayores, memoria, cuentas depositadas en el Registro Mercantil, borradores sucesivos, informe de gestión, documentación soporte e informe de auditoría, y reporta SOLO las diferencias con importe, cuenta, origen y causa sugerida. Incluye la checklist de desgloses obligatorios de memoria por modelo. Úsala cuando lleguen cuentas anuales o borradores, cuando haya que cuadrar la memoria, cuando el cliente envíe una nueva versión, y SIEMPRE antes de firmar el informe. NO la uses para los cuadres internos de la contabilidad (eso es ingesta-y-cuadres).
+description: Compara cuentas anuales, memoria, borradores e informe, y reporta solo las diferencias.
+when_to_use: 'Incluye la checklist de desgloses obligatorios de memoria por modelo. Úsala cuando lleguen cuentas anuales o borradores, cuando haya que cuadrar la memoria, cuando el cliente envíe una nueva versión, y SIEMPRE antes de firmar el informe. NO la uses para los cuadres internos de la contabilidad (eso es ingesta-y-cuadres). Términos: compara, sistemáticamente, anuales, balance, saldos, mayores, memoria, depositadas, registro, mercantil, borradores, sucesivos, informe, gestión.'
+argument-hint: '[qué comparar]'
 ---
 
 # Comparador documental
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** los dos lados de cada comparación: cuentas anuales, balance, memoria, borradores o informe.
+> 2. **Qué vas a recibir:** papel 2.10 con solo las diferencias, su importe, su origen y su causa probable.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 El núcleo de la automatización. Es lo que sustituye a la revisión visual de
 cuadros comparados a mano, que es donde el despacho pierde más horas y donde más

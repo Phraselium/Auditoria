@@ -1,9 +1,20 @@
 ---
 name: comunicaciones-y-manifestaciones
-description: 'Redacta la carta de manifestaciones de la dirección adaptada a los riesgos y juicios concretos del encargo, la comunicación de deficiencias de control interno clasificadas por significatividad con sus recomendaciones, y la comunicación con los responsables del gobierno de la entidad. Úsala en la fase de cierre, antes de la firma del informe: la carta de manifestaciones debe obtenerse con fecha no posterior a la del informe.'
+description: Carta de manifestaciones adaptada, deficiencias de control interno y comunicación con el gobierno.
+when_to_use: 'Úsala en la fase de cierre, antes de la firma del informe: la carta de manifestaciones debe obtenerse con fecha no posterior a la del informe. Términos: redacta, manifestaciones, dirección, adaptada, riesgos, juicios, concretos, encargo, comunicación, deficiencias, control, interno, clasificadas, significatividad.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Comunicaciones y manifestaciones (NIA-ES 580, 260 y 265)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el sumario de incorrecciones y los juicios y estimaciones relevantes del encargo.
+> 2. **Qué vas a recibir:** papeles 8.2 a 8.4: carta de manifestaciones específica, no genérica.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## 1. Carta de manifestaciones de la dirección
 

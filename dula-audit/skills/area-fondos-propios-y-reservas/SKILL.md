@@ -1,9 +1,20 @@
 ---
 name: area-fondos-propios-y-reservas
-description: 'Audita los movimientos del patrimonio neto y su coherencia con las actas y la propuesta de aplicación del resultado, y verifica específicamente las reservas indisponibles y restringidas: reserva legal, reserva de capitalización, reserva de nivelación, reserva por fondo de comercio y otras reservas afectas, con su dotación, mantenimiento, plazos y desglose. Se comprueba en planificación por sus implicaciones y se cierra en trabajo de campo.'
+description: 'Área G — Patrimonio neto y reservas indisponibles: legal, capitalización, nivelación.'
+when_to_use: 'Se comprueba en planificación por sus implicaciones y se cierra en trabajo de campo. Términos: audita, movimientos, patrimonio, coherencia, propuesta, aplicación, verifica, específicamente, reservas, indisponibles, restringidas, reserva, capitalización, nivelación.'
+argument-hint: '[sumas-y-saldos.xlsx]'
 ---
 
 # Área G — Fondos propios y reservas
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el balance de sumas y saldos y el libro de actas.
+> 2. **Qué vas a recibir:** papel G-2 con cada reserva restringida, su norma, su plazo y la dotación mínima verificada.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Cuentas del área:** 10x capital · 11x reservas · 12x resultados · 13x subvenciones y ajustes · 557 dividendo a cuenta
 

@@ -1,9 +1,20 @@
 ---
 name: hechos-posteriores-y-empresa-en-funcionamiento
-description: 'Ejecuta los procedimientos sobre hechos posteriores al cierre y evalúa la capacidad de la entidad para continuar como empresa en funcionamiento, con árboles de decisión que conectan directamente con el efecto en el informe. Úsala en la fase de cierre, antes de redactar el informe, y siempre que aparezcan indicadores de dificultades financieras: patrimonio neto negativo, pérdidas recurrentes, fondo de maniobra negativo o incumplimiento de covenants.'
+description: Hechos posteriores y empresa en funcionamiento, con su efecto directo en el informe.
+when_to_use: 'Úsala en la fase de cierre, antes de redactar el informe, y siempre que aparezcan indicadores de dificultades financieras: patrimonio neto negativo, pérdidas recurrentes, fondo de maniobra negativo o incumplimiento de covenants. Términos: ejecuta, procedimientos, hechos, posteriores, cierre, evalúa, capacidad, entidad, continuar, empresa, funcionamiento, árboles, decisión, conectan.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Hechos posteriores y empresa en funcionamiento (NIA-ES 560 y 570 Revisada)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** actas posteriores al cierre y la valoración formal de la dirección a doce meses.
+> 2. **Qué vas a recibir:** papeles N-1 y N-2, y el tipo de opinión que resulta del árbol de decisión.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## Parte 1 — Hechos posteriores
 

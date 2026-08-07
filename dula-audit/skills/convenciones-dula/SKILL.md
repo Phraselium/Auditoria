@@ -1,9 +1,18 @@
 ---
 name: convenciones-dula
-description: 'Configuración del despacho Dula Auditores: perfil y números de ROAC, marco normativo aplicado y sus fechas de entrada en vigor, índice y nomenclatura de papeles de trabajo, estructura de carpetas del encargo, marcadores reservados, severidades, umbrales de materialidad y tolerancias de cuadre, tarifas por categoría, perfiles de ERP y las once reglas de comportamiento innegociables del plugin. Cárgala al inicio de cualquier trabajo de auditoría y siempre que necesites un umbral, una convención o la versión normativa aplicada.'
+description: 'Configuración del despacho: umbrales, índice de papeles, marco normativo y reglas del plugin.'
+when_to_use: 'Cárgala al inicio de cualquier trabajo de auditoría y siempre que necesites un umbral, una convención o la versión normativa aplicada. Términos: configuración, despacho, auditores, perfil, números, normativo, aplicado, fechas, entrada, índice, nomenclatura, papeles, estructura, carpetas.'
 ---
 
 # Convenciones, umbrales y configuración de Dula Auditores
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 2. **Qué vas a recibir:** los umbrales vigentes, la convención de papeles y las once reglas innegociables.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 **Este es el fichero de configuración del plugin.** Todo lo que aparece entre
 `«»` hay que completarlo con los datos reales del despacho antes del primer uso
@@ -315,5 +324,5 @@ Argumentos comunes a los que generan papel: `--papel` `--cliente` `--ejercicio`
 estado y la ejecución en la bitácora **sin que haya que hacer nada más**.
 
 Verificación de la instalación: `dula doctor` debe decir «El plugin es
-operativo», y `python3 tests/run_all.py` debe devolver **236/236 comprobaciones
+operativo», y `python3 tests/run_all.py` debe devolver **243/243 comprobaciones
 superadas y 100 % de cobertura**.

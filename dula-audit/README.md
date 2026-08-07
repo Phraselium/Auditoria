@@ -5,8 +5,8 @@ completo del encargo —aceptación, planificación, trabajo de campo, cierre e
 informe— bajo NIA-ES, con cálculo determinista por script, trazabilidad total y
 reporte por excepción.
 
-**Estado:** v1.2.0 · 35 skills · 7 comandos · 3 agentes · 23 módulos Python ·
-**236/236 comprobaciones superadas · 100 % de cobertura de la librería**.
+**Estado:** v1.3.0 · 35 skills · 7 comandos · 3 agentes · 23 módulos Python ·
+**243/243 comprobaciones superadas · 100 % de cobertura de la librería**.
 
 ---
 
@@ -104,21 +104,46 @@ dependencia, falta un fichero de referencia) de lo que solo **degrada** el
 resultado (sin tarifas, estimador sin calibrar, párrafos del informe pendientes
 de contraste). Empiece siempre por ahí.
 
-**Coste en contexto:** el plugin añade unos **7.400 tokens a cada sesión** — las
-descripciones de disparo de sus 42 componentes. Es el precio de que las skills se
-activen solas y con precisión. Fuera de campaña puede desactivarlo con
+**Coste en contexto:** el plugin añade unos **6.700 tokens a cada sesión** — las
+descripciones de sus 42 componentes. Fuera de campaña puede desactivarlo con
 `/plugin disable dula-audit` y reactivarlo con `/plugin enable dula-audit`.
 
 Verificación completa de la librería de cálculo:
 
 ```bash
 claude plugin validate <ruta>/dula-audit    # debe decir "Validation passed"
-cd <ruta>/dula-audit && python3 tests/run_all.py   # 236/236 y cobertura 100 %
+cd <ruta>/dula-audit && python3 tests/run_all.py   # 243/243 y cobertura 100 %
 ```
 
 Después, **completa `skills/convenciones-dula/SKILL.md`**: los campos entre `«»` son los datos reales del
 despacho. Sin ellos, el plugin funciona pero deja `[PENDIENTE-CLIENTE]` donde
 haría falta un dato tuyo (tarifas, nº de ROAC, ruta base).
+
+---
+
+## El menú `/`
+
+Al escribir `/` aparecen las 42 entradas del plugin con su descripción en
+castellano y el argumento que esperan. Están ordenadas en dos grupos:
+
+| | |
+|---|---|
+| **`Flujo 1` … `Flujo 6`** | Los seis pasos del encargo, en orden. Empiece por aquí |
+| **`Área A` … `Área M`** | Las doce áreas de trabajo de campo, con su letra del índice |
+| El resto | Procedimientos concretos: materialidad, muestreo, informe, calidad… |
+
+Cada entrada separa lo que usted lee de lo que necesita el modelo:
+
+- **`description`** — una frase corta. Es lo que ve al pasar el ratón.
+- **`when_to_use`** — el detalle de cuándo disparar la skill. No ensucia el menú.
+- **`argument-hint`** — qué escribir después del comando.
+
+Al pulsar cualquiera, lo primero que aparece en pantalla es **qué necesita, qué
+va a recibir y el comando exacto** que se va a ejecutar. Si falta algún dato, se
+lo pide en lugar de inventarlo.
+
+`area-runner` no aparece en el menú: es maquinaria interna de la que tiran las
+doce áreas.
 
 ---
 
@@ -277,14 +302,14 @@ dula --help
 | 5 | La revisión detecta un papel sin conclusión y un riesgo sin respuesta | 7/7 |
 | 6 | El modelo de informe corresponde a la versión normativa vigente | 14/14 |
 
-**`tests/test_libreria.py`** — 184 comprobaciones unitarias con **resultados
+**`tests/test_libreria.py`** — 191 comprobaciones unitarias con **resultados
 numéricos conocidos**, no solo «que no reviente»: TIR de un préstamo francés
 contra su tipo de partida, proyección de errores por *tainting*, umbral doble de
 los analíticos, clasificación de arrendamientos indicador a indicador, período
 medio de cobro, conciliación bancaria en los dos sentidos.
 
 ```bash
-python3 tests/run_all.py             # 236/236 + cobertura, es el que hay que ejecutar
+python3 tests/run_all.py             # 243/243 + cobertura, es el que hay que ejecutar
 python3 tests/generar_fixtures.py    # regenera los datos sintéticos
 ```
 

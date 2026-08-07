@@ -1,9 +1,20 @@
 ---
 name: muestreo
-description: Ejecuta la selección de muestras conforme al método elegido en el diseño de pruebas (MUS por unidades monetarias, atributos para pruebas de controles, o dirigido no estadístico), documentando población, unidad de muestreo, estratificación, semilla de aleatoriedad para reproducibilidad, tamaño y su fundamento; evalúa los errores encontrados, los proyecta a la población y concluye frente a la materialidad de ejecución. Úsala cuando haya que seleccionar partidas para probar o evaluar los errores de una muestra ya examinada.
+description: Selecciona la muestra (MUS, atributos o dirigido) y proyecta los errores a la población.
+when_to_use: 'Úsala cuando haya que seleccionar partidas para probar o evaluar los errores de una muestra ya examinada. Términos: ejecuta, selección, muestras, método, elegido, diseño, pruebas, unidades, monetarias, atributos, controles, dirigido, estadístico, documentando.'
+argument-hint: '[población.xlsx] [columna-importe]'
 ---
 
 # Muestreo de auditoría (NIA-ES 530)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** la población y la materialidad de ejecución vigente.
+> 2. **Qué vas a recibir:** la selección con su semilla registrada, para que un revisor pueda reproducirla exactamente.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## La semilla no es un detalle
 

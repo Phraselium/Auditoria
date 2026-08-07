@@ -24,7 +24,7 @@ from .excel_out import PapelDeTrabajo, exporta_tablas
 from .excepciones import INFORMATIVA, RESOLVER, Excepcion, Resultado
 from .traza import RegistroTrazas, Traza, huella
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 
 def _salida(res: Resultado, json_out: bool = False) -> None:

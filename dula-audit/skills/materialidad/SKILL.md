@@ -1,9 +1,20 @@
 ---
 name: materialidad
-description: Determina la magnitud de referencia y el porcentaje con justificación del criterio elegido, la materialidad global, la materialidad de ejecución, las materialidades específicas para áreas sensibles y el umbral de incorrecciones claramente insignificantes. Recalcula automáticamente al cierre si las cifras finales cambian y alerta si el cambio afecta al alcance ya ejecutado. Úsala en planificación tras la ingesta y de nuevo al cierre con las cifras definitivas.
+description: Materialidad global, de ejecución y específicas, con la justificación del criterio elegido.
+when_to_use: 'Úsala en planificación tras la ingesta y de nuevo al cierre con las cifras definitivas. Términos: determina, magnitud, referencia, porcentaje, justificación, criterio, elegido, materialidad, global, ejecución, materialidades, específicas, sensibles, umbral.'
+argument-hint: '[cifras.json]'
 ---
 
 # Materialidad (NIA-ES 320 y 450)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** cifra de negocios, total activo y resultado antes de impuestos.
+> 2. **Qué vas a recibir:** papel 1.4 y, si es un recálculo, la alerta de si el alcance ya ejecutado se ha quedado corto.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## Procedimiento
 

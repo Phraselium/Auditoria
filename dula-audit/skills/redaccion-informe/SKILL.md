@@ -1,9 +1,20 @@
 ---
 name: redaccion-informe
-description: Determina el tipo de opinión mediante árbol de decisión (naturaleza del hecho × generalización del efecto), redacta el informe de auditoría conforme a los modelos vigentes tras la Resolución del ICAC de 22 de enero de 2026 —incluida la sección relativa al Impuesto sobre Sociedades—, redacta las salvedades con el lenguaje técnico exacto cuantificando su efecto, y verifica el informe contra las cuentas anuales definitivas antes de darlo por bueno. Úsala cuando haya que decidir el tipo de opinión, redactar o revisar el informe, o comprobar si una incidencia tiene efecto en la opinión.
+description: Determina el tipo de opinión y redacta el informe conforme a los modelos vigentes de 2026.
+when_to_use: 'Úsala cuando haya que decidir el tipo de opinión, redactar o revisar el informe, o comprobar si una incidencia tiene efecto en la opinión. Términos: determina, opinión, decisión, naturaleza, generalización, efecto, redacta, informe, auditoría, modelos, vigentes, resolución, sección, relativa.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Redacción del informe
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el sumario de incorrecciones, las conclusiones de cierre y las cuentas anuales definitivas.
+> 2. **Qué vas a recibir:** el informe con la sección del Impuesto sobre Sociedades y la verificación 9.1 previa a la firma.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## Cuándo se dispara
 

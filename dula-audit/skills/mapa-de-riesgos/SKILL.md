@@ -1,9 +1,20 @@
 ---
 name: mapa-de-riesgos
-description: Identifica y valora los riesgos de incorrección material por área y por afirmación, situando cada uno en el espectro de riesgo inherente y motivando la valoración con los factores concurrentes. Incluye la presunción de fraude en el reconocimiento de ingresos, el riesgo de elusión de controles por la dirección, los riesgos significativos y la evaluación del entorno de TI y los controles generales. Produce la matriz de riesgos vinculada a los procedimientos que los responden. Úsala en planificación, tras el entendimiento de la entidad, o cuando aparezca un hallazgo que obligue a reevaluar el riesgo.
+description: Riesgos por área y afirmación, situados en el espectro de riesgo inherente y motivados.
+when_to_use: 'Úsala en planificación, tras el entendimiento de la entidad, o cuando aparezca un hallazgo que obligue a reevaluar el riesgo. Términos: identifica, valora, riesgos, incorrección, material, afirmación, situando, espectro, riesgo, inherente, motivando, valoración, factores, concurrentes.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Mapa de riesgos (NIA-ES 315 Revisada y 240)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el entendimiento de la entidad y los analíticos preliminares.
+> 2. **Qué vas a recibir:** papel 1.5 con la matriz de riesgos: cero riesgos sin respuesta y cero pruebas sin riesgo.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## Inputs
 

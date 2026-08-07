@@ -1,5 +1,5 @@
 ---
-description: Muestra dónde está el encargo y cuál es el siguiente paso
+description: Dónde está el encargo y cuál es el siguiente paso.
 argument-hint: '[ruta-del-encargo]'
 ---
 

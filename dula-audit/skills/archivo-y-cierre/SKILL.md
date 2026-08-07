@@ -1,9 +1,20 @@
 ---
 name: archivo-y-cierre
-description: 'Ensambla el archivo final del encargo dentro del plazo normativo: índice completo de papeles de trabajo, referencias cruzadas, control de versiones y registro de lo que debe conservarse y durante cuánto tiempo. Úsala tras la firma del informe, para cerrar el archivo, o cuando haya que localizar documentación de un encargo anterior.'
+description: 'Ensambla el archivo final: índice, referencias cruzadas, conservación y registro de uso de IA.'
+when_to_use: 'Úsala tras la firma del informe, para cerrar el archivo, o cuando haya que localizar documentación de un encargo anterior. Términos: ensambla, archivo, encargo, dentro, normativo, índice, completo, papeles, referencias, cruzadas, control, versiones, registro, conservarse.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Archivo y cierre
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** el encargo con todas sus fases cerradas y el informe firmado.
+> 2. **Qué vas a recibir:** papel 9.9 con el índice completo y el control de plazos de conservación.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## El plazo
 

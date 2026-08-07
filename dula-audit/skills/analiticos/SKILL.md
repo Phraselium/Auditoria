@@ -1,9 +1,20 @@
 ---
 name: analiticos
-description: 'Ejecuta procedimientos analíticos preliminares, sustantivos y de revisión final: variaciones interanuales, ratios, márgenes, análisis mensual de ingresos y gastos, y expectativas construidas con datos independientes, con umbral de investigación definido a priori. Investiga y documenta solo las desviaciones que superan el umbral. Úsala en planificación, como prueba sustantiva en las áreas donde la relación es predecible, y en la revisión final antes de la firma.'
+description: Procedimientos analíticos con el umbral de investigación fijado antes de mirar las cifras.
+when_to_use: 'Úsala en planificación, como prueba sustantiva en las áreas donde la relación es predecible, y en la revisión final antes de la firma. Términos: ejecuta, procedimientos, analíticos, preliminares, sustantivos, revisión, variaciones, interanuales, ratios, márgenes, análisis, mensual, ingresos, gastos.'
+argument-hint: '[cifras-actual.json] [cifras-anterior.json]'
 ---
 
 # Procedimientos analíticos (NIA-ES 520)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** las cifras del ejercicio y del anterior, y la materialidad de ejecución vigente.
+> 2. **Qué vas a recibir:** papel 1.6 con las variaciones que superan el umbral, los ratios y su comparativa.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 ## La regla que hace que valgan como evidencia
 

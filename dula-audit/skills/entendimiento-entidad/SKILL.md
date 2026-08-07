@@ -1,9 +1,20 @@
 ---
 name: entendimiento-entidad
-description: 'Construye el entendimiento de la entidad y su entorno: perfil de negocio, sector, marco de información financiera aplicable, ciclos de transacciones, sistemas de TI y grado de automatización, partes vinculadas y hechos relevantes del ejercicio, aprovechando el Registro Mercantil, las cuentas depositadas, la web de la entidad y la prensa cuando estén disponibles. Úsala al inicio de la planificación, antes del mapa de riesgos.'
+description: Perfil de negocio, marco contable aplicable, ciclos, sistemas de TI y partes vinculadas.
+when_to_use: 'Úsala al inicio de la planificación, antes del mapa de riesgos. Términos: construye, entendimiento, entidad, entorno, perfil, negocio, sector, información, financiera, aplicable, ciclos, transacciones, sistemas, automatización.'
+argument-hint: '[cliente] [ejercicio]'
 ---
 
 # Entendimiento de la entidad (NIA-ES 315 Revisada)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** las cuentas depositadas de los últimos ejercicios y el informe del auditor anterior si lo hay.
+> 2. **Qué vas a recibir:** papel 1.1, con el marco contable verificado contra los límites legales y no presumido.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 No es un documento de relleno: es lo que permite que el mapa de riesgos identifique
 riesgos **reales** en vez de una lista genérica de manual.

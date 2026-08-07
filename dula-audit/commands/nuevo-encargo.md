@@ -1,5 +1,5 @@
 ---
-description: Crea la carpeta y el estado de un encargo nuevo, y arranca la fase de aceptación
+description: Flujo 1 — Crea el encargo y arranca la aceptación y la independencia.
 argument-hint: <cliente> <ejercicio> [PGC|PGC-PYMES|PGC-CONSOLIDADO]
 ---
 

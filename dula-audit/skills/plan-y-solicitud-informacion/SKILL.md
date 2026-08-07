@@ -1,9 +1,20 @@
 ---
 name: plan-y-solicitud-informacion
-description: Genera la lista de documentación a solicitar al cliente personalizada al perfil de la entidad, priorizada por ruta crítica, con calendario, responsables y seguimiento de pendientes y recordatorios. Incluye modo específico para cliente que no responde (escalado, alternativas de evidencia, impacto en alcance y en el informe) y para cliente que envía todo desordenado (triaje y clasificación automática de lo recibido). Úsala tras la planificación y para hacer seguimiento de pendientes durante toda la campaña.
+description: Genera la PBC personalizada y priorizada por ruta crítica, y hace seguimiento de pendientes.
+when_to_use: 'Úsala tras la planificación y para hacer seguimiento de pendientes durante toda la campaña. Términos: genera, documentación, solicitar, cliente, personalizada, perfil, entidad, priorizada, crítica, calendario, responsables, seguimiento, pendientes, recordatorios.'
+argument-hint: '[carpeta-del-encargo]'
 ---
 
 # Plan y solicitud de información (PBC)
+
+> **Al invocarla, empieza por aquí.** Presenta en pantalla, en tres
+> líneas y antes de hacer nada:
+>
+> 1. **Qué necesito:** las áreas activas del encargo según su perfil.
+> 2. **Qué vas a recibir:** la PBC por área con prioridades, y los pendientes registrados para su seguimiento.
+> 3. **El comando exacto** que voy a ejecutar, con las rutas reales.
+>
+> Si falta algo de lo anterior, pídelo y **no lo inventes**.
 
 Una PBC genérica es una PBC que el cliente ignora. Esta se construye con las áreas
 que el encargo tiene realmente activas, con lo que de verdad hace falta, y

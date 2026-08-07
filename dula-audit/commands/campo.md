@@ -1,6 +1,6 @@
 ---
-description: Ejecuta un área de trabajo de campo con su programa escalado por perfil
-argument-hint: <área> — inmovilizado | existencias | clientes | proveedores | tesoreria | arrendamientos | fondos-propios | personal | fiscal | provisiones | subvenciones | vinculadas
+description: Flujo 4 — Ejecuta un área de trabajo de campo con su programa escalado.
+argument-hint: <área — p.ej. arrendamientos, inmovilizado, fiscal, tesoreria>
 ---
 
 Ejecuta el área: $ARGUMENTS
