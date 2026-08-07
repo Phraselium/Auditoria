@@ -233,6 +233,20 @@ El script valida el paquete contra la especificación —campos permitidos,
 longitud de `name` y `description`, tamaño del cuerpo— y falla si algo no cumple.
 La suite lo comprueba en cada ejecución.
 
+### Qué NO se puede hacer desde los ajustes de la app
+
+**Los ajustes de Claude no admiten plugins de Claude Code ni marketplaces.**
+Plugins, marketplaces y `/plugin` son exclusivos de Claude Code. En los ajustes
+de la app solo hay dos sitios, y solo uno sirve aquí:
+
+| Sección de ajustes | Qué admite | ¿Sirve para dula-audit? |
+|---|---|---|
+| **Skills** (Personalizar en la app de escritorio, o los ajustes de skills en claude.ai) | Un `.zip` con una skill del estándar Agent Skills | **Sí** — es el `.zip` de esta sección |
+| **Conectores** | Servidores MCP, por URL y OAuth | No. dula-audit no es un servidor MCP: no hay nada a lo que conectarse |
+
+No hay ninguna opción de «añadir repositorio» ni de «marketplace» en la app.
+Para eso hace falta Claude Code.
+
 ### Si la subida falla con «no se ha podido sincronizar»
 
 Ese error es del validador de la plataforma, no del contenido de la skill. Las
@@ -246,12 +260,18 @@ verifica en cada ejecución:
 | Extensiones desconocidas | Solo `.md`, `.py` y `.json` |
 | Más de 200 ficheros | El paquete tiene 87 |
 
-Si aun así falla, suba **`build/dula-audit-claude-ai-minimo.zip`** (98 KB): es el
-mismo índice y los mismos 39 procedimientos, sin librería Python ni referencias.
-Si ese sí sincroniza, el problema está en la librería o en las referencias, no en
-la skill — y lo sabremos con una sola prueba. Tenga en cuenta que **sin la
-librería no hay cálculo determinista**, así que es un paquete de diagnóstico, no
-el producto.
+Si aun así falla, hay dos variantes para aislar la causa con dos pruebas:
+
+| Variante | En qué se diferencia | Qué demuestra si esa sí sube |
+|---|---|---|
+| `dula-audit-claude-ai-plano.zip` (238 KB) | `SKILL.md` en la **raíz** del zip, sin carpeta contenedora | El validador esperaba la disposición plana |
+| `dula-audit-claude-ai-minimo.zip` (98 KB) | Solo índice y procedimientos, **sin librería ni referencias** | El problema está en la librería o en las referencias, no en la skill |
+
+Las dos son de diagnóstico, no el producto: **sin la librería Python no hay
+cálculo determinista**, que es el fundamento del plugin.
+
+Si ninguna sube, **el camino sin riesgo es Claude Code con la opción A**: se
+descomprime en `~/.claude/skills/` y no interviene ningún validador.
 
 > **Las skills no se sincronizan entre superficies.** Si actualiza el plugin,
 > tiene que volver a subir el `.zip` a claude.ai.

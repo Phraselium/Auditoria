@@ -455,6 +455,18 @@ def main() -> int:
     print(f"Paquete minimo de diagnostico: {zmin}")
     print(f"  sin libreria ni referencias, {os.path.getsize(zmin) / 1024:,.0f} KB")
 
+    # 7. variante con SKILL.md en la RAIZ del zip, sin carpeta contenedora.
+    #    Las dos disposiciones aparecen documentadas segun la fuente y no hay
+    #    forma de saber cual espera el validador sin probarlas.
+    zllano = os.path.join(DESTINO, f"{NOMBRE}-claude-ai-plano.zip")
+    with zipfile.ZipFile(zllano, "w", zipfile.ZIP_DEFLATED) as z:
+        for base, _, ficheros in os.walk(pkg):
+            for f in ficheros:
+                completo = os.path.join(base, f)
+                z.write(completo, os.path.relpath(completo, pkg))
+    print(f"Variante sin carpeta contenedora: {zllano}")
+    print(f"  SKILL.md en la raiz del zip, {os.path.getsize(zllano) / 1024:,.0f} KB")
+
     construye_claude_code()
     return 0
 
