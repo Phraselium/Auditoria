@@ -1,0 +1,222 @@
+{
+  "_meta": {
+    "descripcion": "Checklist de desgloses obligatorios de la memoria segun el modelo aplicable (PGC RD 1514/2007 y PGC PYMES). Fichero pesado: se carga bajo demanda desde comparador.checklist_memoria().",
+    "uso": "Las 'claves' son los terminos que se buscan en el texto de la memoria para dar la nota por presente. Una nota presente NO implica que este completa: el contraste numerico lo hace memoria_vs_estados().",
+    "condicion": "Las notas con 'condicion' solo se exigen si el contexto del encargo activa ese supuesto (p.ej. 'subvenciones': True)."
+  },
+  "modelos": {
+    "PYME": ["N01","N02","N03","N04","N05","N06","N07","N08","N09","N10","N11","N18","N19","N23"],
+    "ABREVIADA": ["N01","N02","N03","N04","N05","N06","N07","N08","N09","N10","N11","N12","N13","N14","N15","N16","N17","N18","N19","N23"],
+    "NORMAL": ["N01","N02","N03","N04","N05","N06","N07","N08","N09","N10","N11","N12","N13","N14","N15","N16","N17","N18","N19","N20","N21","N22","N23","N24","N25"]
+  },
+  "notas": [
+    {
+      "id": "N01",
+      "titulo": "Actividad de la empresa",
+      "claves": ["actividad de la empresa", "objeto social", "actividad principal"],
+      "contenido": "Domicilio y forma legal, actividad principal, moneda funcional si difiere del euro, y en su caso empresa del grupo a la que pertenece y donde se depositan sus cuentas consolidadas.",
+      "norma": "PGC 3ª parte, memoria nota 1",
+      "obligatoria": true
+    },
+    {
+      "id": "N02",
+      "titulo": "Bases de presentacion de las cuentas anuales",
+      "claves": ["bases de presentacion", "imagen fiel", "principios contables", "comparacion de la informacion"],
+      "contenido": "Imagen fiel, principios contables no obligatorios aplicados, aspectos criticos de la valoracion y estimacion de la incertidumbre, comparacion de la informacion, elementos recogidos en varias partidas, cambios en criterios contables y correccion de errores.",
+      "norma": "PGC 3ª parte, memoria nota 2",
+      "obligatoria": true
+    },
+    {
+      "id": "N03",
+      "titulo": "Aplicacion de resultados",
+      "claves": ["aplicacion de resultados", "distribucion del resultado", "propuesta de aplicacion"],
+      "contenido": "Propuesta de distribucion del resultado y, en su caso, limitaciones para la distribucion de dividendos. Debe cuadrar con el resultado del ejercicio y con el ECPN.",
+      "norma": "PGC 3ª parte, memoria nota 3",
+      "obligatoria": true
+    },
+    {
+      "id": "N04",
+      "titulo": "Normas de registro y valoracion",
+      "claves": ["normas de registro y valoracion", "criterios contables aplicados", "criterios de valoracion"],
+      "contenido": "Criterios aplicados a cada una de las partidas relevantes: inmovilizado, arrendamientos, instrumentos financieros, existencias, impuestos, ingresos y gastos, provisiones, subvenciones, transacciones con partes vinculadas.",
+      "norma": "PGC 3ª parte, memoria nota 4",
+      "obligatoria": true
+    },
+    {
+      "id": "N05",
+      "titulo": "Inmovilizado material",
+      "claves": ["inmovilizado material", "movimiento del inmovilizado"],
+      "contenido": "Analisis del movimiento del ejercicio: saldo inicial, altas, bajas, traspasos y saldo final del coste y de la amortizacion acumulada y correcciones de valor. Elementos totalmente amortizados en uso, compromisos de compra, y bienes afectos a garantias.",
+      "norma": "PGC 3ª parte, memoria nota 5",
+      "obligatoria": true
+    },
+    {
+      "id": "N06",
+      "titulo": "Inmovilizado intangible",
+      "claves": ["inmovilizado intangible", "fondo de comercio", "aplicaciones informaticas"],
+      "contenido": "Movimiento del ejercicio por clases, criterio de amortizacion y vida util, y para el fondo de comercio la informacion sobre su deterioro y la reserva indisponible del art. 273.4 LSC.",
+      "norma": "PGC 3ª parte, memoria nota 6",
+      "obligatoria": true
+    },
+    {
+      "id": "N07",
+      "titulo": "Arrendamientos y otras operaciones de naturaleza similar",
+      "claves": ["arrendamiento", "leasing", "arrendamiento financiero", "arrendamiento operativo"],
+      "contenido": "Para arrendamientos financieros: coste del bien, duracion, cuotas pagadas y pendientes, valor de la opcion de compra e importe de las cargas financieras diferidas, con desglose por vencimientos. Para operativos: importe de las cuotas reconocidas como gasto y pagos minimos futuros por plazos.",
+      "norma": "PGC NRV 8ª; memoria nota 8 (abreviada)",
+      "condicion": "arrendamientos",
+      "obligatoria": true
+    },
+    {
+      "id": "N08",
+      "titulo": "Instrumentos financieros - activos financieros",
+      "claves": ["activos financieros", "instrumentos financieros", "inversiones financieras", "deudores"],
+      "contenido": "Importe en libros por categorias y clases, correcciones por deterioro, y en su caso impagados y vencimientos.",
+      "norma": "PGC NRV 9ª",
+      "obligatoria": true
+    },
+    {
+      "id": "N09",
+      "titulo": "Instrumentos financieros - pasivos financieros",
+      "claves": ["pasivos financieros", "deudas", "deudas con entidades de credito", "vencimiento de las deudas"],
+      "contenido": "Importe en libros por categorias y clases, y clasificacion por vencimientos de los importes que venzan en cada uno de los cinco anos siguientes y del resto hasta su ultimo vencimiento. Debe cuadrar con el total de deudas del balance.",
+      "norma": "PGC NRV 9ª",
+      "obligatoria": true
+    },
+    {
+      "id": "N10",
+      "titulo": "Fondos propios",
+      "claves": ["fondos propios", "capital social", "reservas", "patrimonio neto"],
+      "contenido": "Composicion del capital, movimiento de las reservas y, con especial detalle, las reservas indisponibles o con restricciones a su disponibilidad: reserva legal, reserva de capitalizacion, reserva de nivelacion, reserva por fondo de comercio y otras reservas afectas.",
+      "norma": "PGC 3ª parte; arts. 274 y 273.4 LSC; arts. 25 y 105 LIS",
+      "obligatoria": true
+    },
+    {
+      "id": "N11",
+      "titulo": "Situacion fiscal",
+      "claves": ["situacion fiscal", "impuesto sobre beneficios", "impuesto sobre sociedades", "conciliacion del resultado"],
+      "contenido": "Conciliacion del resultado contable con la base imponible, desglose del gasto por impuesto, diferencias permanentes y temporarias, activos y pasivos por impuesto diferido con justificacion de su recuperabilidad, bases imponibles negativas y deducciones pendientes, y ejercicios abiertos a inspeccion.",
+      "norma": "PGC NRV 13ª",
+      "obligatoria": true
+    },
+    {
+      "id": "N12",
+      "titulo": "Existencias",
+      "claves": ["existencias", "correcciones valorativas de existencias"],
+      "contenido": "Circunstancias que motiven correcciones valorativas, limitaciones en la disponibilidad y compromisos firmes de compra y venta.",
+      "norma": "PGC NRV 10ª",
+      "condicion": "existencias",
+      "obligatoria": true
+    },
+    {
+      "id": "N13",
+      "titulo": "Moneda extranjera",
+      "claves": ["moneda extranjera", "diferencias de cambio", "divisa"],
+      "contenido": "Importe de los activos y pasivos denominados en moneda extranjera y de las diferencias de cambio reconocidas en el resultado del ejercicio.",
+      "norma": "PGC NRV 11ª",
+      "condicion": "moneda_extranjera",
+      "obligatoria": true
+    },
+    {
+      "id": "N14",
+      "titulo": "Ingresos y gastos",
+      "claves": ["ingresos y gastos", "cargas sociales", "consumo de mercaderias", "aprovisionamientos"],
+      "contenido": "Desglose de la partida de aprovisionamientos, de las cargas sociales, y en su caso de las ventas por categorias de actividad y mercados geograficos. Los desgloses deben cuadrar con la cuenta de perdidas y ganancias.",
+      "norma": "PGC 3ª parte",
+      "obligatoria": true
+    },
+    {
+      "id": "N15",
+      "titulo": "Provisiones y contingencias",
+      "claves": ["provisiones", "contingencias", "pasivos contingentes", "litigios"],
+      "contenido": "Analisis del movimiento de cada partida del balance, naturaleza de la obligacion, evolucion esperada e indicacion de las incertidumbres. Para los pasivos contingentes, descripcion de su naturaleza y estimacion de sus efectos financieros.",
+      "norma": "PGC NRV 15ª",
+      "condicion": "provisiones",
+      "obligatoria": true
+    },
+    {
+      "id": "N16",
+      "titulo": "Subvenciones, donaciones y legados",
+      "claves": ["subvenciones", "donaciones", "legados"],
+      "contenido": "Importe y caracteristicas, importes reconocidos en la cuenta de resultados, y analisis del movimiento del contenido de la subpartida, indicando el saldo inicial y final y los aumentos y disminuciones. Cumplimiento de las condiciones asociadas.",
+      "norma": "PGC NRV 18ª",
+      "condicion": "subvenciones",
+      "obligatoria": true
+    },
+    {
+      "id": "N17",
+      "titulo": "Combinaciones de negocios",
+      "claves": ["combinaciones de negocios", "adquisicion de negocio", "fusion"],
+      "contenido": "Informacion sobre las combinaciones efectuadas en el ejercicio y el fondo de comercio o diferencia negativa resultante.",
+      "norma": "PGC NRV 19ª",
+      "condicion": "combinaciones",
+      "obligatoria": true
+    },
+    {
+      "id": "N18",
+      "titulo": "Operaciones con partes vinculadas",
+      "claves": ["partes vinculadas", "operaciones vinculadas", "administradores", "alta direccion", "retribuciones"],
+      "contenido": "Importe de las operaciones con partes vinculadas por tipo y naturaleza, saldos pendientes, y retribuciones e importes de anticipos y creditos concedidos al personal de alta direccion y a los miembros del organo de administracion. Este desglose no admite el criterio de importancia relativa por importe.",
+      "norma": "PGC 3ª parte; art. 260 LSC",
+      "obligatoria": true
+    },
+    {
+      "id": "N19",
+      "titulo": "Otra informacion",
+      "claves": ["otra informacion", "numero medio de empleados", "honorarios de auditoria", "plantilla"],
+      "contenido": "Numero medio de personas empleadas en el ejercicio, distribuido por categorias y por sexos, y honorarios devengados por el auditor de cuentas distinguiendo los correspondientes a servicios de auditoria de los demas servicios prestados.",
+      "norma": "PGC 3ª parte; art. 260 LSC",
+      "obligatoria": true
+    },
+    {
+      "id": "N20",
+      "titulo": "Informacion sobre medio ambiente",
+      "claves": ["medio ambiente", "medioambiental", "informacion medioambiental"],
+      "contenido": "Descripcion y valor de los sistemas incorporados al inmovilizado destinados a la proteccion del medio ambiente, gastos del ejercicio y provisiones y contingencias de naturaleza medioambiental.",
+      "norma": "Resolucion ICAC de 25 de marzo de 2002",
+      "obligatoria": true
+    },
+    {
+      "id": "N21",
+      "titulo": "Estado de flujos de efectivo",
+      "claves": ["flujos de efectivo", "efe", "estado de flujos"],
+      "contenido": "Detalle y conciliacion de los componentes del efectivo y otros activos liquidos equivalentes, y explicacion de los importes significativos no disponibles para su uso.",
+      "norma": "PGC 3ª parte",
+      "condicion": "efe",
+      "obligatoria": true
+    },
+    {
+      "id": "N22",
+      "titulo": "Activos no corrientes mantenidos para la venta y operaciones interrumpidas",
+      "claves": ["mantenidos para la venta", "operaciones interrumpidas", "actividades interrumpidas"],
+      "contenido": "Descripcion del activo o grupo enajenable, hechos y circunstancias de la venta y resultado reconocido.",
+      "norma": "PGC NRV 7ª",
+      "condicion": "mantenidos_venta",
+      "obligatoria": true
+    },
+    {
+      "id": "N23",
+      "titulo": "Hechos posteriores al cierre",
+      "claves": ["hechos posteriores", "acontecimientos posteriores", "posteriores al cierre"],
+      "contenido": "Hechos posteriores que no afecten a las cuentas anuales pero cuyo conocimiento sea util para el usuario, y hechos que muestren condiciones que ya existian al cierre y que hayan supuesto ajuste.",
+      "norma": "PGC NRV 23ª; NIA-ES 560",
+      "obligatoria": true
+    },
+    {
+      "id": "N24",
+      "titulo": "Informacion segmentada",
+      "claves": ["informacion segmentada", "segmentos", "distribucion de la cifra de negocios"],
+      "contenido": "Distribucion del importe neto de la cifra de negocios por categorias de actividad y por mercados geograficos.",
+      "norma": "PGC 3ª parte",
+      "obligatoria": true
+    },
+    {
+      "id": "N25",
+      "titulo": "Aplazamientos de pago a proveedores",
+      "claves": ["aplazamientos de pago", "periodo medio de pago", "morosidad", "ley 15/2010"],
+      "contenido": "Periodo medio de pago a proveedores, ratio de operaciones pagadas y pendientes de pago, y volumen total de pagos y de pagos pendientes.",
+      "norma": "DA 3ª Ley 15/2010; Resolucion ICAC de 29 de enero de 2016",
+      "obligatoria": true
+    }
+  ]
+}

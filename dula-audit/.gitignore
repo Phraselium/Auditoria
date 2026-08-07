@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+
+# Fixtures sinteticos: se regeneran de forma determinista con
+#   python3 tests/generar_fixtures.py
+tests/fixtures/
+tests/salida/
+
+# El despacho crea este fichero a partir de tarifas.json.ejemplo
+shared/references/tarifas.json

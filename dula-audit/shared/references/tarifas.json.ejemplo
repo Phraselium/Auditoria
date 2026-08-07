@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "descripcion": "Tarifas por categoria profesional. Renombre este fichero a tarifas.json y sustituya los valores por los reales del despacho.",
+    "aviso": "Sin este fichero, estimacion-encargo devuelve los honorarios como [PENDIENTE-CLIENTE]. No inventa un precio."
+  },
+  "socio": 120.0,
+  "gerente": 85.0,
+  "senior": 60.0,
+  "ayudante": 40.0,
+  "_coste_hora": {
+    "socio": 55.0,
+    "gerente": 42.0,
+    "senior": 28.0,
+    "ayudante": 18.0
+  }
+}
