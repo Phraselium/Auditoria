@@ -8,8 +8,7 @@ Arranca un encargo nuevo: $ARGUMENTS
 1. Crea la estructura de carpetas y el estado del encargo:
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli nuevo "<ruta-base>/<CLIENTE>/<EJERCICIO>" "<CLIENTE>" <EJERCICIO> --marco <MARCO>
+dula nuevo "<ruta-base>/<CLIENTE>/<EJERCICIO>" "<CLIENTE>" <EJERCICIO> --marco <MARCO>
 ```
 
 2. Invoca `aceptacion-e-independencia` para evaluar amenazas, incompatibilidades,

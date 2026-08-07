@@ -32,8 +32,7 @@ fila, las columnas en cualquier orden y los importes en formato español
 ## Procedimiento
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli ingesta 00-fuentes/sumas_y_saldos.xlsx \
+dula ingesta 00-fuentes/sumas_y_saldos.xlsx \
     --diario 00-fuentes/diario.xlsx \
     --anterior 00-fuentes/sumas_y_saldos_anterior.xlsx \
     --ejercicio 2025 --cliente "<CLIENTE>" \

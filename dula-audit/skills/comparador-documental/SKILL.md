@@ -29,14 +29,13 @@ hace constar** — nunca se da por cuadrado lo que no se ha comparado.
 ## Procedimiento
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 
 # 1. Cuentas anuales <-> balance de sumas y saldos
-python3 -m dula.cli comparar --ccaa 00-fuentes/ccaa.json \
+dula comparar --ccaa 00-fuentes/ccaa.json \
     --sumas-y-saldos 00-fuentes/sumas_y_saldos.xlsx
 
 # 2. Memoria <-> estados financieros + checklist de desgloses
-python3 -m dula.cli comparar \
+dula comparar \
     --memoria-desgloses 00-fuentes/memoria_desgloses.json \
     --estados 00-fuentes/estados.json \
     --memoria-texto 00-fuentes/memoria.txt \
@@ -44,21 +43,21 @@ python3 -m dula.cli comparar \
     --modelo PYME --contexto '{"arrendamientos": true, "subvenciones": true}'
 
 # 3. Ejercicio <-> anterior <-> cuentas depositadas en el Registro Mercantil
-python3 -m dula.cli comparar --ccaa ccaa.json --anterior-ccaa ccaa_anterior.json \
+dula comparar --ccaa ccaa.json --anterior-ccaa ccaa_anterior.json \
     --depositadas ccaa_depositadas.json
 
 # 4. Informe de gestion <-> cuentas anuales (NIA-ES 720R)
-python3 -m dula.cli comparar --ccaa ccaa.json --informe-gestion informe_gestion.json
+dula comparar --ccaa ccaa.json --informe-gestion informe_gestion.json
 
 # 5. Documentacion soporte <-> registro contable
-python3 -m dula.cli comparar --soporte facturas.xlsx --contabilidad mayor_400.xlsx \
+dula comparar --soporte facturas.xlsx --contabilidad mayor_400.xlsx \
     --clave "n factura" --columna-importe importe
 
 # 6. Diff entre borradores
-python3 -m dula.cli comparar --borrador-anterior v1.json --borrador-nuevo v2.json
+dula comparar --borrador-anterior v1.json --borrador-nuevo v2.json
 
 # 7. ULTIMA VERIFICACION antes de la firma
-python3 -m dula.cli comparar --informe informe.json --ccaa-definitivas ccaa_def.json \
+dula comparar --informe informe.json --ccaa-definitivas ccaa_def.json \
     --papel "01-papeles/9.1 Verificacion previa a la firma.xlsx"
 ```
 

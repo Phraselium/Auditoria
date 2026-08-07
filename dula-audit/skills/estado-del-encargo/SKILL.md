@@ -11,8 +11,7 @@ no es un lujo: es lo primero que se pregunta cualquiera que retoma un encargo.
 ## Ejecución
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli estado <carpeta-encargo>
+dula estado <carpeta-encargo>
 ```
 
 El subcomando lee `encargo.json` y `uso-ia.log` y presenta:
@@ -45,12 +44,12 @@ SIGUIENTE PASO RECOMENDADO
 Complementos:
 
 ```bash
-python3 -m dula.cli horas <encargo>                          # horas por papel
-python3 -m dula.cli horas <encargo> --papel-ref F-1 --imputar 3.5 --quien "LG"
-python3 -m dula.cli pbc <encargo>                            # pendientes del cliente
-python3 -m dula.cli pbc <encargo> --anadir "Cuadros de leasing en Excel" --area F --prioridad 1
-python3 -m dula.cli pbc <encargo> --recibido P001            # marcar como recibido
-python3 -m dula.cli validar <encargo> --listar               # bitácora de uso de IA
+dula horas <encargo>                          # horas por papel
+dula horas <encargo> --papel-ref F-1 --imputar 3.5 --quien "LG"
+dula pbc <encargo>                            # pendientes del cliente
+dula pbc <encargo> --anadir "Cuadros de leasing en Excel" --area F --prioridad 1
+dula pbc <encargo> --recibido P001            # marcar como recibido
+dula validar <encargo> --listar               # bitácora de uso de IA
 ```
 
 ## El «siguiente paso recomendado»

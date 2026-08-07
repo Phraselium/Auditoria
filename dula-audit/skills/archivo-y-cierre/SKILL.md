@@ -79,7 +79,7 @@ Se alimenta **solo** con ejecuciones lanzadas con `--encargo`. Antes de cerrar e
 archivo:
 
 ```bash
-python3 -m dula.cli validar <encargo> --listar    # ninguna debe quedar sin validar
+dula validar <encargo> --listar    # ninguna debe quedar sin validar
 ```
 
 `revision-de-calidad` en modo completo escribe la versión legible del registro en

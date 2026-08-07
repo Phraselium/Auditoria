@@ -12,8 +12,7 @@ después, el procedimiento no es un analítico sustantivo: es una racionalizaci�
 de lo que ha salido, y no vale como evidencia ante un revisor.
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli analiticos 00-fuentes/cifras_actual.json 00-fuentes/cifras_anterior.json \
+dula analiticos 00-fuentes/cifras_actual.json 00-fuentes/cifras_anterior.json \
     --materialidad <MP> --factor 0.5 --papel "01-papeles/1.6 Analiticos.xlsx"
 ```
 

@@ -13,6 +13,7 @@ funcion que nunca se ha ejecutado no es codigo entregable.
 
 from __future__ import annotations
 
+import io as io_
 import json
 import os
 import shutil
@@ -730,6 +731,143 @@ def t_presentacion() -> None:
            "y la marca como BLOQUEANTE")
 
 
+def t_cli() -> None:
+    """La interfaz por la que las skills invocan todo. Si un subcomando falla,
+    la skill que lo usa no produce papel."""
+    bloque("interfaz de linea de comandos")
+    from dula import cli
+    import contextlib
+
+    FIX = os.path.join(AQUI, "fixtures")
+    sys_y_saldos = os.path.join(FIX, "sumas_y_saldos_2025.xlsx")
+    diario = os.path.join(FIX, "diario_2025.xlsx")
+    base = os.path.join(SALIDA, "cli")
+    shutil.rmtree(base, ignore_errors=True)
+    enc = os.path.join(base, "ACME", "2025")
+
+    def corre(*argv: str) -> tuple[int, str]:
+        buf = io_.StringIO()
+        with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+            code = cli.main(list(argv))
+        return code, buf.getvalue()
+
+    code, salida = corre("doctor")
+    afirma(code == 0, "`dula doctor` termina sin bloqueantes en esta instalacion")
+    afirma("pandas" in salida and "Mapeo PGC operativo" in salida,
+           "doctor comprueba dependencias y que el mapeo PGC se carga de verdad")
+    afirma("VERIFICAR-LITERAL-ICAC" in salida,
+           "doctor recuerda los parrafos del informe pendientes de contraste")
+
+    code, _ = corre("nuevo", enc, "ACME SL", "2025")
+    afirma(code == 0 and os.path.exists(os.path.join(enc, "encargo.json")),
+           "`dula nuevo` crea el encargo y su estructura de carpetas")
+
+    code, salida = corre("ingesta", sys_y_saldos, "--diario", diario,
+                         "--ejercicio", "2025", "--encargo", enc, "--horas", "2.5",
+                         "--papel", os.path.join(enc, "01-papeles", "2.1.xlsx"))
+    afirma(code == 0 and "Todos los cuadres" in salida,
+           "`dula ingesta` pasa los cuadres y genera el papel 2.1")
+    afirma("Bitacora: IA-0001" in salida,
+           "la ejecucion queda anotada en la bitacora de uso de IA")
+
+    code, salida = corre("reservas", sys_y_saldos, "--encargo", enc,
+                         "--papel", os.path.join(enc, "01-papeles", "G-2.xlsx"))
+    afirma(code == 0 and "Reserva de capitalizacion" in salida,
+           "`dula reservas` identifica la reserva de capitalizacion como indisponible")
+    afirma("nota de fondos propios" in salida,
+           "y recuerda que debe desglosarse en memoria")
+
+    code, salida = corre("materialidad", '{"cifra_negocios": 1850000}',
+                         "--perfil", "ESTANDAR", "--encargo", enc)
+    afirma(code == 0 and "Materialidad de ejecucion" in salida,
+           "`dula materialidad` calcula y registra la materialidad")
+
+    code, salida = corre("estado", enc)
+    afirma(code == 0 and "SIGUIENTE PASO RECOMENDADO" in salida,
+           "`dula estado` presenta el panel con el siguiente paso")
+
+    code, salida = corre("pbc", enc, "--anadir", "Cuadros de leasing", "--area", "F",
+                         "--prioridad", "1")
+    afirma(code == 0 and "P001" in salida, "`dula pbc` registra un pendiente del cliente")
+
+    code, salida = corre("horas", enc)
+    afirma(code == 0 and "2.5" in salida, "`dula horas` refleja las horas imputadas")
+
+    code, salida = corre("validar", enc, "--listar")
+    afirma(code == 0 and "PENDIENTE-VALIDACION" in salida,
+           "`dula validar --listar` muestra las ejecuciones sin validar")
+    code, _ = corre("validar", enc, "--entrada", "IA-0001", "--quien", "MJ Perez")
+    afirma(code == 0, "`dula validar` valida una entrada concreta")
+
+    code, salida = corre("calidad", enc, "--pre-vuelo")
+    afirma("PANEL DEL SOCIO" in salida, "`dula calidad` emite el panel del socio")
+    afirma("CAL-091" in salida,
+           "y detecta la ejecucion asistida aun sin validar sobre un papel concluido")
+
+    code, salida = corre("asientos", diario, "2025-12-31", "--materialidad", "15031")
+    afirma(code == 0 and "Test de asientos" in salida, "`dula asientos` se ejecuta")
+
+    code, salida = corre("leasing", os.path.join(FIX, "leasings_internos.xlsx"),
+                         "2025-12-31")
+    afirma("contratos" in salida, "`dula leasing` procesa el lote")
+
+    code, salida = corre("amortizaciones", os.path.join(FIX, "inventario_inmovilizado.xlsx"),
+                         "2025-01-01", "2025-12-31")
+    afirma("Recalculados" in salida, "`dula amortizaciones` recalcula el inventario")
+
+    code, salida = corre("financiacion", os.path.join(FIX, "cartera_financiacion.xlsx"),
+                         "2025-12-31", "--confirmaciones",
+                         os.path.join(FIX, "confirmaciones_bancarias.xlsx"))
+    afirma("instrumentos" in salida, "`dula financiacion` recalcula la cartera")
+
+    code, salida = corre("comparar", "--memoria-desgloses",
+                         os.path.join(FIX, "memoria_desgloses.json"),
+                         "--estados", os.path.join(FIX, "estados_financieros.json"))
+    afirma("4,850.00" in salida.replace(".", ".") or "4850" in salida.replace(",", ""),
+           "`dula comparar` detecta la diferencia deliberada")
+
+    code, salida = corre("muestreo", sys_y_saldos, "saldo", "--metodo", "dirigido",
+                         "--materialidad", "15031")
+    afirma("Semilla de aleatoriedad" in salida,
+           "`dula muestreo` publica la semilla para que sea reproducible")
+
+    drivers = os.path.join(SALIDA, "drivers.json")
+    with open(drivers, "w", encoding="utf-8") as fh:
+        json.dump({"n_asientos": 4200, "n_cuentas": 180, "n_leasings": 12,
+                   "n_instrumentos_financiacion": 6, "existencias": "si",
+                   "automatizacion_facturacion": "media", "respuesta_cliente": "normal"},
+                  fh)
+    tarifas = os.path.join(SALIDA, "tarifas.json")
+    with open(tarifas, "w", encoding="utf-8") as fh:
+        json.dump({"socio": 120.0, "gerente": 85.0, "senior": 60.0, "ayudante": 40.0,
+                   "_coste_hora": {"socio": 55.0, "gerente": 42.0, "senior": 28.0,
+                                   "ayudante": 18.0}}, fh)
+    code, salida = corre("estimar", drivers, "--tarifas", tarifas, "--encargo", enc)
+    afirma(code == 0 and "PERFIL:" in salida and "Honorarios estimados" in salida,
+           "`dula estimar` calcula perfil, horas y honorarios")
+    afirma("Punto muerto" in salida and "FACTORES QUE MAS ENCARECEN" in salida,
+           "y entrega el punto muerto y las palancas de abaratamiento")
+    code, salida = corre("estimar", drivers, "--encargo", enc)
+    afirma("[PENDIENTE-CLIENTE]" in salida,
+           "sin tarifas, los honorarios salen [PENDIENTE-CLIENTE]: no se inventa un precio")
+
+    act = os.path.join(SALIDA, "act.json"); ant = os.path.join(SALIDA, "ant.json")
+    with open(act, "w", encoding="utf-8") as fh:
+        json.dump({"Ventas": 1_000_000.0, "Personal": 300_000.0}, fh)
+    with open(ant, "w", encoding="utf-8") as fh:
+        json.dump({"Ventas": 980_000.0, "Personal": 200_000.0}, fh)
+    code, salida = corre("analiticos", act, ant, "--materialidad", "20000")
+    afirma(code == 0 and "umbral de investigacion" in salida.lower(),
+           "`dula analiticos` publica el umbral fijado a priori")
+    afirma("Personal" in salida,
+           "y senala la variacion que supera ambos umbrales")
+
+    # un subcomando con fichero inexistente falla limpio, sin rastro de pila
+    code, salida = corre("ingesta", os.path.join(FIX, "no_existe.xlsx"))
+    afirma(code == 1 and "ERROR" in salida and "Traceback" not in salida,
+           "un fichero inexistente produce un error legible, no un rastro de pila")
+
+
 # ---------------------------------------------------------------------------
 def main() -> int:
     os.makedirs(SALIDA, exist_ok=True)
@@ -739,7 +877,7 @@ def main() -> int:
     for fn in (t_plan_contable, t_materialidad, t_muestreo, t_leasing, t_financiacion,
                t_analiticos, t_comparador, t_cuadres_y_regularizacion,
                t_perfil_y_escalado, t_amortizaciones_deterioro, t_bitacora,
-               t_estado_y_encargo, t_excel, t_presentacion):
+               t_estado_y_encargo, t_excel, t_presentacion, t_cli):
         fn()
     print("\n" + "=" * 78)
     print(f"TOTAL: {TOTAL[0] - len(FALLOS)}/{TOTAL[0]} comprobaciones superadas.")

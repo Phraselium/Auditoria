@@ -20,8 +20,16 @@ terminal:
 pip install pandas openpyxl     # las dos únicas dependencias
 ```
 
-Comprueba que responde con `/dula-audit:estado`. Para probar el plugin sin
-instalarlo: `claude --plugin-dir /ruta/a/Auditoria/dula-audit`.
+Comprueba la instalación con:
+
+```bash
+dula doctor
+```
+
+Debe decir «El plugin es operativo». El lanzador `dula` se añade solo al `PATH`
+mientras el plugin está activo: no tienes que configurar rutas.
+
+Para probarlo sin instalarlo: `claude --plugin-dir /ruta/a/Auditoria/dula-audit`.
 
 ## 2. Configurar (20 minutos, una sola vez)
 
@@ -56,11 +64,10 @@ la marca. Es cinco minutos y no se puede automatizar desde este entorno.
 Y durante la campaña, en la línea de comandos:
 
 ```bash
-export PYTHONPATH=~/.claude/plugins/dula-audit/shared/scripts
-python3 -m dula.cli estado <encargo>                    # ¿dónde estamos?
-python3 -m dula.cli pbc <encargo>                       # ¿qué falta del cliente?
-python3 -m dula.cli horas <encargo>                     # ¿cómo va el presupuesto?
-python3 -m dula.cli validar <encargo> --listar          # bitácora de uso de IA
+dula estado <encargo>                    # ¿dónde estamos y qué toca ahora?
+dula pbc <encargo>                       # ¿qué falta del cliente?
+dula horas <encargo>                     # ¿cómo va el presupuesto?
+dula validar <encargo> --listar          # bitácora de uso de IA
 ```
 
 O simplemente pídelo en lenguaje natural: *«audita el inmovilizado de ACME»*,
@@ -113,6 +120,8 @@ Esto marca la diferencia entre un encargo caro y uno barato:
 | Los honorarios salen `[PENDIENTE-CLIENTE]` | Falta `shared/references/tarifas.json` |
 | Diferencias sistemáticas de tipo en leasings | Comisiones de apertura no incluidas en el cálculo del banco. Ver `ARR-020` |
 
+| `dula: command not found` | El plugin no está activo. Compruébalo con `/plugin list`; si no aparece, reinstálalo |
+| `ERROR: faltan dependencias` | `pip install pandas openpyxl`. El lanzador dice cuál falta |
 | El informe de calidad avisa de ejecuciones sin validar | Es lo correcto: valide cada una con `dula validar <encargo> --entrada IA-000X --quien "..."` |
 
 Para ver la traza completa de un error: `DULA_DEBUG=1 python3 -m dula.cli ...`

@@ -5,7 +5,7 @@ calcula. Ningun cuadre, recalculo, amortizacion, extrapolacion de muestra o
 comparacion numerica se hace "a ojo".
 """
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 from . import (amortizaciones, analiticos, asientos, bitacora, calidad,
                comparador, cuadres, encargo, estado, excel_out, excepciones,

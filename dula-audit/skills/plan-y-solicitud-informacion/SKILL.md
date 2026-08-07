@@ -80,12 +80,11 @@ El problema opuesto y casi igual de caro. Triaje de lo recibido:
 Los pendientes viven en `encargo.json`, no en un correo:
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli pbc <encargo> --anadir "Cuadros de leasing en Excel" \
+dula pbc <encargo> --anadir "Cuadros de leasing en Excel" \
     --area F --prioridad 1 --responsable "Dirección financiera" --comprometido 2026-02-15
-python3 -m dula.cli pbc <encargo> --recordar P001     # anota un recordatorio
-python3 -m dula.cli pbc <encargo> --recibido P001     # sale de la lista
-python3 -m dula.cli pbc <encargo>                     # listado por ruta crítica
+dula pbc <encargo> --recordar P001     # anota un recordatorio
+dula pbc <encargo> --recibido P001     # sale de la lista
+dula pbc <encargo>                     # listado por ruta crítica
 ```
 
 Prioridades: **1** bloqueante · **2** calendario · **3** alto impacto en horas ·

@@ -280,7 +280,7 @@ Son **innegociables**. Cualquier skill que las incumpla está mal ejecutada.
     La entrada nace **sin validar**. El auditor la valida después:
 
     ```bash
-    python3 -m dula.cli validar <encargo> --entrada IA-0003 --quien "MJ Pérez"
+    dula validar <encargo> --entrada IA-0003 --quien "MJ Pérez"
     ```
 
     `revision-de-calidad` reporta como excepción (`CAL-091`) toda ejecución sin
@@ -292,21 +292,28 @@ Son **innegociables**. Cualquier skill que las incumpla está mal ejecutada.
 
 ## 8. Ejecución de los scripts
 
+El plugin expone el lanzador **`dula`** en el `PATH` del Bash mientras está
+activo. No hace falta exportar `PYTHONPATH` ni saber dónde se ha instalado: el
+lanzador se localiza a sí mismo, verifica que hay Python 3.10+ con las
+dependencias, y da un mensaje accionable si falta algo.
+
 ```bash
-export PYTHONPATH=<ruta-del-plugin>/shared/scripts
-python3 -m dula.cli <subcomando> --help
+dula doctor              # comprueba instalación y configuración
+dula <subcomando> --help
 ```
 
 Dependencias: `pandas` y `openpyxl`. Nada más — sin dependencias exóticas que
 compliquen la instalación en los equipos del despacho.
 
-Subcomandos: `nuevo` · `estimar` · `ingesta` · `materialidad` · `leasing` ·
-`financiacion` · `amortizaciones` · `asientos` · `muestreo` · `analiticos` ·
-`comparar` · `calidad` · `estado` · `horas` · `pbc` · `validar`.
+Subcomandos: `doctor` · `nuevo` · `estimar` · `ingesta` · `materialidad` ·
+`leasing` · `financiacion` · `amortizaciones` · `asientos` · `reservas` ·
+`muestreo` · `analiticos` · `comparar` · `calidad` · `estado` · `horas` · `pbc` ·
+`validar`.
 
 Argumentos comunes a los que generan papel: `--papel` `--cliente` `--ejercicio`
 `--encargo` `--horas` `--riesgos`. Con `--encargo`, el papel se registra en el
 estado y la ejecución en la bitácora **sin que haya que hacer nada más**.
 
-Verificación de la instalación: `python3 tests/run_all.py` debe devolver
-**208/208 comprobaciones superadas y 100 % de cobertura**.
+Verificación de la instalación: `dula doctor` debe decir «El plugin es
+operativo», y `python3 tests/run_all.py` debe devolver **236/236 comprobaciones
+superadas y 100 % de cobertura**.

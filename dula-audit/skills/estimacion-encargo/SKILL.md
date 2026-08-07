@@ -34,8 +34,7 @@ extranjera (668/768), instrumentos de financiación (17x/52x/16x/51x), leasings
 (174/524) y partes vinculadas (16x/24x/44x con desglose de grupo).
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli ingesta <sumas_y_saldos.xlsx> --diario <diario.xlsx> --ejercicio <AAAA>
+dula ingesta <sumas_y_saldos.xlsx> --diario <diario.xlsx> --ejercicio <AAAA>
 ```
 
 **2. Completar los drivers cualitativos.** Pregunta al socio **solo** lo que no
@@ -50,7 +49,7 @@ se deduce del balance, y en una sola tanda:
 **3. Puntuación y perfil.**
 
 ```bash
-python3 -m dula.cli estimar drivers.json --tarifas shared/references/tarifas.json \
+dula estimar drivers.json --tarifas shared/references/tarifas.json \
     --excel "02-documentos/Estimacion.xlsx" --encargo <carpeta-encargo>
 ```
 

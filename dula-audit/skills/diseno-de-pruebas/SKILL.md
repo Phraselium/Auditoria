@@ -64,7 +64,7 @@ Con independencia de lo que diga la tabla de eficiencia:
    que un inspector querrá leer.
 3. Dimensiona el alcance con `muestreo`:
    ```bash
-   python3 -m dula.cli muestreo poblacion.xlsx importe --metodo mus \
+   dula muestreo poblacion.xlsx importe --metodo mus \
        --materialidad <MP> --riesgo 0.05 --semilla <n>
    ```
 4. Estima las horas de cada prueba y súmalas. Contrasta con el presupuesto de

@@ -12,8 +12,7 @@ tamaño, y esta presunción **no es rebatible**.
 ## Ejecución
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli asientos 00-fuentes/diario.xlsx 2025-12-31 \
+dula asientos 00-fuentes/diario.xlsx 2025-12-31 \
     --materialidad <MP> --perfil ESTANDAR \
     --cliente "<CLIENTE>" --ejercicio 2025 \
     --papel "01-papeles/2.8 Test de asientos.xlsx"

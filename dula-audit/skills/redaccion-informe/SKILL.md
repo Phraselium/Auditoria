@@ -96,8 +96,7 @@ sin aportar valor al usuario de unas cuentas abreviadas.
 ## 7. Verificación final — BLOQUEANTE
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli comparar --informe 02-documentos/informe.json \
+dula comparar --informe 02-documentos/informe.json \
     --ccaa-definitivas 00-fuentes/ccaa_definitivas.json \
     --papel "01-papeles/9.1 Verificacion previa a la firma.xlsx"
 ```

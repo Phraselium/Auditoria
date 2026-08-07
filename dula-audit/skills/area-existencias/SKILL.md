@@ -48,8 +48,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli muestreo 00-fuentes/existencias.xlsx valor --metodo mus \
+dula muestreo 00-fuentes/existencias.xlsx valor --metodo mus \
     --materialidad <MP> --excel "01-papeles/B-1 Muestra existencias.xlsx"
 ```
 

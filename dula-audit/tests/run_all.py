@@ -24,15 +24,24 @@ COBERTURA_MINIMA = 0.95
 
 
 def funciones_publicas() -> set[str]:
+    """Funciones publicas de la libreria mas los subcomandos del CLI.
+
+    El CLI cuenta: es la interfaz por la que las skills invocan todo. Un
+    subcomando que nunca se ha ejecutado es una skill que no produce papel.
+    """
     out: set[str] = set()
     for f in glob.glob(os.path.join(DIR_LIB, "*.py")):
         mod = os.path.basename(f)[:-3]
-        if mod in ("__init__", "cli"):
+        if mod == "__init__":
             continue
         for n in ast.parse(open(f, encoding="utf-8").read()).body:
-            if isinstance(n, ast.FunctionDef) and not n.name.startswith("_"):
+            if isinstance(n, ast.FunctionDef):
+                if mod == "cli" and not n.name.startswith("cmd_"):
+                    continue  # del CLI solo interesan los subcomandos
+                if not mod == "cli" and n.name.startswith("_"):
+                    continue
                 out.add(f"{mod}.{n.name}")
-            elif isinstance(n, ast.ClassDef):
+            elif isinstance(n, ast.ClassDef) and mod != "cli":
                 for m in n.body:
                     if isinstance(m, ast.FunctionDef) and not m.name.startswith("_"):
                         out.add(f"{mod}.{n.name}.{m.name}")

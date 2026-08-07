@@ -49,8 +49,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli analiticos 00-fuentes/subvenciones_actual.json \
+dula analiticos 00-fuentes/subvenciones_actual.json \
     00-fuentes/subvenciones_anterior.json --materialidad <MP> \
     --papel "01-papeles/L-1 Subvenciones.xlsx"
 ```

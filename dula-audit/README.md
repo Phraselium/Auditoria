@@ -5,8 +5,8 @@ completo del encargo —aceptación, planificación, trabajo de campo, cierre e
 informe— bajo NIA-ES, con cálculo determinista por script, trazabilidad total y
 reporte por excepción.
 
-**Estado:** v1.1.0 · 34 skills · 7 comandos · 3 agentes · 21 módulos Python ·
-**208/208 comprobaciones superadas · 100 % de cobertura de la librería**.
+**Estado:** v1.2.0 · 35 skills · 7 comandos · 3 agentes · 23 módulos Python ·
+**236/236 comprobaciones superadas · 100 % de cobertura de la librería**.
 
 ---
 
@@ -95,15 +95,25 @@ cambios sin desinstalar nada.
 pip install pandas openpyxl            # las dos únicas dependencias
 ```
 
+```bash
+dula doctor                            # comprueba instalación y configuración
 ```
-/dula-audit:estado                     # comprueba que el plugin responde
-```
+
+`dula doctor` distingue lo que **impide** trabajar (falta Python o una
+dependencia, falta un fichero de referencia) de lo que solo **degrada** el
+resultado (sin tarifas, estimador sin calibrar, párrafos del informe pendientes
+de contraste). Empiece siempre por ahí.
+
+**Coste en contexto:** el plugin añade unos **7.400 tokens a cada sesión** — las
+descripciones de disparo de sus 42 componentes. Es el precio de que las skills se
+activen solas y con precisión. Fuera de campaña puede desactivarlo con
+`/plugin disable dula-audit` y reactivarlo con `/plugin enable dula-audit`.
 
 Verificación completa de la librería de cálculo:
 
 ```bash
 claude plugin validate <ruta>/dula-audit    # debe decir "Validation passed"
-cd <ruta>/dula-audit && python3 tests/run_all.py   # 208/208 y cobertura 100 %
+cd <ruta>/dula-audit && python3 tests/run_all.py   # 236/236 y cobertura 100 %
 ```
 
 Después, **completa `skills/convenciones-dula/SKILL.md`**: los campos entre `«»` son los datos reales del
@@ -157,6 +167,7 @@ dula-audit/
 ├── .claude-plugin/plugin.json
 ├── skills/convenciones-dula/SKILL.md                    # perfil del despacho, convenciones y umbrales
 ├── GUIA-ARRANQUE.md             # una página para empezar
+├── bin/dula                     # lanzador; se añade al PATH del Bash
 ├── commands/                    # 7 comandos de entrada rápida
 ├── agents/                      # extractor-documental · reconciliador · revisor-critico
 ├── skills/                      # 34 skills
@@ -218,13 +229,17 @@ uso real.
 
 ## Uso de la librería desde la línea de comandos
 
+El plugin expone el lanzador **`dula`** en el `PATH` del Bash mientras está
+activo — no hay que exportar `PYTHONPATH` ni saber dónde se instaló:
+
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli --help
+dula doctor          # empiece siempre por aquí
+dula --help
 ```
 
 | Subcomando | Qué hace |
 |---|---|
+| `doctor` | Comprueba instalación, dependencias y configuración |
 | `nuevo` | Crea carpeta y estado del encargo |
 | `estimar` | Perfil de complejidad, horas y honorarios |
 | `ingesta` | Normaliza y ejecuta los cuadres de integridad |
@@ -240,6 +255,7 @@ python3 -m dula.cli --help
 | `estado` | Dónde está el encargo y cuál es el siguiente paso |
 | `horas` | Imputa y consulta horas por papel de trabajo |
 | `pbc` | Pendientes del cliente, ordenados por ruta crítica |
+| `reservas` | Reservas indisponibles y restringidas, con la regla del art. 274 LSC |
 | `validar` | Valida una ejecución de la bitácora de uso de IA |
 
 ---
@@ -261,14 +277,14 @@ python3 -m dula.cli --help
 | 5 | La revisión detecta un papel sin conclusión y un riesgo sin respuesta | 7/7 |
 | 6 | El modelo de informe corresponde a la versión normativa vigente | 14/14 |
 
-**`tests/test_libreria.py`** — 156 comprobaciones unitarias con **resultados
+**`tests/test_libreria.py`** — 184 comprobaciones unitarias con **resultados
 numéricos conocidos**, no solo «que no reviente»: TIR de un préstamo francés
 contra su tipo de partida, proyección de errores por *tainting*, umbral doble de
 los analíticos, clasificación de arrendamientos indicador a indicador, período
 medio de cobro, conciliación bancaria en los dos sentidos.
 
 ```bash
-python3 tests/run_all.py             # 208/208 + cobertura, es el que hay que ejecutar
+python3 tests/run_all.py             # 236/236 + cobertura, es el que hay que ejecutar
 python3 tests/generar_fixtures.py    # regenera los datos sintéticos
 ```
 

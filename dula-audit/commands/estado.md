@@ -8,8 +8,7 @@ Estado del encargo: $ARGUMENTS
 Invoca `estado-del-encargo`:
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli estado <carpeta-encargo>
+dula estado <carpeta-encargo>
 ```
 
 Lee el estado de `encargo.json` y `uso-ia.log` —no de la memoria de la

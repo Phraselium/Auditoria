@@ -16,9 +16,8 @@ en encargos largos— para que las excepciones vayan apareciendo cuando aún hay
 tiempo de resolverlas.
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli calidad <carpeta-encargo> --pre-vuelo     # durante la campaña
-python3 -m dula.cli calidad <carpeta-encargo> \
+dula calidad <carpeta-encargo> --pre-vuelo     # durante la campaña
+dula calidad <carpeta-encargo> \
     --panel "02-documentos/Panel del socio.txt" \
     --papel "01-papeles/9.2 Revision de calidad.xlsx"          # antes de firmar
 ```
@@ -88,8 +87,8 @@ inspección no hay forma de distinguir un cálculo revisado de uno aceptado a
 ciegas.
 
 ```bash
-python3 -m dula.cli validar <encargo> --listar                     # ver el registro
-python3 -m dula.cli validar <encargo> --entrada IA-0003 --quien "MJ Pérez"
+dula validar <encargo> --listar                     # ver el registro
+dula validar <encargo> --entrada IA-0003 --quien "MJ Pérez"
 ```
 
 Al ejecutar la revisión en modo completo (no pre-vuelo) se genera además

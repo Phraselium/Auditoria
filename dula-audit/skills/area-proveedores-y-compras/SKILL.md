@@ -51,8 +51,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli muestreo 00-fuentes/pagos_posteriores.xlsx importe \
+dula muestreo 00-fuentes/pagos_posteriores.xlsx importe \
     --metodo dirigido --materialidad <MP> --excel "01-papeles/H-2 Pasivos no registrados.xlsx"
 ```
 

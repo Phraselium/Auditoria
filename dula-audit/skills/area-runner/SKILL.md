@@ -47,7 +47,7 @@ afirmaciones cubiertas**. Una conclusión de una línea no es una conclusión
 registro del papel, de las fuentes y de la bitácora es **automático**:
 
 ```bash
-python3 -m dula.cli <subcomando> ... --encargo . --papel "01-papeles/F-1.xlsx" \
+dula <subcomando> ... --encargo . --papel "01-papeles/F-1.xlsx" \
     --horas 6 --riesgos R002 R007
 ```
 

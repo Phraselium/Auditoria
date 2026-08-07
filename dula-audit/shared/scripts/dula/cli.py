@@ -21,10 +21,10 @@ from . import (amortizaciones, analiticos, asientos, bitacora, calidad,
                materialidad, muestreo, perfil)
 from .encargo import Encargo
 from .excel_out import PapelDeTrabajo, exporta_tablas
-from .excepciones import Resultado
+from .excepciones import INFORMATIVA, RESOLVER, Excepcion, Resultado
 from .traza import RegistroTrazas, Traza, huella
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 
 def _salida(res: Resultado, json_out: bool = False) -> None:
@@ -519,6 +519,214 @@ def cmd_muestreo(args) -> int:
     return 0
 
 
+def cmd_reservas(args) -> int:
+    """Reservas indisponibles y restringidas del patrimonio neto.
+
+    Se comprueba en planificacion, por sus implicaciones sobre la distribucion y
+    sobre el efecto fiscal, y se cierra en trabajo de campo.
+    """
+    from . import plan_contable
+    sys_df, meta = ingesta.normaliza_sumas_y_saldos(args.sumas_y_saldos, args.hoja)
+    res = Resultado("Reservas indisponibles y restringidas")
+    reg = RegistroTrazas()
+    filas: list[dict[str, Any]] = []
+
+    patrimonio = sys_df[sys_df["cuenta"].str.startswith(("10", "11", "12", "13"))]
+    capital = round(-float(
+        sys_df[sys_df["cuenta"].str.startswith("100")]["saldo"].sum()), 2)
+    legal = 0.0
+
+    for _, r in patrimonio.iterrows():
+        info = plan_contable.reserva_restringida(r["cuenta"])
+        saldo = round(-float(r["saldo"]), 2)  # las reservas son de saldo acreedor
+        if info is None:
+            continue
+        if info["cuenta_pgc"].startswith("112"):
+            legal = saldo
+        filas.append({
+            "cuenta": r["cuenta"], "descripcion": r["descripcion"],
+            "reserva": info["nombre"], "saldo": saldo,
+            "disponible": "SI" if info["disponible"] else "NO",
+            "norma": info.get("norma", ""), "regla": info.get("regla", ""),
+        })
+        reg.anota(f"{info['nombre']} ({r['cuenta']})", saldo,
+                  ingesta.traza_de(meta, int(r["_fila_origen"]), "saldo"))
+        if not info["disponible"]:
+            res.add(Excepcion(
+                "RES-001", INFORMATIVA, "G",
+                f"{info['nombre']} (cuenta {r['cuenta']}): {saldo:,.2f} EUR, "
+                f"INDISPONIBLE. {info.get('regla', '')}".strip(),
+                importe=saldo, cuenta=r["cuenta"],
+                origen=f"fila {int(r['_fila_origen'])}",
+                accion="Verificar dotacion, mantenimiento dentro del plazo legal y su "
+                       "desglose expreso en la nota de fondos propios de la memoria.",
+                referencia_normativa=info.get("norma", ""),
+            ))
+
+    # la reserva legal tiene una regla verificable de forma determinista
+    if capital > 0:
+        minimo = round(capital * 0.20, 2)
+        if legal < minimo - 0.01:
+            res.add(Excepcion(
+                "RES-010", RESOLVER, "G",
+                f"Reserva legal dotada {legal:,.2f} EUR frente al minimo exigible de "
+                f"{minimo:,.2f} EUR (20% del capital social de {capital:,.2f} EUR).",
+                importe=round(minimo - legal, 2), cuenta="112",
+                origen="balance de sumas y saldos",
+                causa_sugerida="Dotacion insuficiente, o la sociedad aun no ha alcanzado "
+                               "el limite por no haber obtenido beneficios suficientes.",
+                accion="Verificar que se ha dotado el 10% del beneficio del ejercicio. "
+                       "Mientras no se alcance el 20% del capital, la dotacion es "
+                       "obligatoria y limita la distribucion de dividendos.",
+                referencia_normativa="art. 274 LSC",
+            ))
+        else:
+            res.datos["reserva_legal_completa"] = True
+
+    detalle = pd.DataFrame(filas)
+    total_indisp = round(float(detalle[detalle["disponible"] == "NO"]["saldo"].sum()), 2) \
+        if not detalle.empty else 0.0
+    res.datos.update({
+        "capital_social": capital,
+        "reserva_legal": legal,
+        "reservas_identificadas": len(filas),
+        "total_indisponible": total_indisp,
+    })
+    res.conclusion = (
+        f"Identificadas {len(filas)} reservas, de las que {total_indisp:,.2f} EUR son "
+        f"INDISPONIBLES. Reserva legal {legal:,.2f} EUR sobre un capital de "
+        f"{capital:,.2f} EUR."
+        + (" Sin incidencias en la dotacion." if res.ok and not res.excepciones
+           or all(e.severidad == INFORMATIVA for e in res.excepciones)
+           else " Ver excepciones."))
+    print(res.resumen())
+    print("\nCada reserva indisponible debe figurar identificada en la nota de fondos "
+          "propios de la memoria, con su restriccion y su plazo. Es un desglose que se "
+          "omite con frecuencia.")
+    _papel(args, "G-2", "Reservas indisponibles y restringidas", res,
+           {"Reservas": (detalle, ["saldo"])}, reg,
+           alcance="Identificacion de las reservas indisponibles y restringidas del "
+                   "patrimonio neto, verificacion de la dotacion minima de la reserva "
+                   "legal y comprobacion de su desglose en memoria.",
+           fundamento="arts. 274 y 273.4 LSC; arts. 25 y 105 LIS.")
+    _registra(args, "area-fondos-propios-y-reservas", "G-2",
+              "Reservas indisponibles y restringidas", res,
+              [args.sumas_y_saldos], [getattr(args, "papel", "")],
+              {"total_indisponible": total_indisp, "capital_social": capital})
+    return 0
+
+
+def cmd_doctor(args) -> int:
+    """Comprobacion previa de la instalacion y de la configuracion.
+
+    Se ejecuta antes del primer encargo, y cuando algo no funciona. Distingue lo
+    que impide trabajar de lo que solo degrada el resultado.
+    """
+    # .../<plugin>/shared/scripts/dula/cli.py -> cuatro niveles hasta la raiz.
+    # El lanzador `dula` la exporta en DULA_RAIZ; al invocar `python -m dula.cli`
+    # directamente hay que deducirla, y equivocarse aqui hace que doctor declare
+    # ausentes ficheros que si estan.
+    raiz = os.environ.get("DULA_RAIZ") or os.path.abspath(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+    bloqueantes: list[str] = []
+    avisos: list[str] = []
+    print("dula-audit - comprobacion de la instalacion")
+    print("=" * 70)
+    print(f"Raiz del plugin: {raiz}")
+    print(f"Version de la libreria: {VERSION}")
+    print(f"Python: {sys.version.split()[0]}")
+
+    if sys.version_info < (3, 10):
+        bloqueantes.append(f"Python {sys.version.split()[0]} es anterior a 3.10.")
+
+    for mod in ("pandas", "openpyxl"):
+        try:
+            m = __import__(mod)
+            print(f"  {mod}: {getattr(m, '__version__', 'instalado')}")
+        except ImportError:
+            bloqueantes.append(f"Falta la dependencia '{mod}'. "
+                               f"Instalela con: pip install {mod}")
+
+    print("\nFicheros de referencia")
+    for rel, critico in (("shared/references/mapeo-pgc.json", True),
+                         ("shared/references/desgloses-memoria.json", True),
+                         ("shared/references/catalogo-riesgos.md", False),
+                         ("shared/templates/informe-auditoria.md", True),
+                         ("shared/references/tarifas.json", False),
+                         ("shared/references/historico-encargos.json", False)):
+        ruta = os.path.join(raiz, rel)
+        existe = os.path.exists(ruta)
+        print(f"  [{'OK' if existe else '--'}] {rel}")
+        if not existe and critico:
+            bloqueantes.append(f"Falta el fichero de referencia {rel}.")
+
+    # el mapeo y la checklist deben cargarse de verdad, no solo existir
+    try:
+        from . import plan_contable
+        c = plan_contable.clasifica("4300000001")
+        if c["estado"] != "OK":
+            bloqueantes.append("El mapeo PGC no resuelve una cuenta de clientes.")
+        else:
+            print(f"  Mapeo PGC operativo (430 -> {c['epigrafe']} {c['titulo']}).")
+    except Exception as exc:  # noqa: BLE001
+        bloqueantes.append(f"El mapeo PGC no se puede cargar: {exc}")
+    try:
+        r = comparador.checklist_memoria("", "PYME")
+        print(f"  Checklist de memoria operativa "
+              f"({r.datos['notas_aplicables']} notas para el modelo PYME).")
+    except Exception as exc:  # noqa: BLE001
+        bloqueantes.append(f"La checklist de desgloses no se puede cargar: {exc}")
+
+    print("\nConfiguracion del despacho")
+    conf = os.path.join(raiz, "skills", "convenciones-dula", "SKILL.md")
+    if not os.path.exists(conf):
+        bloqueantes.append("Falta skills/convenciones-dula/SKILL.md.")
+    else:
+        texto = open(conf, encoding="utf-8").read()
+        pendientes = texto.count("«")
+        if pendientes:
+            avisos.append(
+                f"{pendientes} campos sin completar en skills/convenciones-dula/SKILL.md "
+                "(numeros de ROAC, ruta base, festivos locales). El plugin funciona, pero "
+                "los dejara como [PENDIENTE-CLIENTE] en los documentos.")
+        else:
+            print("  Configuracion completada.")
+    if not os.path.exists(os.path.join(raiz, "shared", "references", "tarifas.json")):
+        avisos.append("No hay tarifas.json: `estimacion-encargo` calculara horas pero "
+                      "devolvera los honorarios como [PENDIENTE-CLIENTE]. Copie "
+                      "shared/references/tarifas.json.ejemplo y ponga las suyas.")
+    hist = os.path.join(raiz, "shared", "references", "historico-encargos.json")
+    if os.path.exists(hist):
+        try:
+            if not json.load(open(hist, encoding="utf-8")).get("encargos"):
+                avisos.append("El estimador no esta calibrado con encargos reales del "
+                              "despacho: trate el rango de horas como orientativo.")
+        except Exception:  # noqa: BLE001
+            avisos.append("historico-encargos.json no es JSON valido.")
+
+    plantilla = os.path.join(raiz, "shared", "templates", "informe-auditoria.md")
+    if os.path.exists(plantilla):
+        n = open(plantilla, encoding="utf-8").read().count("[VERIFICAR-LITERAL-ICAC]")
+        if n:
+            avisos.append(
+                f"{n} parrafos del modelo de informe marcados [VERIFICAR-LITERAL-ICAC]: "
+                "contrastelos una vez contra el PDF oficial de la NIA-ES 700R del ICAC "
+                "antes del primer uso real, y borre la marca.")
+
+    print("\n" + "=" * 70)
+    for b in bloqueantes:
+        print(f"  BLOQUEANTE  {b}")
+    for a in avisos:
+        print(f"  AVISO       {a}")
+    if not bloqueantes and not avisos:
+        print("  Todo correcto. El plugin esta listo para trabajar.")
+    elif not bloqueantes:
+        print(f"\n  El plugin es operativo. {len(avisos)} avisos de configuracion.")
+    else:
+        print(f"\n  {len(bloqueantes)} problemas impiden ejecutar los calculos.")
+    return 1 if bloqueantes else 0
+
+
 def cmd_estado(args) -> int:
     enc = Encargo.abrir(args.encargo)
     b = bitacora.Bitacora(enc.carpeta)
@@ -764,6 +972,13 @@ def construye_parser() -> argparse.ArgumentParser:
     s.add_argument("--ejercicio", type=int, default=0)
     s.add_argument("--horas", type=float)
     s.set_defaults(fn=cmd_calidad)
+
+    s = sub.add_parser("reservas", help="reservas indisponibles y restringidas")
+    s.add_argument("sumas_y_saldos"); s.add_argument("--hoja", default=0)
+    comunes(s); s.set_defaults(fn=cmd_reservas)
+
+    s = sub.add_parser("doctor", help="comprueba la instalacion y la configuracion")
+    s.set_defaults(fn=cmd_doctor)
 
     s = sub.add_parser("estado", help="donde esta el encargo y cual es el siguiente paso")
     s.add_argument("encargo")

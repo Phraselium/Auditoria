@@ -65,16 +65,16 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -c "
-import sys; sys.path.insert(0,'${CLAUDE_PLUGIN_ROOT}/shared/scripts')
-from dula import ingesta, plan_contable
-sys_df,_ = ingesta.normaliza_sumas_y_saldos('00-fuentes/sumas_y_saldos.xlsx')
-for _, r in sys_df[sys_df['cuenta'].str.startswith(('11','10','12','13'))].iterrows():
-    info = plan_contable.reserva_restringida(r['cuenta'])
-    if info: print(r['cuenta'], r['saldo'], info['nombre'], '| disponible:', info['disponible'], '|', info.get('regla',''))
-"
+dula reservas 00-fuentes/sumas_y_saldos.xlsx \
+    --cliente "<CLIENTE>" --ejercicio <AAAA> --encargo . \
+    --papel "01-papeles/G-2 Reservas indisponibles.xlsx"
 ```
+
+Identifica cada reserva restringida con su régimen y su norma, verifica de forma
+determinista la dotación mínima de la reserva legal (10 % del beneficio hasta el
+20 % del capital, art. 274 LSC) y deja constancia de que **cada una debe figurar
+identificada en la nota de fondos propios de la memoria** — es un desglose que se
+omite con frecuencia.
 
 ## Checklist de autoverificación
 

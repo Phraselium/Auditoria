@@ -25,8 +25,7 @@ alcance sin ganar un gramo de calidad. El script lo detecta y cambia de magnitud
 **2. Ejecutar.**
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
-python3 -m dula.cli materialidad '{"cifra_negocios": 1850000, "total_activo": 920000, "resultado_antes_impuestos": 41000}' \
+dula materialidad '{"cifra_negocios": 1850000, "total_activo": 920000, "resultado_antes_impuestos": 41000}' \
     --perfil ESTANDAR --encargo . \
     --especifica "M:0.25:retribuciones al órgano de administración y operaciones con partes vinculadas, cuyo desglose es legalmente exigido con independencia de su importe"
 ```

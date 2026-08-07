@@ -15,17 +15,16 @@ misma semilla, obtiene exactamente las mismas partidas.
 ## Métodos
 
 ```bash
-export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 
 # MUS - poblacion numerosa, riesgo de sobrevaloracion, se necesita extrapolar
-python3 -m dula.cli muestreo poblacion.xlsx importe --metodo mus \
+dula muestreo poblacion.xlsx importe --metodo mus \
     --materialidad <MP> --riesgo 0.05 --errores 0 --semilla 12345 --excel salida.xlsx
 
 # Atributos - pruebas de controles
-python3 -m dula.cli muestreo poblacion.xlsx importe --metodo atributos --frecuencia mensual
+dula muestreo poblacion.xlsx importe --metodo atributos --frecuencia mensual
 
 # Dirigido - perfil LIGERO, poblacion concentrada
-python3 -m dula.cli muestreo poblacion.xlsx importe --metodo dirigido --materialidad <MP>
+dula muestreo poblacion.xlsx importe --metodo dirigido --materialidad <MP>
 ```
 
 ### MUS (unidades monetarias)
