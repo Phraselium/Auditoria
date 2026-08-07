@@ -29,7 +29,7 @@ hace constar** — nunca se da por cuadrado lo que no se ha comparado.
 ## Procedimiento
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 
 # 1. Cuentas anuales <-> balance de sumas y saldos
 python3 -m dula.cli comparar --ccaa 00-fuentes/ccaa.json \

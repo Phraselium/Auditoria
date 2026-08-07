@@ -1,6 +1,6 @@
 ---
 name: reconciliador
-description: Ejecuta cuadres y conciliaciones masivas entre ficheros: casación por clave o por importe, identificación de partidas no casadas en ambos sentidos y cuantificación de las diferencias. No aplica criterio profesional: solo calcula. Úsalo para conciliaciones bancarias voluminosas, casación de soporte contra contabilidad, o cuadres entre extracciones de sistemas distintos.
+description: 'Ejecuta cuadres y conciliaciones masivas entre ficheros: casación por clave o por importe, identificación de partidas no casadas en ambos sentidos y cuantificación de las diferencias. No aplica criterio profesional: solo calcula. Úsalo para conciliaciones bancarias voluminosas, casación de soporte contra contabilidad, o cuadres entre extracciones de sistemas distintos.'
 tools: Read, Glob, Grep, Bash
 ---
 

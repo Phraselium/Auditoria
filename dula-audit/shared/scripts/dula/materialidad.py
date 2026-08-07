@@ -13,7 +13,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-# Rangos habituales en la practica espanola. Configurables en CLAUDE.md.
+# Rangos habituales en la practica espanola. Configurables en skills/convenciones-dula/SKILL.md.
 # No son un mandato normativo: la NIA-ES 320 no fija porcentajes.
 RANGOS = {
     "resultado_antes_impuestos": (0.05, 0.10),

@@ -15,7 +15,7 @@ misma semilla, obtiene exactamente las mismas partidas.
 ## Métodos
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 
 # MUS - poblacion numerosa, riesgo de sobrevaloracion, se necesita extrapolar
 python3 -m dula.cli muestreo poblacion.xlsx importe --metodo mus \

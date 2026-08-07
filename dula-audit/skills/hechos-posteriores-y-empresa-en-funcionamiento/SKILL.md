@@ -1,6 +1,6 @@
 ---
 name: hechos-posteriores-y-empresa-en-funcionamiento
-description: Ejecuta los procedimientos sobre hechos posteriores al cierre y evalúa la capacidad de la entidad para continuar como empresa en funcionamiento, con árboles de decisión que conectan directamente con el efecto en el informe. Úsala en la fase de cierre, antes de redactar el informe, y siempre que aparezcan indicadores de dificultades financieras: patrimonio neto negativo, pérdidas recurrentes, fondo de maniobra negativo o incumplimiento de covenants.
+description: 'Ejecuta los procedimientos sobre hechos posteriores al cierre y evalúa la capacidad de la entidad para continuar como empresa en funcionamiento, con árboles de decisión que conectan directamente con el efecto en el informe. Úsala en la fase de cierre, antes de redactar el informe, y siempre que aparezcan indicadores de dificultades financieras: patrimonio neto negativo, pérdidas recurrentes, fondo de maniobra negativo o incumplimiento de covenants.'
 ---
 
 # Hechos posteriores y empresa en funcionamiento (NIA-ES 560 y 570 Revisada)

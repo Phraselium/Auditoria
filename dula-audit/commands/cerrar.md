@@ -1,6 +1,6 @@
 ---
-description: Ejecuta la fase de cierre: incorrecciones, hechos posteriores, manifestaciones, informe y revisión de calidad
-argument-hint: [ruta-del-encargo]
+description: 'Ejecuta la fase de cierre: incorrecciones, hechos posteriores, manifestaciones, informe y revisión de calidad'
+argument-hint: '[ruta-del-encargo]'
 ---
 
 Cierra el encargo: $ARGUMENTS

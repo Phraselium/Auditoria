@@ -1,9 +1,19 @@
-# Dula Auditores — perfil del despacho, convenciones y umbrales
+---
+name: convenciones-dula
+description: 'Configuración del despacho Dula Auditores: perfil y números de ROAC, marco normativo aplicado y sus fechas de entrada en vigor, índice y nomenclatura de papeles de trabajo, estructura de carpetas del encargo, marcadores reservados, severidades, umbrales de materialidad y tolerancias de cuadre, tarifas por categoría, perfiles de ERP y las once reglas de comportamiento innegociables del plugin. Cárgala al inicio de cualquier trabajo de auditoría y siempre que necesites un umbral, una convención o la versión normativa aplicada.'
+---
 
-Este fichero configura el plugin. **Todo lo que aparece entre `«»` hay que
-completarlo con los datos reales del despacho antes del primer uso en
-producción.** Lo que no esté completado, el plugin lo tratará como
+# Convenciones, umbrales y configuración de Dula Auditores
+
+**Este es el fichero de configuración del plugin.** Todo lo que aparece entre
+`«»` hay que completarlo con los datos reales del despacho antes del primer uso
+en producción. Lo que no esté completado, el plugin lo tratará como
 `[PENDIENTE-CLIENTE]` y no lo inventará.
+
+> **Consúltalo al inicio de cualquier trabajo de auditoría** y siempre que
+> necesites un umbral, la referencia de un papel de trabajo, la versión
+> normativa aplicada o una regla de comportamiento. Las reglas de la sección 7
+> son innegociables: cualquier skill que las incumpla está mal ejecutada.
 
 ---
 

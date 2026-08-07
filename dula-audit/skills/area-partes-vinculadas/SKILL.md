@@ -1,6 +1,6 @@
 ---
 name: area-partes-vinculadas
-description: Identifica las partes vinculadas y audita las operaciones realizadas con ellas y sus saldos pendientes, incluidas las retribuciones y anticipos al órgano de administración y a la alta dirección, y verifica su desglose en memoria. Úsala en todo encargo: la ausencia de operaciones vinculadas es una conclusión que hay que probar, no una presunción.
+description: 'Identifica las partes vinculadas y audita las operaciones realizadas con ellas y sus saldos pendientes, incluidas las retribuciones y anticipos al órgano de administración y a la alta dirección, y verifica su desglose en memoria. Úsala en todo encargo: la ausencia de operaciones vinculadas es una conclusión que hay que probar, no una presunción.'
 ---
 
 # Área M — Partes vinculadas
@@ -52,7 +52,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli asientos 00-fuentes/diario.xlsx 2025-12-31 \
     --materialidad <MP> --papel "01-papeles/M-1 Partes vinculadas.xlsx"
 ```

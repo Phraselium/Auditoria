@@ -56,7 +56,7 @@ campos.
 **2. Procesar el lote.**
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli leasing 00-fuentes/contratos_consolidados.xlsx 2025-12-31 \
     --saldo-174 <saldo> --saldo-524 <saldo> \
     --cliente "<CLIENTE>" --ejercicio 2025 \

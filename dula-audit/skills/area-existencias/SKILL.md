@@ -1,6 +1,6 @@
 ---
 name: area-existencias
-description: Audita las existencias: asistencia y verificación del recuento físico, valoración por coste medio o FIFO, corte de operaciones, obsolescencia y márgenes. Úsala cuando haya saldos en el grupo 3, cuando el cliente convoque el recuento, o cuando haya que evaluar el deterioro de existencias. Si la entidad no tiene existencias, no la actives.
+description: 'Audita las existencias: asistencia y verificación del recuento físico, valoración por coste medio o FIFO, corte de operaciones, obsolescencia y márgenes. Úsala cuando haya saldos en el grupo 3, cuando el cliente convoque el recuento, o cuando haya que evaluar el deterioro de existencias. Si la entidad no tiene existencias, no la actives.'
 ---
 
 # Área B — Existencias
@@ -48,7 +48,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli muestreo 00-fuentes/existencias.xlsx valor --metodo mus \
     --materialidad <MP> --excel "01-papeles/B-1 Muestra existencias.xlsx"
 ```

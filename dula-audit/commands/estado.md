@@ -1,6 +1,6 @@
 ---
 description: Muestra dónde está el encargo y cuál es el siguiente paso
-argument-hint: [ruta-del-encargo]
+argument-hint: '[ruta-del-encargo]'
 ---
 
 Estado del encargo: $ARGUMENTS

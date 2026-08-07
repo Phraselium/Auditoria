@@ -1,6 +1,6 @@
 ---
 name: entendimiento-entidad
-description: Construye el entendimiento de la entidad y su entorno: perfil de negocio, sector, marco de información financiera aplicable, ciclos de transacciones, sistemas de TI y grado de automatización, partes vinculadas y hechos relevantes del ejercicio, aprovechando el Registro Mercantil, las cuentas depositadas, la web de la entidad y la prensa cuando estén disponibles. Úsala al inicio de la planificación, antes del mapa de riesgos.
+description: 'Construye el entendimiento de la entidad y su entorno: perfil de negocio, sector, marco de información financiera aplicable, ciclos de transacciones, sistemas de TI y grado de automatización, partes vinculadas y hechos relevantes del ejercicio, aprovechando el Registro Mercantil, las cuentas depositadas, la web de la entidad y la prensa cuando estén disponibles. Úsala al inicio de la planificación, antes del mapa de riesgos.'
 ---
 
 # Entendimiento de la entidad (NIA-ES 315 Revisada)

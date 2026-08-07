@@ -16,7 +16,7 @@ en encargos largos— para que las excepciones vayan apareciendo cuando aún hay
 tiempo de resolverlas.
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli calidad <carpeta-encargo> --pre-vuelo     # durante la campaña
 python3 -m dula.cli calidad <carpeta-encargo> \
     --panel "02-documentos/Panel del socio.txt" \

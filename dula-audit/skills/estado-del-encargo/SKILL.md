@@ -1,6 +1,6 @@
 ---
 name: estado-del-encargo
-description: Muestra en una pantalla dónde está el encargo y qué falta: fase, perfil, materialidad vigente, papeles concluidos y pendientes, riesgos sin respuesta, excepciones abiertas por severidad, documentación pendiente del cliente y horas consumidas frente a las estimadas. Úsala cuando alguien pregunte cómo va un encargo, qué falta para cerrarlo, o al retomar un encargo tras unos días sin tocarlo.
+description: 'Muestra en una pantalla dónde está el encargo y qué falta: fase, perfil, materialidad vigente, papeles concluidos y pendientes, riesgos sin respuesta, excepciones abiertas por severidad, documentación pendiente del cliente y horas consumidas frente a las estimadas. Úsala cuando alguien pregunte cómo va un encargo, qué falta para cerrarlo, o al retomar un encargo tras unos días sin tocarlo.'
 ---
 
 # Estado del encargo
@@ -11,7 +11,7 @@ no es un lujo: es lo primero que se pregunta cualquiera que retoma un encargo.
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli estado <carpeta-encargo>
 ```
 

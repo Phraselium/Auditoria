@@ -1,6 +1,6 @@
 ---
 name: test-asientos-diario
-description: Selecciona asientos inusuales del libro diario como respuesta al riesgo de elusión de los controles por la dirección: contrapartidas atípicas, cuentas raramente utilizadas, asientos manuales de cierre, fines de semana y festivos, importes redondos, usuarios de baja frecuencia, asientos sin descripción e ingresos sin contrapartida en clientes ni tesorería. Reporta por excepción con priorización por puntuación. Es obligatorio en todo encargo: úsala siempre que dispongas del libro diario.
+description: 'Selecciona asientos inusuales del libro diario como respuesta al riesgo de elusión de los controles por la dirección: contrapartidas atípicas, cuentas raramente utilizadas, asientos manuales de cierre, fines de semana y festivos, importes redondos, usuarios de baja frecuencia, asientos sin descripción e ingresos sin contrapartida en clientes ni tesorería. Reporta por excepción con priorización por puntuación. Es obligatorio en todo encargo: úsala siempre que dispongas del libro diario.'
 ---
 
 # Test de asientos del diario (NIA-ES 240.32.a)
@@ -12,7 +12,7 @@ tamaño, y esta presunción **no es rebatible**.
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli asientos 00-fuentes/diario.xlsx 2025-12-31 \
     --materialidad <MP> --perfil ESTANDAR \
     --cliente "<CLIENTE>" --ejercicio 2025 \

@@ -5,7 +5,7 @@ encargos de 2 dias a 2 meses, con la automatizacion de la facturacion, los
 instrumentos de financiacion, los leasings y la capacidad de respuesta del
 cliente como factores que mas mueven la aguja.
 
-Las tarifas por categoria se configuran en CLAUDE.md. Sin tarifas propias, el
+Las tarifas por categoria se configuran en skills/convenciones-dula/SKILL.md. Sin tarifas propias, el
 modulo estima horas y deja los honorarios como [PENDIENTE-CLIENTE]: no inventa
 un precio.
 """
@@ -143,7 +143,7 @@ def clasifica_perfil(puntuacion: int, eip: bool = False,
 # Estimacion de horas
 # ---------------------------------------------------------------------------
 # Horas base por area y perfil. Calibradas sobre encargos tipo del despacho;
-# se ajustan con datos historicos propios (ver CLAUDE.md, seccion Calibracion).
+# se ajustan con datos historicos propios (ver skills/convenciones-dula/SKILL.md, seccion Calibracion).
 HORAS_BASE = {
     "Aceptacion e independencia":   {"LIGERO": 1.0, "ESTANDAR": 2.0, "COMPLEJO": 4.0},
     "Planificacion y riesgos":      {"LIGERO": 3.0, "ESTANDAR": 8.0, "COMPLEJO": 20.0},
@@ -255,7 +255,7 @@ def estima(drivers: dict[str, Any], perfil: str, tarifas: dict[str, float] | Non
             resultado["honorarios"] = "[PENDIENTE-CLIENTE]"
             resultado["nota_honorarios"] = (
                 f"Faltan tarifas para: {', '.join(faltan)}. No se estiman honorarios sin "
-                "tarifa; configurelas en CLAUDE.md.")
+                "tarifa; configurelas en skills/convenciones-dula/SKILL.md.")
         else:
             coste = {c: round(h * tarifas[c], 2) for c, h in por_categoria.items()}
             total_hon = round(sum(coste.values()), 2)
@@ -283,7 +283,7 @@ def estima(drivers: dict[str, Any], perfil: str, tarifas: dict[str, float] | Non
     else:
         resultado["honorarios"] = "[PENDIENTE-CLIENTE]"
         resultado["nota_honorarios"] = ("No se han configurado tarifas por categoria. "
-                                        "Vease CLAUDE.md, seccion Tarifas.")
+                                        "Vease skills/convenciones-dula/SKILL.md, seccion Tarifas.")
     return resultado
 
 

@@ -6,15 +6,27 @@ Una página. Léela entera antes del primer encargo.
 
 ## 1. Instalar (5 minutos, una sola vez)
 
-```bash
-cp -r dula-audit ~/.claude/plugins/
-pip install pandas openpyxl
-cd ~/.claude/plugins/dula-audit && python3 tests/run_all.py    # 208/208 y cobertura 100 %
+Dentro de Claude Code:
+
 ```
+/plugin marketplace add Phraselium/Auditoria
+/plugin install dula-audit@dula
+```
+
+Si el resumen dice `Run /reload-plugins to activate`, ejecútalo. Después, en el
+terminal:
+
+```bash
+pip install pandas openpyxl     # las dos únicas dependencias
+```
+
+Comprueba que responde con `/dula-audit:estado`. Para probar el plugin sin
+instalarlo: `claude --plugin-dir /ruta/a/Auditoria/dula-audit`.
 
 ## 2. Configurar (20 minutos, una sola vez)
 
-Abre `CLAUDE.md` y completa **todos** los campos entre `«»`:
+Abre `skills/convenciones-dula/SKILL.md` —es el fichero de configuración del
+plugin— y completa **todos** los campos entre `«»`:
 
 - Denominación del despacho y **números de ROAC** (sociedad y socio firmante).
 - **Ruta base** donde vivirán las carpetas de los encargos.

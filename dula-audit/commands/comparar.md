@@ -1,6 +1,6 @@
 ---
 description: Ejecuta el comparador documental sobre cuentas anuales, memoria, borradores o el informe
-argument-hint: [qué comparar]
+argument-hint: '[qué comparar]'
 ---
 
 Compara: $ARGUMENTS

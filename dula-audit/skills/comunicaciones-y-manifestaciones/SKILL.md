@@ -1,6 +1,6 @@
 ---
 name: comunicaciones-y-manifestaciones
-description: Redacta la carta de manifestaciones de la dirección adaptada a los riesgos y juicios concretos del encargo, la comunicación de deficiencias de control interno clasificadas por significatividad con sus recomendaciones, y la comunicación con los responsables del gobierno de la entidad. Úsala en la fase de cierre, antes de la firma del informe: la carta de manifestaciones debe obtenerse con fecha no posterior a la del informe.
+description: 'Redacta la carta de manifestaciones de la dirección adaptada a los riesgos y juicios concretos del encargo, la comunicación de deficiencias de control interno clasificadas por significatividad con sus recomendaciones, y la comunicación con los responsables del gobierno de la entidad. Úsala en la fase de cierre, antes de la firma del informe: la carta de manifestaciones debe obtenerse con fecha no posterior a la del informe.'
 ---
 
 # Comunicaciones y manifestaciones (NIA-ES 580, 260 y 265)

@@ -1,6 +1,6 @@
 ---
 name: area-personal
-description: Audita el área de personal: conciliación de nóminas, seguros sociales y contabilidad, indemnizaciones, provisiones por obligaciones con el personal y retenciones. Úsala cuando haya gastos de personal significativos, que es prácticamente siempre.
+description: 'Audita el área de personal: conciliación de nóminas, seguros sociales y contabilidad, indemnizaciones, provisiones por obligaciones con el personal y retenciones. Úsala cuando haya gastos de personal significativos, que es prácticamente siempre.'
 ---
 
 # Área I — Personal
@@ -57,7 +57,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli analiticos 00-fuentes/personal_actual.json \
     00-fuentes/personal_anterior.json --materialidad <MP> \
     --papel "01-papeles/I-1 Personal.xlsx"

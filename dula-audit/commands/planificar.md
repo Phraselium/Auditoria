@@ -1,6 +1,6 @@
 ---
-description: Ejecuta la fase completa de planificación: entendimiento, materialidad, riesgos, diseño de pruebas y PBC
-argument-hint: [ruta-del-encargo]
+description: 'Ejecuta la fase completa de planificación: entendimiento, materialidad, riesgos, diseño de pruebas y PBC'
+argument-hint: '[ruta-del-encargo]'
 ---
 
 Planifica el encargo: $ARGUMENTS

@@ -1,6 +1,6 @@
 ---
 name: area-inmovilizado
-description: Audita el inmovilizado material, intangible e inversiones inmobiliarias: altas, bajas, recálculo integral de amortizaciones elemento a elemento con prorrateo por días, activación de gastos, indicios de deterioro y existencia física. Úsala cuando haya saldos en los grupos 20, 21 o 22, cuando el cliente aporte el inventario de inmovilizado, o cuando haya que verificar la dotación a la amortización.
+description: 'Audita el inmovilizado material, intangible e inversiones inmobiliarias: altas, bajas, recálculo integral de amortizaciones elemento a elemento con prorrateo por días, activación de gastos, indicios de deterioro y existencia física. Úsala cuando haya saldos en los grupos 20, 21 o 22, cuando el cliente aporte el inventario de inmovilizado, o cuando haya que verificar la dotación a la amortización.'
 ---
 
 # Área A — Inmovilizado
@@ -50,7 +50,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli amortizaciones 00-fuentes/inventario.xlsx 2025-01-01 2025-12-31 \
     --cliente "<CLIENTE>" --ejercicio 2025 --papel "01-papeles/A-1 Inmovilizado.xlsx"
 ```

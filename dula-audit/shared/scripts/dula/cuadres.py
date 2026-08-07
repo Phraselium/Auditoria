@@ -13,7 +13,7 @@ import pandas as pd
 from .excepciones import BLOQUEANTE, DOCUMENTAR, RESOLVER, Excepcion, Resultado
 from .plan_contable import clasifica, es_patrimonial, es_resultados
 
-# Tolerancia por redondeo de centimos. Configurable en CLAUDE.md.
+# Tolerancia por redondeo de centimos. Configurable en skills/convenciones-dula/SKILL.md.
 TOLERANCIA = 0.01
 
 

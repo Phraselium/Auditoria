@@ -27,7 +27,7 @@ from .ingesta import columna, num
 PERIODOS_ANO = {"mensual": 12, "bimestral": 6, "trimestral": 4,
                 "cuatrimestral": 3, "semestral": 2, "anual": 1}
 
-# Tolerancias configurables (CLAUDE.md).
+# Tolerancias configurables (skills/convenciones-dula/SKILL.md).
 TOL_IMPORTE = 1.00        # EUR de diferencia admitida en cuadres de contrato
 TOL_TIPO = 0.0025         # 0,25 p.p. entre el TIE calculado y el declarado
 

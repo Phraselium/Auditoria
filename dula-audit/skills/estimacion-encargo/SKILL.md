@@ -34,7 +34,7 @@ extranjera (668/768), instrumentos de financiación (17x/52x/16x/51x), leasings
 (174/524) y partes vinculadas (16x/24x/44x con desglose de grupo).
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli ingesta <sumas_y_saldos.xlsx> --diario <diario.xlsx> --ejercicio <AAAA>
 ```
 

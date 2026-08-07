@@ -80,7 +80,7 @@ El problema opuesto y casi igual de caro. Triaje de lo recibido:
 Los pendientes viven en `encargo.json`, no en un correo:
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli pbc <encargo> --anadir "Cuadros de leasing en Excel" \
     --area F --prioridad 1 --responsable "Dirección financiera" --comprometido 2026-02-15
 python3 -m dula.cli pbc <encargo> --recordar P001     # anota un recordatorio

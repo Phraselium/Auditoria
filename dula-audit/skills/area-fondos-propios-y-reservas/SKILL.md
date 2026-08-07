@@ -1,6 +1,6 @@
 ---
 name: area-fondos-propios-y-reservas
-description: Audita los movimientos del patrimonio neto y su coherencia con las actas y la propuesta de aplicación del resultado, y verifica específicamente las reservas indisponibles y restringidas: reserva legal, reserva de capitalización, reserva de nivelación, reserva por fondo de comercio y otras reservas afectas, con su dotación, mantenimiento, plazos y desglose. Se comprueba en planificación por sus implicaciones y se cierra en trabajo de campo.
+description: 'Audita los movimientos del patrimonio neto y su coherencia con las actas y la propuesta de aplicación del resultado, y verifica específicamente las reservas indisponibles y restringidas: reserva legal, reserva de capitalización, reserva de nivelación, reserva por fondo de comercio y otras reservas afectas, con su dotación, mantenimiento, plazos y desglose. Se comprueba en planificación por sus implicaciones y se cierra en trabajo de campo.'
 ---
 
 # Área G — Fondos propios y reservas
@@ -65,9 +65,9 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -c "
-import sys; sys.path.insert(0,'<plugin>/shared/scripts')
+import sys; sys.path.insert(0,'${CLAUDE_PLUGIN_ROOT}/shared/scripts')
 from dula import ingesta, plan_contable
 sys_df,_ = ingesta.normaliza_sumas_y_saldos('00-fuentes/sumas_y_saldos.xlsx')
 for _, r in sys_df[sys_df['cuenta'].str.startswith(('11','10','12','13'))].iterrows():

@@ -16,7 +16,7 @@ import pandas as pd
 from .excepciones import DOCUMENTAR, INFORMATIVA, RESOLVER, Excepcion, Resultado
 
 # Festivos nacionales de aplicacion general en Espana (sin autonomicos ni locales,
-# que se anaden por configuracion en CLAUDE.md).
+# que se anaden por configuracion en skills/convenciones-dula/SKILL.md).
 FESTIVOS_FIJOS = [(1, 1), (1, 6), (5, 1), (8, 15), (10, 12), (11, 1),
                   (12, 6), (12, 8), (12, 25)]
 

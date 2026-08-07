@@ -1,6 +1,6 @@
 ---
 name: area-provisiones-y-contingencias
-description: Audita provisiones y pasivos contingentes: circularización de abogados, evaluación de litigios en curso, verificación del cálculo de las provisiones y del desglose de los pasivos contingentes. Úsala cuando haya litigios, reclamaciones, saldos en el grupo 14 o 499, o cuando la circularización bancaria revele avales.
+description: 'Audita provisiones y pasivos contingentes: circularización de abogados, evaluación de litigios en curso, verificación del cálculo de las provisiones y del desglose de los pasivos contingentes. Úsala cuando haya litigios, reclamaciones, saldos en el grupo 14 o 499, o cuando la circularización bancaria revele avales.'
 ---
 
 # Área K — Provisiones y contingencias
@@ -53,7 +53,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli muestreo 00-fuentes/mayor_623.xlsx importe --metodo dirigido \
     --materialidad <MP> --excel "01-papeles/K-1 Abogados a circularizar.xlsx"
 ```

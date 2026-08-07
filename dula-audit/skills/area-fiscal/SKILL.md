@@ -1,6 +1,6 @@
 ---
 name: area-fiscal
-description: Audita el área fiscal: conciliación del resultado contable con la base imponible, diferencias permanentes y temporarias, activos y pasivos por impuesto diferido y su recuperabilidad, deducciones y bases imponibles negativas pendientes, contingencias fiscales y ejercicios abiertos, y cuadre de IVA, IRPF e IS con la contabilidad. NO cubre el apartado del informe sobre transparencia fiscal país por país: eso es redaccion-informe.
+description: 'Audita el área fiscal: conciliación del resultado contable con la base imponible, diferencias permanentes y temporarias, activos y pasivos por impuesto diferido y su recuperabilidad, deducciones y bases imponibles negativas pendientes, contingencias fiscales y ejercicios abiertos, y cuadre de IVA, IRPF e IS con la contabilidad. NO cubre el apartado del informe sobre transparencia fiscal país por país: eso es redaccion-informe.'
 ---
 
 # Área J — Fiscal
@@ -66,7 +66,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli analiticos 00-fuentes/cifras_fiscales.json \
     00-fuentes/cifras_fiscales_anterior.json --materialidad <MP> \
     --papel "01-papeles/J-1 Fiscal.xlsx"

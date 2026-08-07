@@ -1,6 +1,6 @@
 ---
 name: area-tesoreria-y-financiacion
-description: Audita tesorería y financiación: conciliaciones bancarias, gestión y seguimiento de las confirmaciones bancarias incluidos avales, garantías, pignoraciones y saldos indirectos, normalización de cuadros de amortización heterogéneos, recálculo de deuda viva, reparto corriente/no corriente, intereses devengados, coste amortizado y verificación de covenants. Escala desde tres créditos hasta carteras de pólizas, confirming y factoring.
+description: 'Audita tesorería y financiación: conciliaciones bancarias, gestión y seguimiento de las confirmaciones bancarias incluidos avales, garantías, pignoraciones y saldos indirectos, normalización de cuadros de amortización heterogéneos, recálculo de deuda viva, reparto corriente/no corriente, intereses devengados, coste amortizado y verificación de covenants. Escala desde tres créditos hasta carteras de pólizas, confirming y factoring.'
 ---
 
 # Área D y E — Tesorería y financiación
@@ -57,7 +57,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli financiacion 00-fuentes/cartera.xlsx 2025-12-31 \
     --confirmaciones 00-fuentes/confirmaciones.xlsx --covenants 00-fuentes/covenants.xlsx \
     --cliente "<CLIENTE>" --ejercicio 2025 --papel "01-papeles/E-1 Financiacion.xlsx"

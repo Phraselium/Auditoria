@@ -58,19 +58,55 @@ Este plugin ataca las dos cosas:
 
 ## Instalación
 
-```bash
-# 1. Copiar el plugin donde Claude Code lo encuentre
-cp -r dula-audit ~/.claude/plugins/
+### Opción A — desde el repositorio (recomendada)
 
-# 2. Dependencias (solo dos, nada exótico)
-pip install pandas openpyxl
+Dentro de Claude Code:
 
-# 3. Verificar la instalación
-cd ~/.claude/plugins/dula-audit
-python3 tests/run_all.py     # 208/208 y cobertura 100 %
+```
+/plugin marketplace add Phraselium/Auditoria
+/plugin install dula-audit@dula
 ```
 
-Después, **completa `CLAUDE.md`**: los campos entre `«»` son los datos reales del
+Si el resumen de instalación dice `Run /reload-plugins to activate`, ejecútalo.
+
+### Opción B — desde una copia local
+
+```bash
+git clone https://github.com/Phraselium/Auditoria.git
+```
+
+```
+/plugin marketplace add /ruta/donde/lo/hayas/clonado/Auditoria
+/plugin install dula-audit@dula
+```
+
+### Opción C — probarlo sin instalar
+
+```bash
+claude --plugin-dir /ruta/a/Auditoria/dula-audit
+```
+
+La copia local tiene prioridad sobre la instalada, así que sirve para probar
+cambios sin desinstalar nada.
+
+### Después de instalar, en cualquiera de los tres casos
+
+```bash
+pip install pandas openpyxl            # las dos únicas dependencias
+```
+
+```
+/dula-audit:estado                     # comprueba que el plugin responde
+```
+
+Verificación completa de la librería de cálculo:
+
+```bash
+claude plugin validate <ruta>/dula-audit    # debe decir "Validation passed"
+cd <ruta>/dula-audit && python3 tests/run_all.py   # 208/208 y cobertura 100 %
+```
+
+Después, **completa `skills/convenciones-dula/SKILL.md`**: los campos entre `«»` son los datos reales del
 despacho. Sin ellos, el plugin funciona pero deja `[PENDIENTE-CLIENTE]` donde
 haría falta un dato tuyo (tarifas, nº de ROAC, ruta base).
 
@@ -119,7 +155,7 @@ el último día, el problema no se ha resuelto, se ha concentrado.
 ```
 dula-audit/
 ├── .claude-plugin/plugin.json
-├── CLAUDE.md                    # perfil del despacho, convenciones y umbrales
+├── skills/convenciones-dula/SKILL.md                    # perfil del despacho, convenciones y umbrales
 ├── GUIA-ARRANQUE.md             # una página para empezar
 ├── commands/                    # 7 comandos de entrada rápida
 ├── agents/                      # extractor-documental · reconciliador · revisor-critico
@@ -183,7 +219,7 @@ uso real.
 ## Uso de la librería desde la línea de comandos
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli --help
 ```
 

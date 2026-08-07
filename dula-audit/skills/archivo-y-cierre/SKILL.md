@@ -1,6 +1,6 @@
 ---
 name: archivo-y-cierre
-description: Ensambla el archivo final del encargo dentro del plazo normativo: índice completo de papeles de trabajo, referencias cruzadas, control de versiones y registro de lo que debe conservarse y durante cuánto tiempo. Úsala tras la firma del informe, para cerrar el archivo, o cuando haya que localizar documentación de un encargo anterior.
+description: 'Ensambla el archivo final del encargo dentro del plazo normativo: índice completo de papeles de trabajo, referencias cruzadas, control de versiones y registro de lo que debe conservarse y durante cuánto tiempo. Úsala tras la firma del informe, para cerrar el archivo, o cuando haya que localizar documentación de un encargo anterior.'
 ---
 
 # Archivo y cierre

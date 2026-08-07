@@ -1,6 +1,6 @@
 ---
 name: area-proveedores-y-compras
-description: Audita proveedores y compras: conciliaciones de saldos, búsqueda de pasivos no registrados, corte de operaciones y confirmaciones. Úsala siempre que haya compras o gastos de explotación significativos. La búsqueda de pasivos no registrados es su procedimiento central y no se omite en ningún perfil.
+description: 'Audita proveedores y compras: conciliaciones de saldos, búsqueda de pasivos no registrados, corte de operaciones y confirmaciones. Úsala siempre que haya compras o gastos de explotación significativos. La búsqueda de pasivos no registrados es su procedimiento central y no se omite en ningún perfil.'
 ---
 
 # Área H — Proveedores y compras
@@ -51,7 +51,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli muestreo 00-fuentes/pagos_posteriores.xlsx importe \
     --metodo dirigido --materialidad <MP> --excel "01-papeles/H-2 Pasivos no registrados.xlsx"
 ```

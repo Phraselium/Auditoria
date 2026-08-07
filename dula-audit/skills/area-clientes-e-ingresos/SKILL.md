@@ -1,6 +1,6 @@
 ---
 name: area-clientes-e-ingresos
-description: Audita clientes e ingresos: circularización y procedimientos alternativos, corte de operaciones, antigüedad y deterioro, reconocimiento de ingresos incluida la respuesta a la presunción de fraude de la NIA-ES 240, y conciliación de ingresos con el IVA repercutido. Úsala siempre que haya cifra de negocios: es un área obligatoria en todo encargo.
+description: 'Audita clientes e ingresos: circularización y procedimientos alternativos, corte de operaciones, antigüedad y deterioro, reconocimiento de ingresos incluida la respuesta a la presunción de fraude de la NIA-ES 240, y conciliación de ingresos con el IVA repercutido. Úsala siempre que haya cifra de negocios: es un área obligatoria en todo encargo.'
 ---
 
 # Área C — Clientes e ingresos
@@ -51,7 +51,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli muestreo 00-fuentes/mayor_clientes.xlsx debe --metodo mus \
     --materialidad <MP> --semilla <n> --excel "01-papeles/C-1 Muestra clientes.xlsx"
 ```

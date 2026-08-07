@@ -1,6 +1,6 @@
 ---
 name: area-subvenciones
-description: Audita las subvenciones, donaciones y legados: clasificación entre capital y explotación, cumplimiento de las condiciones asociadas, imputación a resultados, riesgo de reintegro y desgloses. Úsala cuando haya saldos en las cuentas 130, 131, 132, 740 o 746. Si la entidad no recibe subvenciones, no la actives.
+description: 'Audita las subvenciones, donaciones y legados: clasificación entre capital y explotación, cumplimiento de las condiciones asociadas, imputación a resultados, riesgo de reintegro y desgloses. Úsala cuando haya saldos en las cuentas 130, 131, 132, 740 o 746. Si la entidad no recibe subvenciones, no la actives.'
 ---
 
 # Área L — Subvenciones
@@ -49,7 +49,7 @@ El programa escalado por perfil está en
 ## Ejecución
 
 ```bash
-export PYTHONPATH=<plugin>/shared/scripts
+export PYTHONPATH=${CLAUDE_PLUGIN_ROOT}/shared/scripts
 python3 -m dula.cli analiticos 00-fuentes/subvenciones_actual.json \
     00-fuentes/subvenciones_anterior.json --materialidad <MP> \
     --papel "01-papeles/L-1 Subvenciones.xlsx"
