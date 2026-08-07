@@ -1,0 +1,15 @@
+{
+  "name": "auditoria-nia-es",
+  "version": "1.6.0",
+  "description": "Equipo de auditoría senior virtual para despachos españoles. Cubre el ciclo completo del encargo (aceptación, planificación, trabajo de campo, cierre e informe) bajo NIA-ES, con cálculo determinista por script, trazabilidad total y reporte por excepción.",
+  "author": {
+    "name": "Phraselium"
+  },
+  "keywords": [
+    "auditoria",
+    "NIA-ES",
+    "PGC",
+    "ICAC",
+    "papeles-de-trabajo"
+  ]
+}

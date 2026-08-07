@@ -1,13 +1,13 @@
 {
-  "name": "dula",
-  "description": "Plugins de auditoría de cuentas de Dula Auditores, para despachos españoles que trabajan bajo NIA-ES.",
+  "name": "audita",
+  "description": "Plugins de auditoría de cuentas para despachos españoles que trabajan bajo NIA-ES.",
   "owner": {
-    "name": "Dula Auditores"
+    "name": "Phraselium"
   },
   "plugins": [
     {
-      "name": "dula-audit",
-      "source": "./dula-audit",
+      "name": "auditoria-nia-es",
+      "source": "./auditoria-nia-es",
       "description": "Equipo de auditoría senior virtual: cubre el ciclo completo del encargo bajo NIA-ES, con cálculo determinista por script, trazabilidad total y reporte por excepción."
     }
   ]

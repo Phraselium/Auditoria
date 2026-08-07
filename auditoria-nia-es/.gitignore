@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+
+# Fixtures sinteticos: se regeneran de forma determinista con
+#   python3 tests/generar_fixtures.py
+tests/fixtures/
+tests/salida/
+
+# El despacho crea este fichero a partir de tarifas-ejemplo.json
+shared/references/tarifas.json
+
+# Paquete de claude.ai: se publica el .zip, no el arbol intermedio
+build/auditoria-nia-es/

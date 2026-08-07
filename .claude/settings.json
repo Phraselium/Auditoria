@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "audita": {
+      "source": {
+        "source": "github",
+        "repo": "Phraselium/Auditoria"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "auditoria-nia-es@audita": true
+  }
+}
