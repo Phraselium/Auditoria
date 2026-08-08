@@ -323,13 +323,18 @@ def valida(pkg: str) -> list[str]:
         errores.append(f"name de {len(n)} caracteres (maximo {MAX_NOMBRE})")
     if not re.fullmatch(r"[a-z0-9-]+", n):
         errores.append(f"name '{n}' debe ser minusculas, numeros y guiones")
+    # reglas de quick_validate.py que no son evidentes en la especificacion
+    if n.startswith("-") or n.endswith("-") or "--" in n:
+        errores.append(f"name '{n}' no puede empezar o acabar en guion, ni llevar dos seguidos")
+    if len(fm.get("compatibility", "")) > 500:
+        errores.append("compatibility pasa de 500 caracteres")
     if any(p in n.lower() for p in ("claude", "anthropic")):
         errores.append(f"name '{n}' contiene una palabra reservada")
     d = fm.get("description", "")
     if len(d) > MAX_DESCRIPCION:
         errores.append(f"description de {len(d)} caracteres (maximo {MAX_DESCRIPCION})")
-    if "<" in d or "<" in n:
-        errores.append("name/description no pueden contener etiquetas XML")
+    if any(c in d or c in n for c in "<>"):
+        errores.append("name/description no pueden contener < ni >")
     cuerpo = len(m.group(2))
     if cuerpo > 20_000:
         errores.append(f"cuerpo de SKILL.md de {cuerpo} caracteres: pasa de ~5k tokens")
@@ -428,25 +433,40 @@ def main() -> int:
             print("  -", e)
         return 1
 
-    # 5. zip con la carpeta de la skill en la raiz
-    zpath = os.path.join(DESTINO, f"{NOMBRE}-claude-ai.zip")
-    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
-        for base, _, ficheros in os.walk(pkg):
-            for f in ficheros:
-                completo = os.path.join(base, f)
-                z.write(completo, os.path.relpath(completo, DESTINO))
+    # 5. El empaquetado replica exactamente el de `package_skill.py` de
+    #    anthropics/skills, que es el empaquetador canonico:
+    #      - la carpeta de la skill va en la raiz del archivo (arcname relativo
+    #        al PADRE de la carpeta), no su contenido suelto;
+    #      - la extension es .skill, no .zip;
+    #      - se excluyen __pycache__, node_modules, *.pyc y .DS_Store.
+    #    Se genera ademas la copia .zip porque la pantalla de subida de
+    #    claude.ai documenta esa extension: mismo contenido, dos nombres.
+    def escribe(destino: str) -> None:
+        with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
+            for base, dirs, ficheros in os.walk(pkg):
+                dirs[:] = [d for d in dirs if d not in ("__pycache__", "node_modules")]
+                for f in sorted(ficheros):
+                    if f.endswith(".pyc") or f == ".DS_Store":
+                        continue
+                    completo = os.path.join(base, f)
+                    z.write(completo, os.path.relpath(completo, DESTINO))
 
-    tam = os.path.getsize(zpath) / 1024
+    skpath = os.path.join(DESTINO, f"{NOMBRE}.skill")
+    zpath = os.path.join(DESTINO, f"{NOMBRE}.zip")
+    escribe(skpath)
+    escribe(zpath)
+
     n_proc = len(glob.glob(os.path.join(pkg, "procedimientos", "*.md")))
-    print(f"Paquete para claude.ai: {zpath}")
-    print(f"  {n_proc} procedimientos, {tam:,.0f} KB")
-    print(f"  frontmatter: solo name y description")
+    print(f"Paquete para claude.ai: {skpath}")
+    print(f"  y la misma carpeta como .zip:  {zpath}")
+    print(f"  {n_proc} procedimientos, {os.path.getsize(skpath) / 1024:,.0f} KB")
+    print(f"  disposicion y exclusiones identicas a package_skill.py")
     print(f"  cuerpo de SKILL.md: {os.path.getsize(os.path.join(pkg, 'SKILL.md')):,} bytes")
 
     # 6. paquete minimo de diagnostico: solo SKILL.md y los procedimientos.
-    #    Si el completo no sincroniza y este si, el problema esta en la libreria
+    #    Si el completo no sube y este si, el problema esta en la libreria
     #    Python o en las referencias, no en la skill.
-    zmin = os.path.join(DESTINO, f"{NOMBRE}-claude-ai-minimo.zip")
+    zmin = os.path.join(DESTINO, f"{NOMBRE}-minimo.skill")
     with zipfile.ZipFile(zmin, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr(f"{NOMBRE}/SKILL.md",
                    open(os.path.join(pkg, "SKILL.md"), encoding="utf-8").read())
@@ -454,18 +474,6 @@ def main() -> int:
             z.write(f, os.path.join(NOMBRE, "procedimientos", os.path.basename(f)))
     print(f"Paquete minimo de diagnostico: {zmin}")
     print(f"  sin libreria ni referencias, {os.path.getsize(zmin) / 1024:,.0f} KB")
-
-    # 7. variante con SKILL.md en la RAIZ del zip, sin carpeta contenedora.
-    #    Las dos disposiciones aparecen documentadas segun la fuente y no hay
-    #    forma de saber cual espera el validador sin probarlas.
-    zllano = os.path.join(DESTINO, f"{NOMBRE}-claude-ai-plano.zip")
-    with zipfile.ZipFile(zllano, "w", zipfile.ZIP_DEFLATED) as z:
-        for base, _, ficheros in os.walk(pkg):
-            for f in ficheros:
-                completo = os.path.join(base, f)
-                z.write(completo, os.path.relpath(completo, pkg))
-    print(f"Variante sin carpeta contenedora: {zllano}")
-    print(f"  SKILL.md en la raiz del zip, {os.path.getsize(zllano) / 1024:,.0f} KB")
 
     construye_claude_code()
     return 0

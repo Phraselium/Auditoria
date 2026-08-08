@@ -237,14 +237,26 @@ frontmatter solo acepta los seis campos de la especificación Agent Skills, así
 que el plugin no se puede subir tal cual — `argument-hint`, `when_to_use` y
 `user-invocable` darían `Unexpected key(s) in SKILL.md frontmatter`.
 
-El paquete ya está construido en **`build/auditoria-nia-es-claude-ai.zip`** (240 KB).
+El paquete se genera con **la misma disposición y las mismas exclusiones que
+`package_skill.py`**, el empaquetador oficial de
+[anthropics/skills](https://github.com/anthropics/skills). Comprobado: el
+contenido de nuestro archivo y el que produce ese script son **idénticos fichero
+a fichero**, y su validador (`quick_validate.py`) responde `Skill is valid!`.
+
+Vienen dos ficheros con exactamente el mismo contenido, porque el empaquetador
+oficial escribe `.skill` y la pantalla de subida documenta `.zip`:
+
+| Fichero | Cuándo usarlo |
+|---|---|
+| **`build/auditoria-nia-es.skill`** (241 KB) | **Pruebe este primero.** Es la extensión que produce el empaquetador oficial |
+| `build/auditoria-nia-es.zip` (241 KB) | Si la pantalla de subida no acepta `.skill` |
 
 **Pasos:**
 
-1. Descargue `build/auditoria-nia-es-claude-ai.zip` del repositorio.
+1. Descargue `build/auditoria-nia-es.skill` del repositorio.
 2. En claude.ai: **Ajustes → Capacidades** → active **«Ejecución de código y
    creación de archivos»**. Sin eso las skills no funcionan.
-3. **Ajustes → Capacidades → Skills → Subir skill** y elija el `.zip`.
+3. **Ajustes → Capacidades → Skills → Subir skill** y elija el fichero.
 4. En una conversación nueva, escriba: *«comprueba la instalación de auditoria-nia-es
    con audita doctor»*.
 
@@ -264,9 +276,11 @@ El paquete ya está construido en **`build/auditoria-nia-es-claude-ai.zip`** (24
 python3 tools/construir_paquetes.py
 ```
 
-El script valida el paquete contra la especificación —campos permitidos,
-longitud de `name` y `description`, tamaño del cuerpo— y falla si algo no cumple.
-La suite lo comprueba en cada ejecución.
+El script valida el paquete contra las **mismas reglas que `quick_validate.py`**:
+campos permitidos, formato del `name` (sin guion inicial, final ni doble),
+longitud de `name`, `description` y `compatibility`, ausencia de `<` y `>`, y
+tamaño del cuerpo. Falla si algo no cumple, y la suite lo comprueba en cada
+ejecución.
 
 ### Qué NO se puede hacer desde los ajustes de la app
 
@@ -276,7 +290,7 @@ de la app solo hay dos sitios, y solo uno sirve aquí:
 
 | Sección de ajustes | Qué admite | ¿Sirve para auditoria-nia-es? |
 |---|---|---|
-| **Skills** (Personalizar en la app de escritorio, o los ajustes de skills en claude.ai) | Un `.zip` con una skill del estándar Agent Skills | **Sí** — es el `.zip` de esta sección |
+| **Skills** (Personalizar en la app de escritorio, o los ajustes de skills en claude.ai) | Un `.skill` o `.zip` con una skill del estándar Agent Skills | **Sí** — es el fichero de esta sección |
 | **Conectores** | Servidores MCP, por URL y OAuth | No. auditoria-nia-es no es un servidor MCP: no hay nada a lo que conectarse |
 
 No hay ninguna opción de «añadir repositorio» ni de «marketplace» en la app.
@@ -284,29 +298,27 @@ Para eso hace falta Claude Code.
 
 ### Si la subida falla con «no se ha podido sincronizar»
 
-Ese error es del validador de la plataforma, no del contenido de la skill. Las
-cuatro causas conocidas están ya descartadas por construcción, y la suite lo
-verifica en cada ejecución:
+Estas causas están descartadas por construcción, y la suite lo verifica en cada
+ejecución:
 
-| Causa | Cómo se evita |
+| Causa | Cómo se descarta |
 |---|---|
-| Campos de frontmatter con texto libre | El paquete lleva **solo** `name` y `description`. `license` y `compatibility` exigen valores normalizados (SPDX, mapa de versiones) y con prosa se rechazan |
+| Frontmatter inválido | Pasa `quick_validate.py`, el validador oficial: `Skill is valid!` |
+| Disposición del archivo | Idéntica a la de `package_skill.py`: todo cuelga de `auditoria-nia-es/`, con `SKILL.md` dentro de esa carpeta y **no** en la raíz |
+| Extensión del fichero | Se entregan `.skill` (la del empaquetador oficial) y `.zip` |
 | Ficheros con bit de ejecución o scripts de shell | El punto de entrada es `audita.py`, Python plano en modo `0644`. No viaja ningún `.sh`, `.exe` ni binario |
 | Extensiones desconocidas | Solo `.md`, `.py` y `.json` |
+| Basura de empaquetado | Se excluyen `__pycache__`, `node_modules`, `*.pyc` y `.DS_Store`, igual que el oficial |
 | Más de 200 ficheros | El paquete tiene 87 |
 
-Si aun así falla, hay dos variantes para aislar la causa con dos pruebas:
+Si aun así falla, suba **`build/auditoria-nia-es-minimo.skill`** (99 KB): mismo
+índice y mismos 39 procedimientos, **sin librería Python ni referencias**. Si ese
+sí sube, el problema está en la librería o en las referencias, no en la skill.
+Es diagnóstico, no el producto: **sin la librería no hay cálculo determinista**,
+que es el fundamento del plugin.
 
-| Variante | En qué se diferencia | Qué demuestra si esa sí sube |
-|---|---|---|
-| `auditoria-nia-es-claude-ai-plano.zip` (238 KB) | `SKILL.md` en la **raíz** del zip, sin carpeta contenedora | El validador esperaba la disposición plana |
-| `auditoria-nia-es-claude-ai-minimo.zip` (98 KB) | Solo índice y procedimientos, **sin librería ni referencias** | El problema está en la librería o en las referencias, no en la skill |
-
-Las dos son de diagnóstico, no el producto: **sin la librería Python no hay
-cálculo determinista**, que es el fundamento del plugin.
-
-Si ninguna sube, **el camino sin riesgo es Claude Code con la opción A**: se
-descomprime en `~/.claude/skills/` y no interviene ningún validador.
+Y si tampoco, el error no está en el paquete. **Use Claude Code con la opción
+A**: se descomprime en `~/.claude/skills/` y no interviene ningún validador.
 
 > **Las skills no se sincronizan entre superficies.** Si actualiza el plugin,
 > tiene que volver a subir el `.zip` a claude.ai.

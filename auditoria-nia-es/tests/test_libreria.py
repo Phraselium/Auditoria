@@ -976,8 +976,19 @@ def t_paquete_claude_ai() -> None:
     r = subprocess.run([sys.executable, os.path.join(RAIZ, "tools", "construir_paquetes.py")],
                        capture_output=True, text=True, cwd=RAIZ)
     afirma(r.returncode == 0, f"el paquete se construye sin errores ({r.stdout.strip()[:60]})")
-    zpath = os.path.join(RAIZ, "build", "auditoria-nia-es-claude-ai.zip")
-    afirma(os.path.exists(zpath), "se genera el .zip")
+    # El empaquetador canonico (package_skill.py de anthropics/skills) produce
+    # un .skill, no un .zip. Se generan los dos con el mismo contenido porque la
+    # pantalla de subida documenta .zip y el empaquetador escribe .skill.
+    zpath = os.path.join(RAIZ, "build", "auditoria-nia-es.skill")
+    zzip = os.path.join(RAIZ, "build", "auditoria-nia-es.zip")
+    afirma(os.path.exists(zpath), "se genera el .skill")
+    afirma(os.path.exists(zzip), "se genera tambien el .zip")
+    import hashlib as _h
+    def _cont(ruta):
+        with zipfile.ZipFile(ruta) as z:
+            return {n: _h.sha256(z.read(n)).hexdigest() for n in z.namelist()}
+    afirma(_cont(zpath) == _cont(zzip),
+           "el .skill y el .zip llevan exactamente lo mismo")
 
     with zipfile.ZipFile(zpath) as z:
         nombres = z.namelist()
@@ -1007,6 +1018,22 @@ def t_paquete_claude_ai() -> None:
         afirma(not any("when_to_use" in z.read(p).decode("utf-8")[:200]
                        and p.endswith("SKILL.md") for p in nombres),
                "ningún fichero conserva frontmatter de Claude Code")
+
+        # Disposicion y exclusiones de package_skill.py: TODO cuelga de la
+        # carpeta de la skill, y no viaja ni cache ni basura de macOS.
+        afirma(all(n.startswith("auditoria-nia-es/") for n in nombres),
+               "todo cuelga de la carpeta de la skill, como en el empaquetador oficial")
+        afirma(not any("__pycache__" in n or "node_modules" in n
+                       or n.endswith(".pyc") or n.endswith(".DS_Store")
+                       for n in nombres),
+               "se aplican las exclusiones del empaquetador oficial")
+
+        # Reglas de quick_validate.py que no se deducen de la especificacion
+        nm = fm["name"]
+        afirma(not (nm.startswith("-") or nm.endswith("-") or "--" in nm),
+               f"name '{nm}' sin guion inicial, final ni doble")
+        afirma("<" not in fm["description"] and ">" not in fm["description"],
+               "la description no lleva < ni >")
 
         # lo que dispara el rechazo al sincronizar: ejecutables, scripts de
         # shell, extensiones desconocidas o instalacion de dependencias

@@ -8,7 +8,8 @@ Una página. Léela entera antes del primer encargo.
 
 ### Si usa **claude.ai** (web o escritorio)
 
-1. Descargue `build/auditoria-nia-es-claude-ai.zip` del repositorio.
+1. Descargue `build/auditoria-nia-es.skill` del repositorio (o el `.zip`, que
+   lleva lo mismo, si la pantalla de subida no acepta `.skill`).
 2. **Ajustes → Capacidades**: active «Ejecución de código y creación de archivos».
 3. **Ajustes → Capacidades → Skills → Subir skill** y elija el `.zip`.
 4. Pruebe con: *«comprueba la instalación de auditoria-nia-es con audita doctor»*.
