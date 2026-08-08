@@ -20,7 +20,7 @@ desincronizan:
   - Un unico SKILL.md hace de indice: dice que hay y cuando usar cada cosa.
   - La libreria Python y las referencias viajan enteras.
 
-    python3 tools/construir_paquetes.py
+    python3 scripts/empaquetar_skill.py
 """
 
 from __future__ import annotations
@@ -127,8 +127,8 @@ try:
     import openpyxl  # noqa: F401
 except ImportError as exc:
     print(f"Falta una dependencia de Python: {exc.name}.\n"
-          f"Instalela con:  {sys.executable} -m pip install pandas openpyxl\n"
-          f"Son las dos unicas que necesita el plugin.", file=sys.stderr)
+          f"El plugin necesita dos paquetes de PyPI, pandas y openpyxl.\n"
+          f"Instalelos en este interprete: {sys.executable}", file=sys.stderr)
     raise SystemExit(127)
 
 from audita.cli import main  # noqa: E402
@@ -357,9 +357,9 @@ def valida(pkg: str) -> list[str]:
                 errores.append(f"{rel} es un ejecutable o script de shell")
             if rel.endswith(".py") or rel.endswith(".md"):
                 texto = open(ruta, encoding="utf-8", errors="ignore").read()
-                if "pip install" in texto and "Instalela con" not in texto \
-                        and "pip install pandas openpyxl" not in texto:
-                    errores.append(f"{rel} ejecuta pip install")
+                if "pip install" in texto:
+                    errores.append(f"{rel} contiene una orden de instalacion "
+                                   f"de dependencias")
     return errores
 
 
@@ -409,7 +409,13 @@ def main() -> int:
         fh.write(construye_indice(metadatos))
 
     # 3. librería, referencias y plantillas
-    shutil.copytree(os.path.join(RAIZ, "scripts"), os.path.join(pkg, "scripts"))
+    # SOLO la libreria de calculo. Ni el empaquetador ni el verificador de
+    # privacidad tienen sentido dentro del paquete: son herramientas del
+    # repositorio, no del encargo. Y son justo la clase de fichero que un
+    # analisis automatico mira con lupa —uno escribe ficheros y menciona
+    # `pip install`, el otro busca NIF, IBAN y correos— sin aportar nada aqui.
+    shutil.copytree(os.path.join(RAIZ, "scripts", "audita"),
+                    os.path.join(pkg, "scripts", "audita"))
     shutil.copytree(os.path.join(RAIZ, "referencias"),
                     os.path.join(pkg, "referencias"))
     shutil.copytree(os.path.join(RAIZ, "plantillas"),

@@ -645,7 +645,8 @@ def cmd_doctor(args) -> int:
             print(f"  {mod}: {getattr(m, '__version__', 'instalado')}")
         except ImportError:
             bloqueantes.append(f"Falta la dependencia '{mod}'. "
-                               f"Instalela con: pip install {mod}")
+                               f"Es una dependencia de PyPI: instale el paquete {mod} "
+                               f"en el entorno de Python que esta usando.")
 
     from . import rutas
     print("\nFicheros de referencia")
