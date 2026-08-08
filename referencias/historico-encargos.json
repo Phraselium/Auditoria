@@ -1,0 +1,53 @@
+{
+  "_meta": {
+    "descripcion": "Calibracion del estimador de horas. Registre aqui los drivers y las HORAS REALES de encargos ya cerrados.",
+    "por_que": "Las horas base de scripts/audita/perfil.py (HORAS_BASE) son genericas. Con 3-5 encargos reales registrados, el rango optimista/esperado/pesimista pasa de orientativo a utilizable como base de oferta.",
+    "como_usarlo": "Anada una entrada por encargo cerrado. Compare 'horas_reales_por_area' con la estimacion que el plugin habria dado y ajuste HORAS_BASE en consecuencia.",
+    "estado": "VACIO - el estimador no esta calibrado con datos del despacho. Adviertalo al socio al presentar una estimacion."
+  },
+  "encargos": [],
+  "_ejemplo_de_entrada": {
+    "cliente": "(anonimizado o iniciales)",
+    "ejercicio": 2024,
+    "perfil_asignado": "ESTANDAR",
+    "puntuacion": 38,
+    "drivers": {
+      "n_asientos": 4200,
+      "n_cuentas": 180,
+      "automatizacion_facturacion": "media",
+      "n_instrumentos_financiacion": 6,
+      "n_leasings": 12,
+      "existencias": "si",
+      "subvenciones": "no",
+      "operaciones_vinculadas": "si",
+      "moneda_extranjera": "no",
+      "consolidacion": "no",
+      "primer_encargo": "no",
+      "respuesta_cliente": "normal"
+    },
+    "horas_reales_totales": 0.0,
+    "horas_reales_por_area": {
+      "Planificacion y riesgos": 0.0,
+      "Ingesta y cuadres": 0.0,
+      "Inmovilizado": 0.0,
+      "Existencias": 0.0,
+      "Clientes e ingresos": 0.0,
+      "Proveedores y compras": 0.0,
+      "Tesoreria y financiacion": 0.0,
+      "Arrendamientos": 0.0,
+      "Fondos propios y reservas": 0.0,
+      "Personal": 0.0,
+      "Fiscal": 0.0,
+      "Provisiones y contingencias": 0.0,
+      "Subvenciones": 0.0,
+      "Partes vinculadas": 0.0,
+      "Cierre e incorrecciones": 0.0,
+      "Informe": 0.0,
+      "Revision de calidad": 0.0
+    },
+    "honorarios_facturados": 0.0,
+    "incidencias_que_dispararon_horas": [
+      "(p.ej.: el cliente entrego los cuadros de leasing en PDF escaneado)"
+    ]
+  }
+}

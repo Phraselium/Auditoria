@@ -1,13 +1,13 @@
 {
-  "name": "audita",
-  "description": "Plugins de auditoría de cuentas para despachos españoles que trabajan bajo NIA-ES.",
+  "name": "auditoria-nia-es",
+  "description": "Plugin de auditoría de cuentas anuales bajo NIA-ES para despachos españoles.",
   "owner": {
     "name": "Phraselium"
   },
   "plugins": [
     {
       "name": "auditoria-nia-es",
-      "source": "./auditoria-nia-es",
+      "source": "./",
       "description": "Equipo de auditoría senior virtual: cubre el ciclo completo del encargo bajo NIA-ES, con cálculo determinista por script, trazabilidad total y reporte por excepción."
     }
   ]

@@ -1,0 +1,5 @@
+# Las dos unicas dependencias de la libreria de calculo.
+#   pandas    normalizacion de la contabilidad de cualquier ERP
+#   openpyxl  lectura y escritura de los papeles de trabajo
+pandas>=2.0
+openpyxl>=3.1

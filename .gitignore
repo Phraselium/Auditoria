@@ -1,2 +1,32 @@
 __pycache__/
 *.pyc
+
+# Fixtures sinteticos: se regeneran de forma determinista con
+#   python3 tests/generar_fixtures.py
+tests/fixtures/
+tests/salida/
+
+# El despacho crea este fichero a partir de referencias/tarifas-ejemplo.json
+referencias/tarifas.json
+
+# Paquete para claude.ai: se publica el .skill, no el arbol intermedio
+dist/auditoria-nia-es/
+
+# --- Datos del despacho y de los clientes: nunca se versionan -------------
+# El plugin es codigo publicable; los papeles de trabajo no lo son.
+*.xlsx
+*.xlsm
+*.xls
+*.ods
+*.csv
+encargos/
+clientes/
+salidas/
+*.pfx
+*.p12
+*.key
+*.pem
+uso-ia.log
+encargo.json
+config/configuracion.md
+datos/nombres_privados.txt

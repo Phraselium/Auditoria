@@ -1,0 +1,14 @@
+# Razones sociales de su cartera, una por línea.
+#
+# Copie este fichero a `datos/nombres_privados.txt` (ignorado por git) y ponga
+# los nombres reales de sus clientes. El verificador de privacidad fallará si
+# alguno de ellos aparece en un fichero que vaya a subirse al repositorio.
+#
+# Sin este fichero la comprobación cubre identificadores (NIF, NIE, CIF, IBAN),
+# correos, teléfonos y ficheros prohibidos, pero NO razones sociales.
+#
+# No se distingue mayúsculas de minúsculas. Las líneas que empiezan por # se
+# ignoran.
+
+EJEMPLO CLIENTE SL
+TRANSPORTES DEL EJEMPLO SA
