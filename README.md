@@ -30,7 +30,7 @@ Después:
 ```bash
 pip install -r requirements.txt                    # pandas y openpyxl
 python3 scripts/comprobar_privacidad.py --instalar-hook  # bloquea commits con datos de cliente
-python3 tests/run_all.py                           # 293 comprobaciones
+python3 tests/run_all.py                           # 298 comprobaciones
 audita doctor                                      # qué falta por configurar
 ```
 
@@ -211,7 +211,7 @@ cliente, reescribe, fuerza el push y abre un ticket a GitHub Support.
 ## Pruebas
 
 ```bash
-python3 tests/run_all.py     # 293 comprobaciones, cobertura de la librería
+python3 tests/run_all.py     # 298 comprobaciones, cobertura de la librería
 ```
 
 Cubren lo que puede romperse en silencio y llegar a un informe firmado: los diez

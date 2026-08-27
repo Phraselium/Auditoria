@@ -1000,10 +1000,14 @@ def t_paquete_claude_ai() -> None:
             r"^---\n(.*?)\n---", z.read("auditoria-nia-es/SKILL.md").decode("utf-8"),
             __import__("re").S).group(1)
         fm = yaml.safe_load(fm_txt)
-        # solo los dos campos obligatorios: `license` y `compatibility` exigen
-        # valores normalizados y con texto libre la subida falla al sincronizar
-        afirma(set(fm) == {"name", "description"},
-               f"frontmatter minimo, solo name y description ({sorted(fm)})")
+        # mismos campos que el paquete de asesoria fiscal, que sube sin
+        # problemas: name, description y una licencia SPDX. Nada de texto libre
+        afirma(set(fm) == {"name", "description", "license"},
+               f"frontmatter: name, description y license ({sorted(fm)})")
+        afirma(fm["license"] == "MIT", "la licencia es un identificador SPDX")
+        afirma(len(fm["description"]) <= 600,
+               f"description de {len(fm['description'])} caracteres, en el orden "
+               f"de magnitud de la de fiscal (360)")
         afirma(len(fm["description"]) <= 1024,
                f"description de {len(fm['description'])} caracteres (máximo 1024)")
         afirma(__import__("re").fullmatch(r"[a-z0-9-]{1,64}", fm["name"])
@@ -1011,8 +1015,22 @@ def t_paquete_claude_ai() -> None:
                f"name '{fm['name']}' cumple el formato y no usa palabras reservadas")
 
         procs = [n for n in nombres if n.startswith("auditoria-nia-es/procedimientos/")]
-        afirma(len(procs) == 39,
-               f"viajan las 10 guias y los 29 procedimientos (hay {len(procs)})")
+        afirma(len(procs) == 40,
+               f"viajan las 10 guias, los 29 procedimientos y el catalogo "
+               f"(hay {len(procs)})")
+        afirma("auditoria-nia-es/procedimientos/00-catalogo.md" in nombres,
+               "el catalogo anotado viaja fuera del SKILL.md")
+
+        # el SKILL.md es lo unico que se carga siempre: tiene que ser corto.
+        # El de fiscal, que sube sin problemas, mide 5.849 bytes.
+        cuerpo = z.read("auditoria-nia-es/SKILL.md").decode("utf-8").split("---", 2)[2]
+        afirma(len(cuerpo) <= 8_000,
+               f"el cuerpo del SKILL.md mide {len(cuerpo)} bytes (maximo 8.000)")
+
+        # rutas relativas a la carpeta de la skill, sin `$D` ni paso previo
+        # de localizar el directorio
+        con_d = [p for p in procs if "$D/" in z.read(p).decode("utf-8")]
+        afirma(not con_d, f"ningun procedimiento usa $D ({con_d[:3]})")
         for carpeta in ("referencias/", "plantillas/", "scripts/audita/", "audita.py"):
             afirma(any(n.startswith(f"auditoria-nia-es/{carpeta}") for n in nombres),
                    f"el paquete incluye {carpeta}")

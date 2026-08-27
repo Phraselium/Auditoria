@@ -77,32 +77,23 @@ FASES = [
         "revision-de-calidad", "estado-del-encargo"]),
 ]
 
-# El paquete de claude.ai no tiene ${CLAUDE_PLUGIN_ROOT} ni el lanzador `audita`
-# en el PATH: las rutas se reescriben al montar el paquete.
+# En claude.ai no existe CLAUDE_PLUGIN_ROOT ni el lanzador `audita` en el PATH:
+# todo cuelga de la carpeta de la skill y las rutas quedan relativas a ella.
 SUSTITUCIONES = [
-    ("${CLAUDE_PLUGIN_ROOT}/procedimientos", "$D/procedimientos"),
-    ("${CLAUDE_PLUGIN_ROOT}/referencias", "$D/referencias"),
-    ("${CLAUDE_PLUGIN_ROOT}/plantillas", "$D/plantillas"),
-    ("${CLAUDE_PLUGIN_ROOT}/scripts", "$D/scripts"),
-    ("${CLAUDE_PLUGIN_ROOT}", "$D"),
-    ("procedimientos/", "$D/procedimientos/"),
-    ("referencias/", "$D/referencias/"),
-    ("plantillas/", "$D/plantillas/"),
+    ('"${CLAUDE_PLUGIN_ROOT}"/', ""),
+    ("${CLAUDE_PLUGIN_ROOT:-.}/", ""),
+    ("${CLAUDE_PLUGIN_ROOT}/", ""),
+    ("$CLAUDE_PLUGIN_ROOT/", ""),
 ]
 
 DESCRIPCION = (
-    "Auditoría de cuentas anuales españolas bajo NIA-ES, ciclo completo: estimación de "
-    "honorarios, aceptación e independencia, materialidad, mapa de riesgos, ingesta y "
-    "cuadres de la contabilidad de cualquier ERP, las doce áreas de trabajo de campo "
-    "(inmovilizado, existencias, clientes e ingresos, proveedores, tesorería y "
-    "financiación, arrendamientos, fondos propios y reservas, personal, fiscal, "
-    "provisiones, subvenciones y partes vinculadas), comparador documental de cuentas "
-    "anuales y memoria, evaluación de incorrecciones, informe conforme a la Resolución "
-    "del ICAC de 22/01/2026 y revisión de calidad del archivo. Todo cálculo por script, "
-    "con traza a fichero, hoja y celda, y reporte por excepción. Úsala al trabajar en una "
-    "auditoría española: cuadrar un balance de sumas y saldos, recalcular leasings o "
-    "amortizaciones, fijar la materialidad, seleccionar una muestra, cuadrar la memoria, "
-    "redactar el informe o revisar el archivo antes de firmar."
+    "Auditoría de cuentas anuales españolas bajo NIA-ES para despacho profesional. "
+    "Cuadres de la contabilidad de cualquier ERP, materialidad, mapa de riesgos, "
+    "muestreo, las doce áreas de trabajo de campo, recálculo de leasings y de "
+    "financiación, comparador de cuentas anuales y memoria, informe y revisión de "
+    "calidad del archivo. Úsala para cualquier trabajo de auditoría española: cuadrar "
+    "un balance de sumas y saldos, fijar la materialidad, seleccionar una muestra, "
+    "recalcular arrendamientos, redactar el informe o revisar el archivo antes de firmar."
 )
 
 ENTRADA = '''#!/usr/bin/env python3
@@ -161,7 +152,7 @@ def reescribe_rutas(texto: str) -> str:
     for viejo, nuevo in SUSTITUCIONES:
         texto = texto.replace(viejo, nuevo)
     # el lanzador `audita` no está en el PATH de claude.ai
-    return re.sub(r"(?m)^(\s*)audita ", r"\1python3 $D/audita.py ", texto)
+    return re.sub(r"(?m)^(\s*)audita ", r"\1python3 audita.py ", texto)
 
 
 def construye_indice(metadatos: dict[str, dict]) -> str:
@@ -173,7 +164,8 @@ def construye_indice(metadatos: dict[str, dict]) -> str:
     # Todo lo demas va al cuerpo, donde no lo valida nadie.
     import io
     buf = io.StringIO()
-    for k, v in (("name", NOMBRE), ("description", DESCRIPCION)):
+    for k, v in (("name", NOMBRE), ("description", DESCRIPCION),
+                 ("license", "MIT")):
         yaml.safe_dump({k: v}, buf, allow_unicode=True, width=10**6,
                        default_flow_style=False, sort_keys=False)
     L = [
@@ -181,122 +173,99 @@ def construye_indice(metadatos: dict[str, dict]) -> str:
         buf.getvalue().rstrip("\n"),
         "---",
         "",
-        "# Auditoría de cuentas — NIA-ES",
+        "# Auditoría de cuentas anuales — NIA-ES",
         "",
-        "Equipo de auditoría senior para encargos españoles bajo NIA-ES. **Esta página es",
-        "el índice**: abre solo el procedimiento que necesites, cuando lo necesites.",
+        "Conocimiento y herramientas para auditar cuentas anuales españolas bajo NIA-ES.",
+        "Todas las rutas de este documento son **relativas a la carpeta de esta skill**.",
         "",
-        "Versión 1.6.0 · Marco: NIA-ES; PGC y PGC PYMES; RICAC de",
-        "22/01/2026 · Requiere Python 3.10+ con `pandas` y `openpyxl`.",
+        "## Cómo usar esta skill",
         "",
-        "## Cómo trabajar con esta skill",
+        "1. **Lee siempre primero** `procedimientos/convenciones-despacho.md`. Son las",
+        "   reglas de trabajo: qué se calcula por script y qué no, la prohibición de",
+        "   inventar cifras, los umbrales del despacho y el índice de papeles.",
+        "2. **Abre el procedimiento** de la tabla de abajo que corresponda, y solo ese:",
+        "   `cat procedimientos/<nombre>.md`.",
+        "3. **Calcula con la librería**, nunca a ojo: `python3 audita.py <subcomando>`.",
+        "   Empieza por `python3 audita.py doctor` para ver qué falta por configurar.",
         "",
-        "1. **Localiza la carpeta de la skill** una sola vez por conversación:",
-        "   ```bash",
-        "   find / -name 'SKILL.md' -path '*auditoria-nia-es*' 2>/dev/null | head -1",
-        "   ```",
-        "   Llámala `$D` (el directorio que la contiene). Todo lo demás es relativo a ella.",
+        "## Las cinco reglas que no se negocian",
         "",
-        "2. **Lee el procedimiento** que corresponda de la tabla de abajo:",
-        "   ```bash",
-        "   cat $D/procedimientos/<nombre>.md",
-        "   ```",
+        "1. **El script calcula, tú interpretas.** Ningún importe sale de una estimación",
+        "   mental: todo cuadre, recálculo y extrapolación se ejecuta en Python.",
+        "2. **Cero invención.** Falta un dato → `[PENDIENTE-CLIENTE]`. Hace falta criterio",
+        "   → `[JUICIO-AUDITOR]`. Nunca se rellena en silencio.",
+        "3. **Reporte por excepción.** Conclusión, excepciones y evidencia. Máximo 15",
+        "   líneas en pantalla; el detalle va al papel de trabajo.",
+        "4. **Asiste, no decide ni firma.** Toda conclusión es una propuesta sujeta a la",
+        "   validación del auditor firmante. Si la evidencia no basta, se dice.",
+        "5. **Confidencialidad.** La documentación del cliente está sujeta al deber de",
+        "   secreto (art. 31 LAC), a la normativa de blanqueo y al RGPD.",
         "",
-        "3. **Ejecuta los cálculos** con la librería. Nunca calcules «a ojo»:",
-        "   ```bash",
-        "   python3 $D/audita.py doctor          # comprueba el entorno",
-        "   python3 $D/audita.py <subcomando> --help",
-        "   ```",
+        "Las once completas, con su fundamento normativo, en",
+        "`procedimientos/convenciones-despacho.md`.",
         "",
-        "4. **Antes de nada, carga las convenciones del despacho**:",
-        "   `cat $D/procedimientos/convenciones-despacho.md` — lleva los umbrales, el índice de",
-        "   papeles de trabajo, el marco normativo aplicado y las once reglas de",
-        "   comportamiento que no se negocian.",
+        "## Procedimientos",
         "",
-        "## Las once reglas que no se negocian",
-        "",
-        "1. **El script calcula, tú interpretas.** Todo cuadre, recálculo, amortización,",
-        "   extrapolación de muestra o comparación numérica se ejecuta con la librería",
-        "   Python. Ningún importe sale de una estimación mental.",
-        "2. **Cero invención.** Ninguna cifra, fecha, cláusula o referencia normativa sin",
-        "   origen verificable. Si falta un dato: `[PENDIENTE-CLIENTE]`. Si hace falta",
-        "   criterio profesional: `[JUICIO-AUDITOR]`. Nunca se rellena en silencio.",
-        "3. **Reporte por excepción.** Conclusión + excepciones + evidencia. Nunca volcados",
-        "   masivos. Máximo 15 líneas en pantalla.",
-        "4. **Proporcionalidad graduada.** El alcance lo fija el perfil calculado del",
-        "   encargo (LIGERO / ESTÁNDAR / COMPLEJO), no una plantilla única.",
-        "5. **Justificabilidad.** Cada decisión metodológica queda documentada para que un",
-        "   revisor externo la reconstruya sin preguntar nada.",
-        "6. **Autocontrol.** Ningún procedimiento cierra sin pasar su checklist final.",
-        "7. **Asiste, no decide ni firma.** Toda conclusión es una propuesta sujeta a la",
-        "   validación del auditor firmante.",
-        "8. **Si la evidencia no basta, se dice.** Nunca se concluye igualmente.",
-        "9. **Nunca se recorta el alcance por debajo de lo defendible.** Si el atajo no es",
-        "   justificable, se dice y se propone la alternativa correcta con su coste.",
-        "10. **Confidencialidad.** La documentación del cliente está sujeta a deber de",
-        "    secreto (art. 31 LAC), a la normativa de blanqueo y al RGPD.",
-        "11. **Deja constancia** de que el trabajo se ha realizado con asistencia de",
-        "    herramientas automatizadas (NIGC1-ES).",
-        "",
-        "> La dirección, supervisión y revisión del encargo es responsabilidad",
-        "> **indelegable** del socio firmante (NIA-ES 220 Revisada). Esta skill no la",
-        "> sustituye: la hace viable en minutos.",
-        "",
-        "## Procedimientos disponibles",
-        "",
-        "Cada uno en `procedimientos/<nombre>.md`. Ábrelos de uno en uno.",
+        "Uno por fichero en `procedimientos/`. Los marcados **▸** son guías de fase:",
+        "ábrelas primero y te dicen cuál de su fase toca y en qué orden.",
         "",
     ]
     for titulo, nombres in FASES:
-        L += [f"### {titulo}", "", "| Procedimiento | Qué hace |", "|---|---|"]
-        for n in nombres:
-            if n not in metadatos:
-                continue
-            marca = "**▸**" if n in GUIAS else ""
-            L.append(f"| {marca} `{n}` | {metadatos[n]['description']} |".replace("|  `", "| `"))
+        presentes = [n for n in nombres if n in metadatos]
+        if not presentes:
+            continue
+        L.append(f"**{titulo}**")
+        L.append("")
+        L.append("  " + " · ".join(
+            (f"**▸ {n}**" if n in GUIAS else f"`{n}`") for n in presentes))
         L.append("")
     L += [
-        "**▸** marca las **guías de fase**: ábrelas primero, te dicen qué",
-        "procedimiento de su fase corresponde y en qué orden.",
+        "El catálogo con una línea de descripción por procedimiento está en",
+        "`procedimientos/00-catalogo.md`.",
         "",
-    ]
-    L += [
-        "## Qué más hay en el paquete",
+        "## Qué más hay",
         "",
         "| Carpeta | Contenido |",
         "|---|---|",
-        "| `scripts/audita/` | La librería de cálculo: ingesta, cuadres, materialidad, muestreo, leasings, financiación, amortizaciones, comparador, test de asientos y revisión de calidad |",
-        "| `referencias/` | Mapeo del PGC a epígrafes, checklist de las 25 notas de memoria por modelo, catálogo de riesgos y los doce programas de trabajo por área |",
-        "| `plantillas/` | Modelo de informe conforme a la RICAC de 22/01/2026, cartas de encargo y de manifestaciones, comunicaciones y solicitudes de confirmación |",
+        "| `scripts/audita/` | Librería de cálculo: ingesta, cuadres, materialidad, muestreo, leasings, financiación, amortizaciones, comparador y calidad |",
+        "| `referencias/` | Mapeo del PGC, desgloses de memoria, catálogo de riesgos y los doce programas por área |",
+        "| `plantillas/` | Informe conforme a la RICAC de 22/01/2026, cartas y comunicaciones |",
         "",
-        "## Subcomandos de la librería",
+        "## Subcomandos",
         "",
         "```",
-        "doctor       comprueba el entorno y la configuración",
-        "nuevo        crea la carpeta y el estado del encargo",
-        "estimar      perfil de complejidad, horas y honorarios",
-        "ingesta      normaliza la contabilidad y ejecuta los cuadres  ← empieza por aquí",
-        "materialidad materialidad global, de ejecución y específicas",
-        "leasing      procesa el lote de contratos de arrendamiento",
-        "financiacion cartera, confirmaciones bancarias y covenants",
-        "amortizaciones  recálculo integral del inmovilizado",
-        "reservas     reservas indisponibles y restringidas",
-        "asientos     test de asientos del diario (NIA-ES 240)",
-        "muestreo     MUS, atributos o dirigido, con semilla registrada",
-        "analiticos   variaciones, ratios y expectativas",
-        "comparar     comparador documental",
-        "calidad      revisión del archivo y panel del socio",
-        "estado       dónde está el encargo y cuál es el siguiente paso",
-        "horas / pbc / validar   seguimiento del encargo y bitácora de uso de IA",
+        "doctor  nuevo  estimar  ingesta  materialidad  leasing  financiacion",
+        "amortizaciones  reservas  asientos  muestreo  analiticos  comparar",
+        "calidad  estado  horas  pbc  validar",
         "```",
         "",
-        "## Primer uso",
+        "`ingesta` es la puerta de entrada: sin la contabilidad cuadrada no se trabaja",
+        "ninguna área. `python3 audita.py <subcomando> --help` para cada uno.",
         "",
-        "Ejecuta `python3 $D/audita.py doctor`. Te dirá qué falta por configurar: los",
-        "campos entre `«»` de `procedimientos/convenciones-despacho.md` (números de ROAC,",
-        "ruta base), las tarifas por categoría y los párrafos del modelo de informe",
-        "pendientes de contrastar con el PDF oficial del ICAC.",
+        "> La dirección, supervisión y revisión del encargo es responsabilidad",
+        "> **indelegable** del socio firmante (NIA-ES 220 Revisada).",
     ]
+    return "\n".join(L) + "\n"
+
+
+def construye_catalogo(metadatos: dict[str, dict]) -> str:
+    """El catalogo anotado, fuera del SKILL.md.
+
+    El indice se carga en cada conversacion; este fichero solo cuando alguien
+    pregunta que hay. Sacarlo de ahi baja el coste fijo a la mitad.
+    """
+    L = ["# Catálogo de procedimientos", "",
+         "Qué hace cada uno. Ábrelos con `cat procedimientos/<nombre>.md`.",
+         "Los marcados **▸** son guías de fase.", ""]
+    for titulo, nombres in FASES:
+        presentes = [n for n in nombres if n in metadatos]
+        if not presentes:
+            continue
+        L += [f"## {titulo}", "", "| Procedimiento | Qué hace |", "|---|---|"]
+        for n in presentes:
+            marca = "▸ " if n in GUIAS else ""
+            L.append(f"| {marca}`{n}` | {metadatos[n]['description']} |")
+        L.append("")
     return "\n".join(L) + "\n"
 
 
@@ -336,8 +305,10 @@ def valida(pkg: str) -> list[str]:
     if any(c in d or c in n for c in "<>"):
         errores.append("name/description no pueden contener < ni >")
     cuerpo = len(m.group(2))
-    if cuerpo > 20_000:
-        errores.append(f"cuerpo de SKILL.md de {cuerpo} caracteres: pasa de ~5k tokens")
+    if cuerpo > 8_000:
+        errores.append(f"cuerpo de SKILL.md de {cuerpo} caracteres. Es lo unico que "
+                       f"se carga siempre: mantengalo por debajo de 8.000 y mueva el "
+                       f"detalle a procedimientos/")
     for req in ("procedimientos", "referencias", "plantillas", "scripts"):
         if not os.path.isdir(os.path.join(pkg, req)):
             errores.append(f"falta la carpeta {req}/")
@@ -404,9 +375,13 @@ def main() -> int:
         print(f"ERROR: procedimientos sin clasificar en el indice: {sorted(faltan)}")
         return 1
 
-    # 2. indice
+    # 2. indice, y el catalogo anotado como fichero aparte para que el
+    #    SKILL.md quede corto: es lo que se carga siempre, y cada byte cuenta
     with open(os.path.join(pkg, "SKILL.md"), "w", encoding="utf-8") as fh:
         fh.write(construye_indice(metadatos))
+    with open(os.path.join(pkg, "procedimientos", "00-catalogo.md"),
+              "w", encoding="utf-8") as fh:
+        fh.write(construye_catalogo(metadatos))
 
     # 3. librería, referencias y plantillas
     # SOLO la libreria de calculo. Ni el empaquetador ni el verificador de
